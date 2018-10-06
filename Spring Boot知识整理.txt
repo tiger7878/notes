@@ -1,0 +1,220 @@
+1、@AutoConfigureAfter（xx.class）：表示在某个类实例化以后再实例化本类
+2、mybatis的xml文件是需要保留的。spring的xml不用保留。
+3、事务：引入spring-boot-starter-jdbc，然后在service类上加@Transactional注解，这样该类下所有public方法都有事务
+4、导入项目配置文件properties：@PropertySource(value={"classpath:xx.properties"})
+5、导入其他组件的xml文件：@ImportResource("classpath:xx.xml")
+6、注解为配置类：@Configuration
+7、包扫描：@ComponetScan(basePackages="xx.xx.xx")
+8、spring boot内嵌的tomcat不支持jsp，需要导入tomcat-embed-jasper。因为spring boot不推荐用jsp。
+9、如果直接new一个对象，而该对象里面有@Atuoware标注属性时会报错，因为new的对象不由spring容器管理
+10、把spring-boot打包成war包放到tomcat中，需要在pom.xml中打包排除tomcat，启动的类需要继承SpringBootServletInitializer，然后重写config(SpringApplicationBuilder)
+11、Application配置文件的优先级：
+	当前目录下的/config子目录
+	当前目录
+	classpath下从config包
+	classpath根路径（默认创建的application.properties就在这里）
+12、配置文件
+	properties配置文件：
+	https://docs.spring.io/spring-boot/docs/2.0.4.RELEASE/reference/htmlsingle/#common-application-properties
+	yaml配置文件：格式注意（冒号后面要空格）
+	https://docs.spring.io/spring-boot/docs/2.0.4.RELEASE/reference/htmlsingle/#boot-features-external-config-yaml
+13、多环境配置
+	公共的配置文件配置在application.properties中
+	把某个环境独有的，配置在独有的环境中。
+	maven打包以后默认启动的是application.properties中配置的spring.profiles.active的环境，通过下面命令可以改变启动环境：
+		java -jar springboot-0.0.1-SNAPSHOT.jar --spring.profiles.active=test
+	yaml多环境：
+		加---来区分不同的环境
+		特别注意，这种配置方式一个文件中头必须只有一个，比如spring，不能配置两个spring
+		yaml缺点：不能通过@PropertySource注解加载。
+14、日志配置：
+	默认使用logback（推荐使用）
+	spring boot默认会加载classpath：logback-spring.xml或者logback-spring.groovy文件
+15、视图引擎：
+	默认Thymeleaf
+16、错误处理
+	方案一：自定义错误类，实现ErrorController
+	方案二：
+	找不到页面时默认找：resources/public/error/404.html
+	出错时默认找：resources/templates/error/5xx.html（针对不同的模板引擎会有不同的后缀）
+	方案三：自定义异常类，使用@ControllerAdvice注解
+	
+17、跨域支持
+	配置类继承WebMvcConfigurerAdapter，然后重写addCorsMappings。
+	更加细粒度的可以在方法上标注@CrossOrigin(origins="http://localhost:8080")指定哪个源地址才可以访问，同时指定这个方法是get还是post
+	
+18、文件上传：注意设置最大文件大小
+
+19、数据库
+	默认使用tomcat-jdbc连接池
+	h2：内存数据库的模式有：本地模式、内存模式
+	
+20、缓存
+	@EnableCaching：在配置上标注，启用缓存
+	@Cacheable：适用于查询
+	@CachePut：适用于更新
+	@CacheEvict：适用于删除
+	备注：要使用缓存的对象必须要实现序列化接口
+	在方法上写key的生成策略的优先级高于专门的key生成策略类
+	
+21、ActiveMQ
+	引入jar包
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-activemq</artifactId>
+		</dependency>
+	配置：
+	spring:
+		activemq:
+			in-memory: true #消息队列，开发时先放内存中，生产环境要安装
+	开启支持：
+		@EnableJms //开启JMS
+		
+22、RabbitMQ
+	引入jar包：
+		<!-- amqp -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+			</dependency>
+	开启RabbitMQ支持：
+	@EnableRabbit
+	备注：配置时自动创建的Bean的名字不能是queue，否则不能自动创建
+    @Bean
+    public Queue queue1() {
+        return new Queue("monkey.queue");
+    }
+	
+23、rest方式调用API获取的实体包含日期格式时报错
+	Can not parse date while it seems to fit format 'yyyy-MM-dd'T'HH:mm:ss.SSS问题
+	在接收方的实体做如下操作：
+	-- https://blog.csdn.net/thomescai/article/details/80019641 （本次参考）
+	-- https://blog.csdn.net/Mr_Smile2014/article/details/79819543（未尝试成功）
+	
+	@JsonDeserialize(using = CustomJsonDateSerializer.class)
+    private Date createTime;
+	
+	public class CustomJsonDateSerializer extends JsonDeserializer<Date> {
+
+		public static final String  FORMAT_HEURE_JSON               = new String("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		public static final String  FORMAT_HEURE_JSON_SERIALIZE     = new String("EEE yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		public static final String  FORMAT_HEURE_JSON_SERIALIZE_2   = new String("EEE, dd MMM yyyy HH:mm:ss zzz");
+		public static final String  FORMAT_HEURE_JSON_SERIALIZE_3   = new String("yyyy-MM-dd HH:mm:ss");
+
+
+		public Date deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
+			try {
+				SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_HEURE_JSON_SERIALIZE_3);
+				return sdf.parse(parser.getText());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
+
+24、spring session+redis集群
+	项目依赖jar包：
+		<!-- spring session -->
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session</artifactId>
+			</dependency>
+		<!-- redis -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-redis</artifactId>
+		</dependency>	
+	项目配置文件：
+	# spring session使用存储类型
+	#spring.session.store-type=redis
+	# spring session刷新模式：默认on-save
+	#spring.session.redis.flush-mode=on-save
+	#spring.session.redis.namespace= 
+	# session超时时间，单位秒
+	#server.session.timeout=30
+	测试：开两个项目，用不同的端口号访问即可，不用开nginx
+	
+25、生产环境监控-基于http（最简单方式）
+	另外的两种监控方式：JMX，远程shell
+	项目jar包：
+		<!-- actuator 监控-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<!-- security 安全框架用来保护监控不被随意访问，默认拦截所有，需要配置-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+	项目配置：
+		#端点的配置
+		endpoints:
+		  sensitive: true
+		  shutdown:
+			enabled: true #开启shutdown以后可以通过post关闭应用，慎用
+		#断点保护
+		security:
+		  basic:
+			enabled: true
+			path: /manage #spring-security只保护/manage，默认保护所有资源
+		  user:
+			name: monkey
+			password: 123456
+
+		management:
+		  security:
+			roles: SUPERUSER
+		  context-path: /manage #指定监控界面访问的路径，这样spring-security就可以进行保护了，防止所有人访问
+
+26、基础Druid数据库连接池（监控在测试环境开启，生产环境关闭，因为这个需要消耗性能）
+	项目依赖：
+		<!-- https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid-spring-boot-starter</artifactId>
+			<version>1.1.10</version>
+		</dependency>
+	项目配置：
+		spring:
+			  datasource:
+				type: com.alibaba.druid.pool.DruidDataSource #数据库连接池使用Druid，不配置它时使用默认的
+	
+	查看是否启用：启动web容器时看是否有下列信息
+		com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure [56] -| Init DruidDataSource
+		com.alibaba.druid.pool.DruidDataSource [930] -| {dataSource-1} inited
+		
+	监控支持配置：（生产环境禁用监控）
+
+27、Swagger
+	注意：需要给springmvc里面的方法定义为get还是post，如果不定义，默认会把get、post、put、delete都生成，通过swagger插件可以看见。
+	项目依赖：
+		<!-- Swagger -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+	配置：
+		@EnableSwagger2：启用支持Swagger2
+		实例化多个Bean：Docket。就表示分多个组
+	注解：
+		@Api(value = "ApiController",description = "测试跨域和swagger的控制器") #用在类上，说明该类的作用
+		@ApiOperation(value = "查找",notes = "根据ID名查找")  #用在方法上，说明方法的作用
+		@ApiImplicitParams和@ApiImplicitParam用在方法上，用于说明参数
+		
+28、生产部署
+	去除不需要的jar包（比如热部署）
+	去除监控：druid、swagger
+	打包跳过测试：clean package -Dmaven.test.skip=true
+	数据库的配置放在不同的环境下，比如dev，test
+	日志文件配置在不同的环境下。
+	
+		

@@ -1,0 +1,49 @@
+1、环境准备：
+	JDK、IDEA、MYSQL
+	MYSQL下载地址：https://dev.mysql.com/downloads/ 
+		服务端：MySQL Community Server
+		客户端：MySQL Workbench
+		
+2、版本控制
+	spring io：用于管理maven引入的各种jar包的版本，保证了兼容性
+	spring cloud：微服务相关的jar的版本
+	
+3、打包
+	在父项目上执行：clean package -Dmaven.test.skip=true 就可以把所有项目打包
+	打包所有的jar到一个jar包中，是一个可执行的jar，需要在某个项目的pom.xml中加入以下代码：
+	<build>
+        <plugins>
+            <!--有了这个插件，在maven打包时会把所有jar包打包到一起，否则只是链接-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.3.3.RELEASE</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <!--指定打包的项目的名字-->
+        <finalName>demo</finalName>
+    </build>
+	
+4、Restfull
+	用url来描述资源：/user/1
+	用http方法来描述行为：get、post、put、delete
+	使用json交互数据
+	它只是一种风格，不是一种强制的标准
+	jsonPath表达式：https://github.com/json-path/JsonPath
+	RequestMapping的value值里面可以写正则表达式：
+		@RequestMapping(value = "/user2/{id:\\d+}",method = RequestMethod.GET)
+	@GetMapping和@PostMapping可以简化代码
+	
+5、JsonView
+	控制不同的视图查询相同的实体时，显示的字段不一致
+	在实体类中定义两个视图接口
+	在实体类的get方法中标注JsonView关联视图接口
+	在控制器的方法上标注JsonView指定视图接口
+

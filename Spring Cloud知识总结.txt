@@ -1,0 +1,225 @@
+1、项目推荐：
+	https://github.com/roncoo/spring-cloud-demo
+	
+2、微服务架构技术栈
+	服务开发：Spring Boot、Spring、SpringMVC
+	服务配置与管理：Archaius、Diamond
+	服务注册与发现：Eureka、Consul、Zookeeper
+	服务调用：Rest、RPC、gRPC
+	服务熔断：Hystrix、Envoy
+	负载均衡：Ribbon、Nginx
+	服务接口调用：Fegin
+	消息队列：Kafka、RabbitMQ、ActiveMQ
+	服务配置中心管理：Spring Cloud Config、Chef
+	服务路由（API网关）：Zuul
+	服务监控：Zabbix、Nagios、Metrics、Spectator
+	全链路追踪：Zipkin、Brave、Dapper
+	服务部署：Docker、OpenStack、Kubernetes
+	数据流操作开发包：Spring Cloud Stream（封装与Redis、Rabbit、Kafka等发送接收消息）
+	时间消息总线：Spring Cloud Bus
+	
+3、资料网址：
+	官网：http://projects.spring.io/spring-cloud/
+	中文网站：https://springcloud.cc/
+	
+4、Lombock
+	@NoArgsConstructor  //无参构造函数
+	@AllArgsConstructor //全参构造函数
+	@Data //生成getter和setter
+	@Accessors(chain = true) //链式编程，setter返回的是实体，可以一直setter下去
+	
+5、开发流程
+	构建项目→pom文件添加依赖→yml文件添加配置→编码→测试
+	
+6、SpringBoot+Mybatis整合
+	@Mapper //springboot+mybatis整合时需要，在mapper接口中标注
+	
+7、RestTemplate
+	用于调用rest服务
+	
+8、Eureka
+	简介：它是C/S结构，用于提供服务的注册与发现
+	两大组件：
+		Eureka Server：注册并保存所有的服务节点
+		Eureka Client：一个java客户端，简化Eureka Server的交互，向Eureka Server发送心跳检查（默认30秒），Eureka Server在多个心跳周期（默认90秒）内没接收到就会移除服务节点。
+	三大角色：
+		Eureka Server：提供服务注册和发现
+		Service Provider：服务提供方讲自身的服务注册到Eureka，从而使消费方可以找到
+		Service Consumer：服务消费方从Eureka获取注册服务列表，从而能够消费服务
+	服务端项目依赖：
+		<!--eureka-server服务端 -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-eureka-server</artifactId>
+		</dependency>
+	服务端项目配置：
+		server:
+		  port: 7001
+
+		eureka:
+		  instance:
+			hostname: localhost #eureka服务端的实例名称
+		  client:
+			register-with-eureka: false #false表示不向注册中心注册自己
+			fetch-registry: false #false表示自己端就是注册中心，我的职责就是维护服务实例，并不需要去检索服务
+			service-url:
+			  defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ #设置与Eureka Server交互的地址查询服务和注册服务都需要依赖这个地址（单机）
+	服务端项目支持：
+		@EnableEurekaServer // EurekaServer服务器端启动类,接受其它微服务注册进来。在服务启动类上标注该注解。
+	服务端测试：
+		http://localhost:7001/
+		
+	客户端注册进入Eureka：
+		<!-- 将微服务provider侧注册进eureka -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+		
+		#客户端注册进eureka服务中
+		eureka:
+		  client:
+			service-url:
+			  defaultZone: http://localhost:7001/eureka #Eureka服务端的地址
+			  
+		@EnableEurekaClient //本服务启动后会自动注册进eureka服务中
+		
+		http://localhost:7001/ 查看：Instances currently registered with Eureka下的实例，发现就有刚才注册进Eureka中的服务。
+	
+	服务发现：
+		@EnableDiscoveryClient //服务发现，在微服务启动类中标注该注解
+		在某个控制器中编写：
+		@Autowired
+		private DiscoveryClient discoveryClient;
+	
+	Eureka集群配置：
+		修改host文件：C:\Windows\System32\drivers\etc
+			#SpringCloud的Eureka集群配置
+			127.0.0.1	eureka7001.com
+			127.0.0.1	eureka7002.com
+			127.0.0.1	eureka7003.com
+		创建eureka7002和eureka7003项目
+		修改eureka7001、eureka7002、eureka7003的yml文件
+		修改微服务的配置文件发布到三台Eureka Server中
+		使用域名加端口验证:http://eureka7001.com:7001，http://eureka7002.com:7002，http://eureka7003.com:7003
+		
+9、名词解释
+		ACID:
+			A（Atomicity）：原子性
+			C（Consistency）：一致性
+			I（Isolation）：独立性
+			D（Durability）：持久性
+		CAP：
+			C（Consistency）：强一致性
+			A（Availability）：可用性
+			P（Partition tolerance）：分区容错性。分布式系统中它必须要有。
+		目前的系统都不可能同时满足CAP，最多满足两头个，其中分布式系统中P时必须要的。
+		Eureka保证的是AP、Zookeeper保证的是CP。所以Eureka比Zookeeper有优势就在这里。
+10、Ribbon客户端的负载均衡
+	源码：https://github.com/Netflix/ribbon，查看wiki就可以了解。
+	项目依赖：
+		<!-- Ribbon相关 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-ribbon</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+	配置文件：
+		#ribbon作为客户端的负载均衡
+		eureka:
+		  client:
+			register-with-eureka: false #不注册自己
+			service-url:
+			  defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/
+	注解：
+		//创建一个RestTemplate去调用rest服务
+		@Bean
+		@LoadBalanced //Spring Cloud Ribbon是基于Netflix Ribbon实现的一套客户端的负载均衡的工具，此注解表示进行负载均衡
+		public RestTemplate restTemplate(){
+			return new RestTemplate();
+		}
+		在服务器启动类上标注：@EnableEurekaClient //标示为eureka的客户端，因为ribbon需要和eureka整合
+	测试：
+		http://localhost/consumer/dept/get/3 可以正常访问就代表配置成功了。
+		
+	微服务做集群：一个微服务，多个实例。
+	
+	Ribbon算法：
+		RoundRobinRule：轮询（默认）
+		RandomRule：随机
+		AvailabilityFilteringRule：
+		WeightResponseTimeRule：
+		RetyRule：默认使用轮询，如果某个服务坏了，就会去获取其他可用的服务
+		BestAvailableRule：
+		ZoneAvidanRule：
+	自定义负载算法：
+		自定义配置类，不能放在@ComponetScan包和子包下。查看源码RandomRule，拷贝过来修改。
+		注意：此时需要注释掉原配置类中的IRule这个Bean，否则会报错。
+
+11、Feign负载均衡
+	官网：https://github.com/OpenFeign/feign
+	它是声明式的web服务客户端，使得编写web服务客户端变得非常容易，只需要创建接口，然后在上面添加注解即可。
+	项目依赖：
+		<!--feign-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-feign</artifactId>
+        </dependency>
+	项目注解：
+		@EnableFeignClients
+	
+12、Hystrix熔断器
+	官网：https://github.com/Netflix/Hystrix
+	项目依赖：
+		<!-- hystrix -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-hystrix</artifactId>
+		</dependency>
+	项目注解：
+		@EnableCircuitBreaker
+	服务熔断：在服务端，服务出现异常时触发，防止雪崩。
+	服务降级：在客户端，服务停用时触发。
+	服务监控：Hystrix Dashboard提供图像画界面展示记录所有通过Hystrix发起的请求的信息
+		健康程度：绿色<黄色<橙色<红色
+		通过这个可以发现故障实例和高压实例
+		添加监控的服务：
+			监控界面:http://localhost:9001/hystrix
+			
+13、Zuul网关
+	官网：https://github.com/Netflix/zuul
+	项目依赖：
+		<!-- zuul路由网关 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zuul</artifactId>
+        </dependency>
+
+        <!--eureka-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka</artifactId>
+        </dependency>
+	项目注解：
+		@EnableZuulProxy
+14、Config统一的配置中心
+	项目依赖：
+		<!-- springCloud Config -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-config-server</artifactId>
+		</dependency>
+	项目注解：
+		@EnableConfigServer
+		
