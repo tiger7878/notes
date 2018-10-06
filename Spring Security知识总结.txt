@@ -40,6 +40,10 @@
 	RequestMapping的value值里面可以写正则表达式：
 		@RequestMapping(value = "/user2/{id:\\d+}",method = RequestMethod.GET)
 	@GetMapping和@PostMapping可以简化代码
+	@RequestBody可以把请求的json字符串转换成实体对象中的属性值
+		public User create(@RequestBody User user){}
+	日期类型数据处理：前后台传递用时间戳
+	
 	
 5、JsonView
 	控制不同的视图查询相同的实体时，显示的字段不一致
@@ -47,3 +51,13 @@
 	在实体类的get方法中标注JsonView关联视图接口
 	在控制器的方法上标注JsonView指定视图接口
 
+6、数据校验hibernate validator
+	@Valid：校验实体的属性值
+		public User create(@Valid @RequestBody User user){}
+	@BindingResult：加上这个参数后，校验不通过也能进入方法，可以收集所有错误信息，没有该参数时，校验不通过就不进入该方法
+	@NotBlank：不能为空
+	@Past：过去的时间
+	自定义错误校验：
+		校验注解：必须要有message、groups、payload三个方法
+		校验类：需要实现ConstraintValidator<A,T>接口。它是spring的一个bean，可以注入其他spring容器中的bean。
+	
