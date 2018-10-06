@@ -43,8 +43,7 @@
 	@RequestBody可以把请求的json字符串转换成实体对象中的属性值
 		public User create(@RequestBody User user){}
 	日期类型数据处理：前后台传递用时间戳
-	
-	
+		
 5、JsonView
 	控制不同的视图查询相同的实体时，显示的字段不一致
 	在实体类中定义两个视图接口
@@ -60,4 +59,29 @@
 	自定义错误校验：
 		校验注解：必须要有message、groups、payload三个方法
 		校验类：需要实现ConstraintValidator<A,T>接口。它是spring的一个bean，可以注入其他spring容器中的bean。
+		
+7、Spring Boot服务异常处理
+	出现异常时：spring boot判断请求是否是浏览器，如果是就响应html，如果不是就响应json。源码见：BasicErrorController中的方法
+	自定义异常页面：（适用于浏览器请求）
+		在resources下创建resources/error目录，然后新建404.html，这就是404的页面。它影响的浏览器的请求，不影响非浏览器的请求。
+	自定义异常响应：（适用于非浏览器请求）
+		自定义异常类继承：RuntimeException类，然后写自己的属性和方法
+		@ControllerAdvice：拦截控制器上的所有异常，标注处理自定义异常的类
+
+8、RestfullAPI的拦截
+	过滤器：Filter（缺点：不知道请求是哪个控制器，哪个方法来处理的）
+		自定义过滤器需要实现Filter接口，并且标注@Component，所有的url请求都会经过这个过滤器。可以通过自定义Bean来控制某些url才经过。
+		第三方过滤器：没有办法直接在它们的类上标注@Component，就必须在配置类中定义FilterRegistrationBean
+	拦截器：Interceptor（缺点：不能拿到请求的方法的参数值）
+		自定义拦截器需要实现：HandlerInterceptor接口，同时标注：@Component注解
+		配置类：继承WebMvcConfigurerAdapter，重写：addInterceptors方法进行注册
+		优点：spring框架本身提供的，可以知道是哪个控制器，哪个方法被拦截了。它会拦截自己写的controller也会拦截spring自己的controller
+	切片：Aspect
+		优点：可以替代上面两种，可以拿到请求的参数的值
+	拦截顺序：Filter→Interceptor→ControllerAdvice→Aspect→Controller。如果Controller出异常就是反着出去。
+	
+9、文件上传和下载
+	JDK7新语法：在try的（）中写流，可以帮我们自动关闭，不用在catch和finally中关闭了
+		try (InputStream inputStream = new FileInputStream(new File(folder, id + ".txt"));
+				OutputStream outputStream = response.getOutputStream();) {}
 	
