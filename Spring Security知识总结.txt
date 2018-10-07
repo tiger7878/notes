@@ -84,4 +84,54 @@
 	JDK7新语法：在try的（）中写流，可以帮我们自动关闭，不用在catch和finally中关闭了
 		try (InputStream inputStream = new FileInputStream(new File(folder, id + ".txt"));
 				OutputStream outputStream = response.getOutputStream();) {}
+
+10、多线程提高RestfullAPI性能
+	 Runnable：使用Callable在主线程里面写代码调用子线程。实用性不大。
+	 DeferredResut：（很有用，待完善）用户请求到action，在action中请求消息队列，另外有一个线程监听消息队列，当消息队列处理完成后，监听线程把结果返回，实际是异步，但是用户无感知。
+	 
+11、Swagger自动生成html文档
+	依赖：
+		<dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+	启用注解：@EnableSwagger2
+	使用环境：@Profile({"dev","test"}) //指定在开发和测试环境中才启用swagger，生产环境中禁用
+	访问地址：http://localhost:8080/swagger-ui.html
+
+12、WireMock伪造REST服务
+	它是一个独立的服务器，在收到请求时响应数据回去
+	下载网址：http://wiremock.org/docs/running-standalone/
+	启动服务端：java -jar wiremock-standalone-2.19.0.jar --port 8062
+	依赖：
+		<dependency>
+			<groupId>com.github.tomakehurst</groupId>
+			<artifactId>wiremock</artifactId>
+		</dependency>
+13、Spring Security基本原理
+	它本质是过滤器链，请求和响应都要经过
+	重要的过滤器：
+		UsernamePasswordAuthenticationFilter：用户名密码认证方式的过滤器
+		BasicAuthenticationFilter：Basic认证方式的过滤器
+		ExceptionTranslationFilter：异常处理的过滤器
+		FilterSecurityInterceptor：安全的拦截器，它来判断能否访问服务器上的资源
+	
+14、自定义用户认证
+	处理用户信息获取的逻辑
+		自定义用户信息获取类，需要实现：UserDetailsService接口
+	处理用户校验逻辑
+		UserDeails接口中的几个方法介绍：
+			isAccountNonExpired()：账户是否有过期
+			isAccountNonLocked()：账户是否被锁定了，可以用来锁定账号。
+			isCredentialsNonExpired()：密码是否过期，安全级别高的网站，30天要求变化密码时用。
+			isEnabled()：账户是否可用，用于假删除，删除的用户不能恢复。
+	处理密码加解密的逻辑
+		PasswordEncoder：它随机生成盐和密码以前加密，相同的原始密码，每次加密得到的结果都是不同的，推荐使用这个。（思路不错）
+	
 	

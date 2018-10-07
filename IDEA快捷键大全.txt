@@ -86,6 +86,7 @@
 	Alt+F9：运行到光标所在的行
 	Shift+Alt+F9：把运行过的地方都展示出来，以便选择哪个来运行，这是进行debug
 	Ctrl+F1：断点调试时查看变量的值
+	Ctrl+F2：停止服务
 	
 提交时忽略文件或者文件夹(设置以后，就看不见这些文件了)
 	Ctrl+Alt+s: Editor→File Types →Ignore files and folders
