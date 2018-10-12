@@ -2,6 +2,7 @@
 	Alt+数字：比如说1，就可以打开左边、底部工具栏，再按一次就隐藏。具体的数字得看数字是啥。再按ESC就可以回到编辑区。
 	Alt+左右箭头：在编辑区左右移动
 	Ctrl+Tab：快速在上一个文件和当前文件之间切换
+	Ctrl+Shift+左右箭头：控制左边工具栏区大小
 
 创建和编码：
 	Alt+Insert ：在左边菜单区：创建包、类、文件；在右边编辑区：类文件中生成构造器/Getter/Setter等
@@ -98,6 +99,9 @@ git的使用
 		在左边菜单栏选中一个文件夹按它则撤销整个文件夹下的所有文件（慎重）
 	Ctrl+K：commit的快捷键
 	Ctrl+Shift+K：push到远程仓库
+
+maven的使用：
+	打包：clean package -Dmaven.test.skip=true
 	
 关联数据库
 	在写mapper.xml文件时会自动提示表名和字段名
