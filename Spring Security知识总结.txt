@@ -133,5 +133,20 @@
 			isEnabled()：账户是否可用，用于假删除，删除的用户不能恢复。
 	处理密码加解密的逻辑
 		PasswordEncoder：它随机生成盐和密码以前加密，相同的原始密码，每次加密得到的结果都是不同的，推荐使用这个。（思路不错）
+		
+15、个性化用户认证流程
+	自定义登录页：专门的类（BrowserSecurityController）来处理登录时的页面跳转提示 
+	自定义登录成功处理：自定义类继承SavedRequestAwareAuthenticationSuccessHandler类
+	自定义登录失败处理：自定义类继承SimpleUrlAuthenticationFailureHandler类
+	获取认证的用户信息：SecurityContextHolder里面
+	
+16、图形验证码
+	图片验证码类：ImageCode
+	验证码生成接口：ValidateCodeGenerator、图片验证码生成类：ImageCodeGenerator
+	验证码配置类：ValidateCodeProperites、图片验证码配置类：ImageCodeProperties
+	验证码异常类：ValidateCodeException
+	验证码过滤器：ValidateCodeFilter
+	验证码实体Bean配置类：ValidateCodeBeanConfig
+	默认验证码输出控制器：ValidateCodeController
 	
 	
