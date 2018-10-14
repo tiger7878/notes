@@ -149,4 +149,15 @@
 	验证码实体Bean配置类：ValidateCodeBeanConfig
 	默认验证码输出控制器：ValidateCodeController
 	
+17、有用的工具类
+	ServletWebRequest：封装了request和response。转换：new ServletWebRequest(HttpServletRequest request)
+	SessionStrategy：对session的操作。包：spring-social
+	RedirectStrategy：跳转redirect工具。包：spring-security
+	ServletRequestUtils：从request获取请求参数的值，例如：ServletRequestUtils.getStringParameter(request.getRequest(), "imageCode")
+	StringUtils：对String的操作，比如equals，isblank等。包：commons-lang
+	AntPathMatcher：用于ant的匹配。比如/user/*的匹配。
+	PasswordEncoder：用于密码加密，相同的明文每次加密得到不同的结果。包spring-security
+	
+	
+	
 	
