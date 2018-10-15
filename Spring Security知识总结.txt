@@ -157,7 +157,7 @@
 	StringUtils：对String的操作，比如equals，isblank等。包：commons-lang
 	AntPathMatcher：用于ant的匹配。比如/user/*的匹配。
 	PasswordEncoder：用于密码加密，相同的明文每次加密得到不同的结果。包spring-security
-	
+	RandomStringUtils：用于生存随机的字符串
 	
 	
 	
