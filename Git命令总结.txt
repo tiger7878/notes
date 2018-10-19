@@ -12,3 +12,13 @@
 	git branch
 7、提交并创建远程分支dev
 	git push --set-upstream origin dev
+8、查看git配置信息
+	git config --list
+9、查看git用户名
+	git config user.name
+10、查看邮箱配置
+	git config user.email
+11、全局配置用户名
+	git config --global user.name 'monkey'
+12、全局配置邮箱
+	git config --global user.email 'zhcw63@163.com'
