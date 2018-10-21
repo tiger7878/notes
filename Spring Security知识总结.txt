@@ -173,4 +173,21 @@
 	private Map<String,ValidateCodeGenerator> validateCodeGennerators;
 	spring发现有这个时，会把spring容器中，所有ValidateCodeGenerator它的实现和bean的名字存到这里
 	
+20、短信登录
+	短信认证的token(包含了认证信息)：SmsCodeAuthenticationToken。参考：UsernamePasswordAuthenticationToken编写。
+	短信认证的过滤器：SmsCodeAuthenticationFilter。参考：UsernamePasswordAuthenticationFilter编写。
+	短信认证的校验逻辑：SmsCodeAuthenticationProvider，要实现AuthenticationProvider接口，它的supports方法是用来判断是否用该类来处理校验逻辑。参考：AbstractUserDetailsAuthenticationProvider编码。
+	短信登录验证的过滤器：SmsCodeFilter。参考：ValidateCodeFilter编写。
 	
+21、验证码重构
+	验证码类型：ValidateCodeType，用于标识图片，还是短信验证码。它设计得巧妙，很多地方都有使用它来获取相关的类。
+	验证码过滤器：ValidateCodeFilter，负责装载需要验证码验证的url和对应的验证码类型，处理时交给对应的验证码处理器进行处理
+	验证码处理器的控制器：ValidateCodeProcessorHolder，负责根据验证码类型获取对应的验证码处理器
+	验证码处理器：ValidateCodeProcessor，负责创建(创建、保存、发送)和校验验证码
+	验证码处理器的实现类：AbstractValidateCodeProcessor（抽象类）、ImageCodeProcessor（图片验证码处理器）、SmsCodeProcessor（短信验证码处理器）
+	安全配置类：AbstractChannelSecurityConfig，用来封装formLogin的，以便其他配置类继承，配置文件分层思想，通过apply引入其他配置类
+	常量配置接口：SecurityConstants，里面封装了所有的常量
+	
+	特别重要：
+		字符串、实体类、依赖查找配合起来一起使用，相当灵活。
+		配置类分层处理。
