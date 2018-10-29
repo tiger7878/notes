@@ -210,4 +210,12 @@
 			方式一：相同的账号，首先在A浏览器登录，然后在B浏览器再登录时把A浏览器上的账号T下线。
 			方式二：相同的账号，首先在A浏览器登录，然后在B浏览器登录时就不能登录。加maxSessionPreventsLogin(true)配置
 		集群Session管理
-		
+			把session存储到独立的服务器，此时往session里面放的数据需要实现Serializable接口，因为需要序列化以后再存放
+			使用spring-session+Redis（4.0的稳定版）
+			yml配置文件：spring.session.store-type=redis
+			说明：集群后，上面的Session失效和并发策略仍然有效
+		退出处理
+			.logout()
+                .logoutUrl("/signOut")//自定义退出的url地址，默认logout
+                .logoutSuccessHandler(MonkeyLogoutSuccessHander)//自定义退出成功后的控制器，需要实现LogoutSuccessHandler接口
+				.logoutSuccessUrl("/xx.html")//自定义退出成功后的跳转页面，它和logoutSuccessHandler只能同时存在一个
