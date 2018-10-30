@@ -219,3 +219,15 @@
                 .logoutUrl("/signOut")//自定义退出的url地址，默认logout
                 .logoutSuccessHandler(MonkeyLogoutSuccessHander)//自定义退出成功后的控制器，需要实现LogoutSuccessHandler接口
 				.logoutSuccessUrl("/xx.html")//自定义退出成功后的跳转页面，它和logoutSuccessHandler只能同时存在一个
+				
+25、Spring Security OAtuth
+	OAtuth 2官网：https://oauth.net/2/
+	Authorization Server : 认证服务器，负责认证和授权。@EnableAuthorizationServer 注解标注即可
+	Resource Server ：资源服务器，存放资源的服务器。@EnableResourceServer 注解标注即可。实际开发中认证服务器可以和资源服务器是同一台。
+	clientId ：应用id，每个应用分配一个id，这样我就知道是哪个引用来请求授权。比如：微信和QQ就是两个不同的应用。
+	clientSecret ：应用的密钥。
+	basic认证：需要填写clientId和clientSecret，这样就能确定这个应用可以请求认证服务器。
+	grant_type ：4种授权模式。password模式可以用于本公司开发的应用。
+	scope ：授权范围
+	access_token ：访问令牌，同一个用户，在某个令牌还没有失效以前，请求其他的授权模式获取到的令牌是同一个，因为认证服务器会判断。
+	
