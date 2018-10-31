@@ -230,4 +230,7 @@
 	grant_type ：4种授权模式。password模式可以用于本公司开发的应用。
 	scope ：授权范围
 	access_token ：访问令牌，同一个用户，在某个令牌还没有失效以前，请求其他的授权模式获取到的令牌是同一个，因为认证服务器会判断。
+	访问角色：默认情况下需要有ROLE_USER角色才能访问，需要在MyUserDetailsService中添加它，否则不能访问
+	获取code：http://localhost:8080/oauth/authorize?response_type=code&client_id=mkapp&redirect_uri=http://monkey78.com&scope=all
+	
 	
