@@ -24,3 +24,7 @@
 	git config --global user.email 'zhcw63@163.com'
 13、从远程仓库克隆某个分支
 	git clone -b branch_name git://xxx/project.git
+14、切换到指定分支，并更新工作区
+	git checkout branch-name
+15、合并指定分支到当前分支
+	git merge branch
