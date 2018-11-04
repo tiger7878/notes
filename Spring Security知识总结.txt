@@ -263,4 +263,36 @@
 		重写endpoints作为参数的方法：配置：AuthenticationManager、UserDetailsService、TokenStore
 		重写clients作为参数的方法：对应用做配置，决定可以给哪些应用发令牌，可以配置多个。可以保存在内存、数据库、redis中
 		TokenStore令牌存储：推荐存储到redis中，可以在令牌失效后自动删除，不用我们维护，而且性能比数据库快很多。
+
+29、JWT（Json Web Token）
+	特点：
+		自包含：包含了一些信息
+		密签：信息是被签名了，不是加密的，别人能破解，不能存放业务敏感信息
+		可扩展：支持自定义的扩展
+	JwtAccessTokenConverter：生成jwtToken，它可以指定密钥对信息进行签名，密钥很重要，别人拿到以后就可以随意进入系统。
+	@ConditionalOnProperty：
+			配置文件中 monkey.security.oauth2.storeType=redis时才采用这个配置
+			@ConditionalOnProperty(prefix = "monkey.security.oauth2", name = "storeType", havingValue = "redis")
+			
+			配置文件中 monkey.security.oauth2.storeType=jwt时就采用这个配置，matchIfMissing表示如果没有配置，也采用它
+			@ConditionalOnProperty(prefix = "monkey.security.oauth2", name = "storeType", havingValue = "jwt", matchIfMissing = true)
+	jwt解析的网站：https://www.jsonwebtoken.io/
+	扩展：
+		自定义MonkeyJwtTokenEnhancer，实现TokenEnhancer，在里面写附加信息
+	读取令牌里面的信息
+		依赖：
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt</artifactId>
+				<version>0.9.0</version>
+			</dependency>
+		从request的请求头中获取到jwtToken，然后解析
+	令牌的刷新
+		一般是用户无感知的做法，比如用户用它的token来获取信息时，服务器发现过期了，可以直接刷新一下给用户
+		刷新token的有效期可以设置长一些，比如一星期或者一个月都行
+		待解决问题：发现刷新令牌后生成的是一个新的token，此时应该把这个token响应回客户端，否则客户端就不知道
+
+30、JWT实现SSO（单点登录）
+	说明：用户在某个应用上登录，然后在其他的关联应用上进行资源访问时也处于登录状态，只是不同的应用上获取到的jwtToken是不同的，需要有统一的认证服务器。
+	
 		
