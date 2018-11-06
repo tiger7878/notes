@@ -294,5 +294,37 @@
 
 30、JWT实现SSO（单点登录）
 	说明：用户在某个应用上登录，然后在其他的关联应用上进行资源访问时也处于登录状态，只是不同的应用上获取到的jwtToken是不同的，需要有统一的认证服务器。
-	
+	依赖：
+		<dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security.oauth</groupId>
+            <artifactId>spring-security-oauth2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-jwt</artifactId>
+        </dependency>
+    </dependencies>
+	注解：
+		@EnableOAuth2Sso
+	配置：
+		security:
+		  oauth2:
+			client:
+			  client-id: mkapp2
+			  client-secret: mkappsecrect2
+			  user-authorization-uri: http://127.0.0.1:9999/server/oauth/authorize #认证地址
+			  access-token-uri: http://127.0.0.1:9999/server/oauth/token #获取token地址
+			resource:
+			  jwt:
+				key-uri: http://127.0.0.1:9999/server/oauth/token_key #获取签名的token_key的地址
+	简化手动点击授权按钮，做成表单自动提交。参考：WhitelabelApprovalEndpoint和SpelView，直接copy，然后修改WhitelabelApprovalEndpoint TEMPLATE。
 		
