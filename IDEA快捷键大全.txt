@@ -5,6 +5,7 @@
 	Ctrl+Shift+左右箭头：控制左边工具栏区大小
 	Alt+字母：使用头部菜单栏上的字母，就会弹出头部菜单栏以便选择
 	Alt+F12：打开终端
+	Ctrl+F4：关闭编辑区的窗口
 
 创建和编码：
 	Alt+Insert ：在左边菜单区：创建包、类、文件；在右边编辑区：类文件中生成构造器/Getter/Setter等
@@ -16,6 +17,7 @@
 	Ctrl+Alt+T：可以把代码包在一个块内，例如：try/catch
 	Ctrl+X：剪切一行（可以用作删除用）
 	Ctrl+Alt+Shift+C：在一个类选中字段、方法，然后按下此健，然后再另一个类中按：Ctrl+V就会连带import关联包都一起导入。
+	Ctrl+Shift+Enter：在写if或者方法时使用它，可以直接生成{}
 
 打开：
 	Ctrl+N，可以快速打开类
@@ -125,5 +127,6 @@ maven的使用：
 	Alt+Shift+F：收藏类或者方法代码
 	
 windows端口查看和关闭
-	netstat -ano | findstr "8002"
-	taskkill /f /t /pid 7592
+	netstat -ano | findstr "8002" #查询端口8002对应的PID
+	tasklist | findstr "7592" #查询PID对应的应用程序
+	taskkill /f /t /pid 7592 #根据PID删除进程
