@@ -327,4 +327,27 @@
 			  jwt:
 				key-uri: http://127.0.0.1:9999/server/oauth/token_key #获取签名的token_key的地址
 	简化手动点击授权按钮，做成表单自动提交。参考：WhitelabelApprovalEndpoint和SpelView，直接copy，然后修改WhitelabelApprovalEndpoint TEMPLATE。
-		
+	
+31、Spring Security授权
+	业务系统：给客户使用，只需要判断用户是否登录或者是简单的角色（比如：普通用户和VIP）
+	内部管理系统：角色、权限复杂
+	AnonymousAuthenticationFilter：匿名认证过滤器，主要用于判断前面的过滤器中是否身份认证成功或者从session中是否拿到身份认证信息，如果没有就构造一个匿名的身份往后传
+	ExceptionTranslationFilter：异常处理的过滤器
+	FilterSecurityInterceptor：安全的过滤器，它来判断当前的Authentication能否访问服务器上的资源，它有当前用户的请求信息。
+	AccessDecisionManger：访问决定的管理者
+	AbstracAccessDecisionManger：是AccessDecisionManger的抽象实现
+	AccessDecisionVoter：投票者，对于本次请求的投票，默认实现：WebExpressionVoter，是Spring Security3以后才有的，它包办了所有投票器
+	AffirmactiveBased：只要有1个投过就过，默认使用它。
+	UnanimousBased：只有有1个投不过就不过
+	ConsensusBased：看投过与不过谁的票数多
+	SecurityConfig：在配置类中写的安全相关的配置项
+	ConfigAttribute：本次请求对应的安全配置项
+	Authentication：当前用户拥有的权限信息
+
+32、动态授权（内部管理系统）
+	通用RBAC数据模型：用户表、角色表、资源表（菜单、按钮、url）、用户角色关系表、角色资源关系表
+	@Order(Integer.MAX_VALUE)：标明该组件最后加载
+	主要利用的是权限表达式：
+		//验证数据库里面的动态权限
+        config.anyRequest().access("@rbacServiceImpl.hasPermission(request,authentication)");
+	
