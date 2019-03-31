@@ -37,13 +37,16 @@
 	使用json交互数据
 	它只是一种风格，不是一种强制的标准
 	jsonPath表达式：https://github.com/json-path/JsonPath
+	Pageable：对象spring-data里面的，用来做分页
+	@PathVariable:标准方法参数，可以使它在url上使用
 	RequestMapping的value值里面可以写正则表达式：
 		@RequestMapping(value = "/user2/{id:\\d+}",method = RequestMethod.GET)
+	@RequestParam：默认参数必须要传，@RequestParam(required = false)可以控制不必传
 	@GetMapping和@PostMapping可以简化代码
 	@RequestBody可以把请求的json字符串转换成实体对象中的属性值
 		public User create(@RequestBody User user){}
-	日期类型数据处理：前后台传递用时间戳
-		
+	日期类型数据处理：前后台传递用时间戳，可以用Date类型来接收时间戳
+	
 5、JsonView
 	控制不同的视图查询相同的实体时，显示的字段不一致
 	在实体类中定义两个视图接口
@@ -51,33 +54,48 @@
 	在控制器的方法上标注JsonView指定视图接口
 
 6、数据校验hibernate validator
-	@Valid：校验实体的属性值
+	@Valid：校验实体的属性值，校验不通过就不会进入该方法
 		public User create(@Valid @RequestBody User user){}
-	@BindingResult：加上这个参数后，校验不通过也能进入方法，可以收集所有错误信息，没有该参数时，校验不通过就不进入该方法
-	@NotBlank：不能为空
+	@BindingResult：加上这个参数后，校验不通过也能进入方法，可以收集所有错误信息；如果没有该参数时，校验不通过就不进入该方法
+	@NotBlank(message="xx不能为空")：不能为空
+	@DecimalMin(value=,inclusive=)：大于等于、大于，由inclusive控制。可以放在字符串上
 	@Past：过去的时间
-	自定义错误校验：
+	自定义错误校验：（视频：3-5 修改和删除请求）
 		校验注解：必须要有message、groups、payload三个方法
-		校验类：需要实现ConstraintValidator<A,T>接口。它是spring的一个bean，可以注入其他spring容器中的bean。
+		校验类：需要实现ConstraintValidator<A,T>接口。它是spring的一个bean，可以注入其他spring容器中的bean
+	
 		
 7、Spring Boot服务异常处理
 	出现异常时：spring boot判断请求是否是浏览器，如果是就响应html，如果不是就响应json。源码见：BasicErrorController中的方法
 	自定义异常页面：（适用于浏览器请求）
 		在resources下创建resources/error目录，然后新建404.html，这就是404的页面。它影响的浏览器的请求，不影响非浏览器的请求。
 	自定义异常响应：（适用于非浏览器请求）
-		自定义异常类继承：RuntimeException类，然后写自己的属性和方法
+		自定义异常类继承：RuntimeException类，然后写自己的属性和方法。spring对于RuntimeException会进行事务回滚。
 		@ControllerAdvice：拦截控制器上的所有异常，标注处理自定义异常的类
+	统一异常处理：https://www.imooc.com/learn/810
 
-8、RestfullAPI的拦截
-	过滤器：Filter（缺点：不知道请求是哪个控制器，哪个方法来处理的）
+8、RestfullAPI的拦截(参考：3-7 使用切片拦截REST服务)
+	过滤器：Filter（缺点：是J2EE框架提供的，不知道请求是哪个控制器，哪个方法来处理的）
 		自定义过滤器需要实现Filter接口，并且标注@Component，所有的url请求都会经过这个过滤器。可以通过自定义Bean来控制某些url才经过。
-		第三方过滤器：没有办法直接在它们的类上标注@Component，就必须在配置类中定义FilterRegistrationBean
+		第三方过滤器：没有办法直接在它们的类上标注@Component，就必须在配置类中定义FilterRegistrationBean，指定在哪些路径上起作用
 	拦截器：Interceptor（缺点：不能拿到请求的方法的参数值）
 		自定义拦截器需要实现：HandlerInterceptor接口，同时标注：@Component注解
 		配置类：继承WebMvcConfigurerAdapter，重写：addInterceptors方法进行注册
 		优点：spring框架本身提供的，可以知道是哪个控制器，哪个方法被拦截了。它会拦截自己写的controller也会拦截spring自己的controller
-	切片：Aspect
+	切片：Aspect（参考：3-8 使用Filter和Interceptor拦截REST服务）
 		优点：可以替代上面两种，可以拿到请求的参数的值
+		切片类：包含了切入点（注解）和增强（方法）
+		切入点：
+			在哪些方法上起作用
+			在什么时候起作用（方法执行前、方法执行后、环绕、抛出异常），其中环绕用得比较多。
+			参考：https://docs.spring.io/spring/docs/4.3.22.RELEASE/spring-framework-reference/htmlsingle/#aop-pointcuts-examples
+		增强：起作用时执行的业务逻辑
+		依赖：
+			<!--aop-->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-aop</artifactId>
+			</dependency>
 	拦截顺序：Filter→Interceptor→ControllerAdvice→Aspect→Controller。如果Controller出异常就是反着出去。
 	
 9、文件上传和下载
@@ -106,7 +124,7 @@
 	访问地址：http://localhost:8080/swagger-ui.html
 
 12、WireMock伪造REST服务
-	它是一个独立的服务器，在收到请求时响应数据回去
+	它是一个独立的服务器，在收到请求时响应数据回去，可以提高开发效率
 	下载网址：http://wiremock.org/docs/running-standalone/
 	启动服务端：java -jar wiremock-standalone-2.19.0.jar --port 8062
 	依赖：
@@ -114,9 +132,13 @@
 			<groupId>com.github.tomakehurst</groupId>
 			<artifactId>wiremock</artifactId>
 		</dependency>
+		
 13、Spring Security基本原理
+	核心功能：认证、授权、攻击防护
+	重要类：
+		WebSecurityConfigurerAdapter：web安全相关的配置类
 	它本质是过滤器链，请求和响应都要经过
-	重要的过滤器：
+	重要的过滤器（从前到后的顺序）：
 		UsernamePasswordAuthenticationFilter：用户名密码认证方式的过滤器
 		BasicAuthenticationFilter：Basic认证方式的过滤器
 		ExceptionTranslationFilter：异常处理的过滤器
@@ -131,25 +153,34 @@
 			isAccountNonLocked()：账户是否被锁定了，可以用来锁定账号。
 			isCredentialsNonExpired()：密码是否过期，安全级别高的网站，30天要求变化密码时用。
 			isEnabled()：账户是否可用，用于假删除，删除的用户不能恢复。
+		自定义类实现UserDeails接口，来处理这些业务逻辑。
 	处理密码加解密的逻辑
-		PasswordEncoder：它随机生成盐和密码以前加密，相同的原始密码，每次加密得到的结果都是不同的，推荐使用这个。（思路不错）
+		PasswordEncoder：它随机生成盐和密码然后加密，相同的原始密码，每次加密得到的结果都是不同的，推荐使用这个。（思路不错）
+		需要在配置类中配置它的实体bean，注册时使用它进行加密后保存到数据库中，至于登录时匹配明文由它来完成。
 		
 15、个性化用户认证流程
-	自定义登录页：专门的类（BrowserSecurityController）来处理登录时的页面跳转提示 
+	自定义登录页：专门的类（BrowserSecurityController）来处理需要认证时的登录页面跳转或者是json响应
+	配置类：统一安全配置类（SecurityProperties）、浏览器安全配置类（BrowserProperties）
 	自定义登录成功处理：自定义类继承SavedRequestAwareAuthenticationSuccessHandler类
 	自定义登录失败处理：自定义类继承SimpleUrlAuthenticationFailureHandler类
-	获取认证的用户信息：SecurityContextHolder里面
+	用户名密码默认的认证token：UsernamePasswordAuthenticationToken
+	获取认证的用户信息：SecurityContextHolder里面，它是线程级别的，同一个线程都可以取出来
 	
 16、图形验证码
+	流程：根据随机数生成图片→把随机数保存到session中→把图片响应到输出流→在认证流程中加入图形验证码校验逻辑
 	图片验证码类：ImageCode
 	验证码生成接口：ValidateCodeGenerator、图片验证码生成类：ImageCodeGenerator
-	验证码配置类：ValidateCodeProperites、图片验证码配置类：ImageCodeProperties
+	验证码配置类：ValidateCodeProperites、图片验证码配置类：ImageCodeProperties（思路：先从请求中获取→若无再读取配置文件→若无再读取默认值）
 	验证码异常类：ValidateCodeException
 	验证码过滤器：ValidateCodeFilter
 	验证码实体Bean配置类：ValidateCodeBeanConfig
 	默认验证码输出控制器：ValidateCodeController
+	在UserNamePasswordAuthenticationFilter之前添加我们的自定义过滤器
+	重构思路：
+		参数可配置、验证码的拦截地址url可配置、验证码的生成逻辑可配置
 	
 17、有用的工具类
+	RequestCache：缓存了当前的请求，可以获取到引发跳转的请求，通过它可以知道该请求是html还是非html请求
 	ServletWebRequest：封装了request和response。转换：new ServletWebRequest(HttpServletRequest request)
 	SessionStrategy：对session的操作。包：spring-social
 	RedirectStrategy：跳转redirect工具。包：spring-security
@@ -161,7 +192,7 @@
 	RestTemplate：请求rest服务时的工具
 	ObjectMapper：把json格式的字符串转换为实体对象
 	
-18、短信验证码
+18、短信验证码（重构时模板方法思路在里面）
 	短信验证码类：SmsCode
 	验证码处理接口：ValidateCodeProcessor
 	验证码处理接口抽象实现类：AbstractValidateCodeProcessor
@@ -169,17 +200,19 @@
 	图片验证码处理类：ImageCodeProecessor
 	短信验证码处理类：SmsCodeProcessor
 	短信验证码发送接口：SmsCodeSender、短信验证码发送接口默认实现类：DefaultSmsCodeSender
+	同一个接口的不同实现可以通过给实体命名来进行不同的实体注入@Componet("xx")
 	
 19、依赖查找
 	@Autowired
 	private Map<String,ValidateCodeGenerator> validateCodeGennerators;
 	spring发现有这个时，会把spring容器中，所有ValidateCodeGenerator它的实现和bean的名字存到这里
 	
-20、短信登录
+20、短信登录（参考的是用户名密码登录来实现）
 	短信认证的token(包含了认证信息)：SmsCodeAuthenticationToken。参考：UsernamePasswordAuthenticationToken编写。
 	短信认证的过滤器：SmsCodeAuthenticationFilter。参考：UsernamePasswordAuthenticationFilter编写。
 	短信认证的校验逻辑：SmsCodeAuthenticationProvider，要实现AuthenticationProvider接口，它的supports方法是用来判断是否用该类来处理校验逻辑。参考：AbstractUserDetailsAuthenticationProvider编码。
-	短信登录验证的过滤器：SmsCodeFilter。参考：ValidateCodeFilter编写。
+	短信登录验证的过滤器：SmsCodeFilter。参考：ValidateCodeFilter编写。把它独立出来的目的是需要发送短信验证码的地方都可使用。
+	短信认证配置类：SmsCodeAuthenticationSecurityConfig，它继承SecurityConfigurerAdapter
 	
 21、验证码重构
 	验证码类型：ValidateCodeType，用于标识图片，还是短信验证码。它设计得巧妙，很多地方都有使用它来获取相关的类。
@@ -189,6 +222,8 @@
 	验证码处理器的实现类：AbstractValidateCodeProcessor（抽象类）、ImageCodeProcessor（图片验证码处理器）、SmsCodeProcessor（短信验证码处理器）
 	安全配置类：AbstractChannelSecurityConfig，用来封装formLogin的，以便其他配置类继承，配置文件分层思想，通过apply引入其他配置类
 	常量配置接口：SecurityConstants，里面封装了所有的常量
+	验证码基本信息配置类：SmsCodeProperties，包含了过期时间，这个值很重要
+	验证码基类：ValidateCode，包含了验证码是否过期的验证，重要
 	
 	特别重要：
 		字符串、实体类、依赖查找配合起来一起使用，相当灵活。
@@ -205,25 +240,27 @@
 
 24、Session管理
 		Session超时处理
-			server.session.timeout=120 #单位是秒，session超时时间，在spring boot中session超时时间最少是1分钟，看源码可知道
+			server.session.timeout=120 #单位是秒，session超时时间，默认是30分钟，在spring boot中session超时时间最少设置是1分钟，看源码可知道
 		Session并发控制
 			方式一：相同的账号，首先在A浏览器登录，然后在B浏览器再登录时把A浏览器上的账号T下线。
 			方式二：相同的账号，首先在A浏览器登录，然后在B浏览器登录时就不能登录。加maxSessionPreventsLogin(true)配置
+			发现问题：使用数据库中读取用户时并发控制失效
 		集群Session管理
 			把session存储到独立的服务器，此时往session里面放的数据需要实现Serializable接口，因为需要序列化以后再存放
 			使用spring-session+Redis（4.0的稳定版）
 			yml配置文件：spring.session.store-type=redis
 			说明：集群后，上面的Session失效和并发策略仍然有效
-		退出处理
+		退出处理（思路：有配置退出页面就跳转退出页面，如果没有配置就响应json）
 			.logout()
-                .logoutUrl("/signOut")//自定义退出的url地址，默认logout
+                .logoutUrl("/signOut")//自定义退出的url地址，默认logout，就是一个名字而已，不需要我们写控制器来处理
                 .logoutSuccessHandler(MonkeyLogoutSuccessHander)//自定义退出成功后的控制器，需要实现LogoutSuccessHandler接口
 				.logoutSuccessUrl("/xx.html")//自定义退出成功后的跳转页面，它和logoutSuccessHandler只能同时存在一个
-				
+		
 25、Spring Security OAtuth
 	OAtuth 2官网：https://oauth.net/2/
 	Authorization Server : 认证服务器，负责认证和授权。@EnableAuthorizationServer 注解标注即可
 	Resource Server ：资源服务器，存放资源的服务器。@EnableResourceServer 注解标注即可。实际开发中认证服务器可以和资源服务器是同一台。
+						Spring Security过滤器链中有OAuth2AuthenticationProcessorFilter过滤器
 	clientId ：应用id，每个应用分配一个id，这样我就知道是哪个引用来请求授权。比如：微信和QQ就是两个不同的应用。
 	clientSecret ：应用的密钥。
 	basic认证：需要填写clientId和clientSecret，这样就能确定这个应用可以请求认证服务器。
@@ -233,11 +270,11 @@
 	访问角色：默认情况下需要有ROLE_USER角色才能访问，需要在MyUserDetailsService中添加它，否则不能访问
 	获取code：http://localhost:8080/oauth/authorize?response_type=code&client_id=mkapp&redirect_uri=http://monkey78.com&scope=all
 	
-26、Spring Security OAtuth源码分析
-	TokenEndpoint：入口点，它有/oauth/token方法
+26、Spring Security OAtuth源码分析（参考：6-3 SpringSecurityOAuth核心源码解析）
+	TokenEndpoint：入口点，它里面有/oauth/token方法
 	ClientDetailsService：它是用来读取第三方应用信息的，默认实现是InMemoryClientDetailsService。
 	ClientDetails：第三方应用的信息，我们可以对第三方应用进行很多项的配置。
-	TokenRequest：封装了 grant_type、scope等请求/oauth/token时的参数和值 相关信息
+	TokenRequest：封装了 grant_type、scope等请求/oauth/token时的参数和值 相关信息。DefaultOAuth2RequestFactory的createTokenRequest方法
 	TokenGranter：令牌授权者，它封装了4种授权模式（授权码、密码等）的不同实现，它根据grant_type创建对应的授权默认的实现。默认实现是CompositeTokenGranter。
 	OAtuth2Request：它是ClientDetails和TokenRequest的整合
 	Authorization：封装的是当前授权用户的一些信息，主要是通过UserDetailsService根据用户名从数据库中读取出来的。
@@ -262,6 +299,12 @@
 	MonkeyAuthorizationServerConfig：自定义认证服务器配置类，实现AuthorizationServerConfigurerAdapter接口
 		重写endpoints作为参数的方法：配置：AuthenticationManager、UserDetailsService、TokenStore
 		重写clients作为参数的方法：对应用做配置，决定可以给哪些应用发令牌，可以配置多个。可以保存在内存、数据库、redis中
+			withClient：配置的是clientId
+			secret：配置的是clientId对应的密钥
+			accessTokenValiditySeconds：配置的是生成的token的有效期，重要！
+			refreshTokenValiditySeconds：配置的是刷新token的有效期
+			authorizedGrantTypes：配置的是该第三方应用支持的授权类型（授权码、密码、简化、客户端）中的哪些？
+			scopes：授权范围
 		TokenStore令牌存储：推荐存储到redis中，可以在令牌失效后自动删除，不用我们维护，而且性能比数据库快很多。
 
 29、JWT（Json Web Token）
@@ -269,7 +312,9 @@
 		自包含：包含了一些信息
 		密签：信息是被签名了，不是加密的，别人能破解，不能存放业务敏感信息
 		可扩展：支持自定义的扩展
+	OAuth2Properties：新增重要配置jwt签名的密钥jwtSigningKey，很重要，泄露了就有安全事故
 	JwtAccessTokenConverter：生成jwtToken，它可以指定密钥对信息进行签名，密钥很重要，别人拿到以后就可以随意进入系统。
+	TokenStoreConfig：新增jwtToken的配置
 	@ConditionalOnProperty：
 			配置文件中 monkey.security.oauth2.storeType=redis时才采用这个配置
 			@ConditionalOnProperty(prefix = "monkey.security.oauth2", name = "storeType", havingValue = "redis")
@@ -328,26 +373,67 @@
 				key-uri: http://127.0.0.1:9999/server/oauth/token_key #获取签名的token_key的地址
 	简化手动点击授权按钮，做成表单自动提交。参考：WhitelabelApprovalEndpoint和SpelView，直接copy，然后修改WhitelabelApprovalEndpoint TEMPLATE。
 	
-31、Spring Security授权
+31、Spring Security授权（7-2 SpringSecurity源码解析重要）
 	业务系统：给客户使用，只需要判断用户是否登录或者是简单的角色（比如：普通用户和VIP）
+		情况一：把不需要认证的配置起来，其他的设置为需要认证才可以访问（参考：MonkeyResourceServerConfig）
+			http.authorizeRequests().antMatchers("xx","这里写多个不需要认证就可以访问的").permitAll().anyRequest().authenticated()
+		情况二：区分简单角色（比如：普通用户和VIP），比如：访问路径/user必须要角色是ADMIN才能可以
+			http.authorizeRequests().antMatchers("这里写多个不需要认证就可以访问的").permitAll().antMatchers("/user").hasRole("ADMIN").anyRequest().authenticated()
+			更加细粒度的写法：.antMatchers(HttpMethod.GET,"/user/*").hasRole("ADMIN")//GET请求，/user/所有路径需要ADMIN角色
+			需要在UserDetails的实现类中配置权限为：ROLE_ADMIN
+			public Collection<? extends GrantedAuthority> getAuthorities() {
+				// TODO: 2019/2/8 需要修改成真实情况
+				return AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_ADMIN");
+			}
 	内部管理系统：角色、权限复杂
 	AnonymousAuthenticationFilter：匿名认证过滤器，主要用于判断前面的过滤器中是否身份认证成功或者从session中是否拿到身份认证信息，如果没有就构造一个匿名的身份往后传
+									前面的过滤器认证成功了，Authentication里面的prnicial就是UserDetails的实例，否则就是一个字符串
 	ExceptionTranslationFilter：异常处理的过滤器
 	FilterSecurityInterceptor：安全的过滤器，它来判断当前的Authentication能否访问服务器上的资源，它有当前用户的请求信息。
 	AccessDecisionManger：访问决定的管理者
-	AbstracAccessDecisionManger：是AccessDecisionManger的抽象实现
-	AccessDecisionVoter：投票者，对于本次请求的投票，默认实现：WebExpressionVoter，是Spring Security3以后才有的，它包办了所有投票器
-	AffirmactiveBased：只要有1个投过就过，默认使用它。
-	UnanimousBased：只有有1个投不过就不过
-	ConsensusBased：看投过与不过谁的票数多
+		AbstracAccessDecisionManger：是AccessDecisionManger的抽象实现
+			AffirmactiveBased：只要有1个投过就过，默认使用它。
+			UnanimousBased：只有有1个投不过就不过
+			ConsensusBased：看投过与不过谁的票数多
+		
+	AccessDecisionVoter：投票者，对于本次请求的投票，默认实现：WebExpressionVoter，是Spring Security3以后才有的，它包办了所有投票器，也就是它投过就过，它投不过就不过
 	SecurityConfig：在配置类中写的安全相关的配置项
-	ConfigAttribute：本次请求对应的安全配置项
-	Authentication：当前用户拥有的权限信息
+	ConfigAttribute：本次请求对应的安全配置项，也就是每个url就被封装成一个该对象
+	Authentication：封装了当前用户拥有的权限信息
+	SecurityContextHolder：通过它可以获取Authentication
+	比较模式：
+		FilterSecurityInterceptor把请求的url、ConfigAttribute、Authentication传递给AccessDecisionManger，
+		AccessDecisionManger调用AccessDecisionVoter进行投票
+		AccessDecisionManger根据投票结果来决定访问时允许还是拒绝
 
-32、动态授权（内部管理系统）
-	通用RBAC数据模型：用户表、角色表、资源表（菜单、按钮、url）、用户角色关系表、角色资源关系表
+32、Spring Security静态权限（会员端-里面有分模块的思想）
+	所谓的静态权限是硬编码到项目里面的
+	AuthorizeConfigProvider：静态权限配置的接口，各个模块有权限配置是实现它即可
+		MonkeyAuthorizeConfigProvider：安全模块静态配置类
+	AuthorizeConfigManager：静态权限配置的管理器，把AuthorizeConfigProvider接口的实例聚合到一起
+		MonkeyAuthorizeConfigManager：静态权限配置管理器的实现
+		
+33、Spring Security动态授权（内部管理系统）
+	通用RBAC数据模型：用户表、角色表、资源表（菜单、按钮、url）、用户角色关系表（多对多）、角色资源关系表（多对多）
 	@Order(Integer.MAX_VALUE)：标明该组件最后加载
-	主要利用的是权限表达式：
+	Spring Security和RBAC数据模型的模块关联起来主要利用的是权限表达式：
 		//验证数据库里面的动态权限
         config.anyRequest().access("@rbacServiceImpl.hasPermission(request,authentication)");
+		每个权限表达式都对应一个方法
+	针对RBAC+App进行权限校验报错的解决方案：No bean resolver registered in the context to resolve access to bean 'rbacService'
+		MonkeyResourceServerConfig中配置：
+			@Bean
+			public OAuth2WebSecurityExpressionHandler oAuth2WebSecurityExpressionHandler(ApplicationContext applicationContext) {
+				OAuth2WebSecurityExpressionHandler expressionHandler = new OAuth2WebSecurityExpressionHandler();
+				expressionHandler.setApplicationContext(applicationContext);
+				return expressionHandler;
+			}
+			
+			@Autowired
+			private OAuth2WebSecurityExpressionHandler expressionHandler;
+
+			@Override
+			public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
+				resources.expressionHandler(expressionHandler);
+			}
 	

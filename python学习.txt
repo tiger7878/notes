@@ -1,0 +1,138 @@
+1、官网：https://www.python.org/
+	选择python 3.6版本：Windows x86-64 executable installer
+	
+2、开发工具PyCharm
+	网址：https://www.jetbrains.com/pycharm/download/#section=windows
+	选择：Professional专业版
+	
+3、Mysql
+	下载地址：https://dev.mysql.com/downloads/mysql/
+	版本选择：MySQL Community Server 5.6
+	数据库 字符集：utf8mb4 -- UTF-8 Unicode
+			排序规则：utf8mb4_general_ci
+
+4、虚拟环境
+	windows环境：cmd下执行
+		pip install virtualenv
+		pip install virtualenvwrapper-win
+		
+5、计算机网络
+	书籍：计算机网络自顶向下方法（第六版）、TCP/IP协议族（第4版）
+	动态ip：家里的网络一定时间会更换IP。一般不要封ip，没用
+	
+6、基础数据类型
+	r：多行字符串
+	u：表示Unicode编码，不加它，中文就不能正常显示。
+	字符串：
+			字符串截取：利用的是切片：'ABCDEFG'[:3]、'ABCDEFG'[-3:]、'ABCDEFG'[::2]
+			isinstance(x, str) 可以判断变量 x 是否是字符串
+			x.upper()：把字符串x变成大写
+			
+	布尔类型：Python把0、空字符串''和None看成 False，其他数值和非空字符串都看成 True
+	
+	list:[]有序集合，里面可以是各种类型的数据。
+		示例：L = ['Adam', 'Lisa', 'Bart']
+		通过索引获取值：L[0]
+		append(data)总是把新的元素添加到list的尾部
+		insert(index,data)：把元素插入指定位置
+		pop()：删除最后一个元素
+		pop(index)：删除指定位置的元素
+		range(n)：切片获取0-n索引的元素
+		L[0:3]：取前3个元素
+		L[::2]：第三个参数表示每N个取一个，上面的 L[::2] 会每两个元素取出一个来，也就是隔一个取一个
+		range(1,101)得到一个数列：[1, 2, 3, ..., 100]
+		
+	tuple：（）元组，一旦创建完毕，就不能修改
+		示例：t = ('Adam', 'Lisa', 'Bart')
+		通过索引获取值：t[0]
+		只有一个元素时在最后加,来表示它是一个tuple
+		len(t)：获取tuple中元素的个数
+		
+	缩进规则：具有相同缩进的代码被视为代码块
+	
+	if：
+		if 、else 、elif 表达式后面都有冒号：
+	for循环：
+		示例：L = ['Adam', 'Lisa', 'Bart']
+				for name in L:
+					print name
+	break：退出循环
+	continue：跳过本次循环，进行下一次循环
+	
+	dict：字典（键值对），key不能重复，无序集合
+		示例：d = {'Adam': 95,'Lisa': 85,'Bart': 59}
+		len(d)：获取集合中元素的个数
+		d[key]：获取value，如果获取不到就报错
+		d.get(key)：获取value，如果获取不到返回None
+		判断key是否存在：if 'Paul' in d:
+		d[key]=value：向dict中更新/插入键值对
+		for key in d：循环遍历key
+		
+	set：没有重复元素，无序集合，区分大小写
+		示例：s = set(['A', 'B', 'C'])
+		'A' in s：判断set中是否有A
+		set中必须是不变对象，任何可变对象不能放入set中
+		for name in s: 遍历元素
+		s.add(value)：添加元素，如果已经存在，也不会报错
+		s.remove(value)：删除元素，如果删除元素不存在，会报错，所以删除前需要判断
+		
+7、函数
+	定义一个函数要使用 def 语句，依次写出函数名、括号、括号中的参数和冒号:，然后，在缩进块中编写函数体，函数的返回值用 return 语句返回
+	实例：def my_abs(x):
+	如果没有return语句，函数执行完毕后也会返回结果，只是结果为 None.return None可以简写为return。
+	return x,y：表示返回多个值
+	默认参数：def power(x, n=2): 。第二个参数可传，可不传。默认参数只能定义在必需参数的后面：
+	可变参数：* 。示例：def fn(*args):
+	
+8、迭代
+	索引迭代： enumerate()
+		实例：L = ['Adam', 'Lisa', 'Bart', 'Paul']
+				for index, name in enumerate(L):
+					print index, '-', name
+	zip函数合并： 
+		实例：L = zip([10, 20, 30], ['A', 'B', 'C']) 得到的是[(10, 'A'), (20, 'B'), (30, 'C')]
+				for index, name in L:
+					print(index, name)
+	迭代dict的value：
+		示例：
+		d = { 'Adam': 95, 'Lisa': 85, 'Bart': 59 }
+		for v in d.values():  #占内存，d.values()得到list
+		for v in d.itervalues(): #不占内存
+	
+	迭代dict的key和value：
+		示例：
+			d = { 'Adam': 95, 'Lisa': 85, 'Bart': 59 }
+			for key, value in d.items():
+			print key, ':', value
+			
+9、生成列表
+		range(1, 11)得到：[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+		[x * x for x in range(1, 11)]得到：[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+		range(1, 100, 2)得到：[1, 3, 5, 7, 9,...]
+		[x * x for x in range(1, 11) if x % 2 == 0]得到：[4, 16, 36, 64, 100]
+
+10、对象
+	构造函数：__init__
+	属性：通常是没有访问控制
+	打印所有属性：dir(对象)
+	魔术方法：__xx__，两个下划线的方法，默认有好多
+	打印对象：重写__str__方法，否则就是打印出对象的类名
+	
+11、高阶函数
+	概念：把方法名作为函数的参数
+	map函数：接收一个函数 f 和一个 list，并通过把函数 f 依次作用在 list 的每个元素上，得到一个新的 list 并返回。
+		示例：
+		def f(x):
+			return x*x
+		print map(f, [1, 2, 3, 4, 5, 6, 7, 8, 9])
+		得到：
+		[1, 4, 9, 10, 25, 36, 49, 64, 81]
+		
+	reduce函数：接收的参数和 map()类似，一个函数 f，一个list，传入的函数 f 必须接收两个参数，对list的每个元素反复调用函数f，并返回最终结果值
+		示例：
+		def f(x, y):
+			return x + y
+		reduce(f, [1, 3, 5, 7, 9])
+		得到：25
+		该函数可以有3个参数
+	

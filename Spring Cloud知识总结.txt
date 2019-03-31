@@ -213,6 +213,7 @@
         </dependency>
 	项目注解：
 		@EnableZuulProxy
+		
 14、Config统一的配置中心
 	项目依赖：
 		<!-- springCloud Config -->
