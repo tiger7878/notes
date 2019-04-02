@@ -163,4 +163,10 @@
 				# 返回函数g:
 				return g
 	
+12、装饰器decorator
+	用于增加函数的功能，简化代码，避免每个函数都写一遍。相当于java中的AOP
+	打印日志：@log
+	监测性能：@performance
+	数据库事务：@transaction
+	URL路由：@post('/xxx')
 	
