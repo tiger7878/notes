@@ -170,3 +170,18 @@
 	数据库事务：@transaction
 	URL路由：@post('/xxx')
 	
+13、模块和包
+	模块：一个py文件就是一个模块。不同的模块下面可以有同名的函数和变量，互相不影响
+		test.py的模块名称是test
+		import test 就引入了test模块
+		test.xx() 调用test模块下的xx方法
+	包：文件夹就是包，不同的包下面可以有同名的模块，互相不影响
+		包下面必须有__init__.py文件，即使该文件是个空文件。每一层都必须有
+	动态导入：先尝试从cStringIO导入，如果失败了（比如cStringIO没有被安装），再尝试从StringIO导入
+		try:
+			from cStringIO import StringIO
+		except ImportError:
+			from StringIO import StringIO
+	__future__：旧版本测试新版本的特性
+	安装第三方模块：pip install xx.py。第三方模块搜索的网址：https://pypi.org/
+	
