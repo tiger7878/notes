@@ -133,8 +133,6 @@
 	getattr(s, 'name')  # 获取s对象的name属性
 	getattr(s, 'age', 20)  # 获取age属性，如果属性不存在，就返回默认值20
 	setattr(s, 'name', 'Adam')  # 设置s对象新的name属性
-	魔术方法：__xx__，两个下划线的方法，默认有好多
-	打印对象：重写__str__方法，否则就是打印出对象的类名
 	
 11、高阶函数
 	概念：把方法名作为函数的参数
@@ -215,4 +213,34 @@
 	isinstance(变量,类)判断类型变量是否是这个类型
 	多重继承：python允许多重继承
 	
+15、特殊方法
+	魔术方法：__xx__，两个下划线的方法，默认有好多
+	打印对象：重写__str__方法，否则就是打印出对象的类名
+	比较函数：cmp(x,y)方法，排序的时候默认调用它
+	获取长度：len方法，获取元素个数，
+	关联函数要实现时必须都实现：__getattr__ 、__setattr__ 、 __delattr__
+	get方法：用@property装饰。有get没有set就是一个只读属性
+	set方法：用@属性.setter装饰，在这里进行值有效性校验
+		@property
+		def score(self):
+			return self.__score
+		@score.setter
+		def score(self, score):
+			if score < 0 or score > 100:
+				raise ValueError('invalid score')
+			self.__score = score
+	限制添加属性：__slots__
+		__slots__ = ('name', 'gender', 'score')
+	__call__：重写该方法可以使一个对象被调用
+	
+16、格式化
+	编码：# -*- coding: utf-8 -*-
+	格式化的字符串：'(I am %s、I am %d years old)' % ('Tom', 18) 得到的是：(I am Tom、I am 18 years old)
+	%d：整数
+	%f：浮点数
+	%s：字符串，它会把任何数据类型转换为字符串
+	%x：十六进制整数
+	%%：字符串里面的%是一个普通字符怎么办？这个时候就需要转义，用%%来表示一个%
+	format：用传入的参数依次替换字符串内的占位符{0}、{1}..，不过这种方式写起来比%要麻烦得多
+		'Hello, {0}, 成绩提升了 {1:.1f}%'.format('小明', 17.125)，得到：'Hello, 小明, 成绩提升了 17.1%'。
 	
