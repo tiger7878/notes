@@ -68,7 +68,11 @@
 		判断key是否存在：if 'Paul' in d:
 		d[key]=value：向dict中更新/插入键值对
 		for key in d：循环遍历key
-		
+	
+	defaultdict ：比dict更加好用
+		参数是dict：defaultdict(dict)
+		参数是list：defaultdict(list)
+	
 	set：没有重复元素，无序集合，区分大小写
 		示例：s = set(['A', 'B', 'C'])
 		'A' in s：判断set中是否有A
@@ -207,6 +211,7 @@
 			from StringIO import StringIO
 	__future__：旧版本测试新版本的特性
 	安装第三方模块：pip install xx.py。第三方模块搜索的网址：https://pypi.org/
+	常用包：math、json、threading
 	
 14、类的继承
 	在子类的__init__方法中，需要调用父类的super(子类, self).__init__()方法
@@ -243,4 +248,36 @@
 	%%：字符串里面的%是一个普通字符怎么办？这个时候就需要转义，用%%来表示一个%
 	format：用传入的参数依次替换字符串内的占位符{0}、{1}..，不过这种方式写起来比%要麻烦得多
 		'Hello, {0}, 成绩提升了 {1:.1f}%'.format('小明', 17.125)，得到：'Hello, 小明, 成绩提升了 17.1%'。
+		
+17、HTTP协议
+	它本质还是一串字符串
+	content-type:
+		form表单提交：application/x-www-form-urlencoded
+		文件上传：multipart/form-data
+		json格式：application/json
+		
+18、requests
+	它是Python的http库
+	文档：http://docs.python-requests.org/zh_CN/latest/user/quickstart.html
+	安装：pip install requests
+	使用requests是完全可以伪装成一个浏览器，来做get、post等http请求
+	get请求：
+	# res = requests.get(url)
+	# res = requests.get(url, params=param)
+	# res = requests.get(url, headers=my_headers)
+	# print("返回的内容：" + res.text)
+	# print("编码：" + res.encoding)
+	# print("状态码：%d" % res.status_code)
+	# print(res.headers)
+
+	post请求：
+	# data：字符串
+	# json：json数据
+	# res = requests.post(url, data=param)
+	# res = requests.post(url, data=json.dumps(param).encode("utf8"))
+	res = requests.post(url, json=param, headers=my_headers)
+	print("返回的内容：" + res.text)
+	# 把响应的数据转换为json
+	print(res.json())
+	
 	
