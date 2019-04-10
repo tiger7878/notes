@@ -285,3 +285,26 @@
 	math方法：从字符串最开始匹配的，返回的是一个对象
 	sub方法：字符串替换
 	search：不是从字符串最开始匹配
+	
+20、beautifulsoup4
+	官网：https://www.crummy.com/software/BeautifulSoup/bs4/doc/index.zh.html
+	安装：pip install beautifulsoup4
+	引入：from bs4 import BeautifulSoup
+	使用：bs = BeautifulSoup(html, "html.parser")
+		# 根据id查找
+		# div_tag = bs.find(id="list")
+	find方法：
+		# 查找到第一个div
+		# div_tag = bs.find("div")
+		# 根据id查找
+		# div_tag = bs.find(id="list")
+		#  查找id=list的div
+		# div_tag = bs.find("div", id="list")
+		# 通过正则表达式
+		# div_tag = bs.find("div", id=re.compile("info-\d+"))
+		# 根据字符串来查找
+		# div_tag = bs.find(string="胜多负少121")
+		# 这个正则匹配好像不管用
+		div_tag = bs.find(string=re.compile("list"))
+		print(div_tag)
+	
