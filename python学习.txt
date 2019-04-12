@@ -308,3 +308,23 @@
 		div_tag = bs.find(string=re.compile("list"))
 		print(div_tag)
 	
+21、xpath
+	windows安装scrpay
+		先安装c++ buildtools：https://www.microsoft.com/en-us/download/details.aspx?id=48159
+		安装lxml：pip install lxml
+		安装Twisted：pip install twisted
+		
+		另一个安装网址：https://www.lfd.uci.edu/~gohlke/pythonlibs/，搜索lxml、twisted、scrapy。注意版本
+			本项目的终端下：pip install E:\python\package\Twisted-19.2.0-cp36-cp36m-win_amd64.whl
+					pip install E:\python\package\Scrapy-1.6.0-py2.py3-none-any.whl
+			
+	引入包：from  scrapy import Selector
+	
+	sel = Selector(text=html)
+		# 获取到元素，用索引来控制某一个，取到的可能是多个
+		tag = sel.xpath('//*[@id="myP"]').extract()[0]
+		print(tag)
+		# 获取元素里面的值
+		tag_text = sel.xpath('//*[@id="myP"]/text()').extract()[0]
+		print(tag_text)
+	
