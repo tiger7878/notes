@@ -309,6 +309,8 @@
 		print(div_tag)
 	
 21、xpath
+	它比bs更好
+	内置方法：https://developer.mozilla.org/en-US/docs/Web/XPath/Functions
 	windows安装scrpay
 		先安装c++ buildtools：https://www.microsoft.com/en-us/download/details.aspx?id=48159
 		安装lxml：pip install lxml
@@ -328,3 +330,17 @@
 		tag_text = sel.xpath('//*[@id="myP"]/text()').extract()[0]
 		print(tag_text)
 	
+		# 属性全值匹配
+		# teacher_tag = sel.xpath("//div[@class='teacher_info info']")
+		# 属性部分值包含
+		# teacher_tag = sel.xpath("//div[contains(@class,'teacher_info')]")
+		# 获取最后一个元素
+		# teacher_tag = sel.xpath("//div[contains(@class,'teacher_info')]/form/input[last()]").extract()
+		# 获取value属性的值
+		# teacher_tag = sel.xpath("//div[contains(@class,'teacher_info')]/form/input[last()]/@value").extract()
+		# print(teacher_tag)
+		# 获取多个元素
+		# div_tag = sel.xpath('//p[@class="pxx"]|//p[@class="pcc"]').extract()
+		# 获取多个元素里面的值
+		div_tag = sel.xpath('//p[@class="pxx"]/text()|//p[@class="pcc"]/text()').extract()
+		print(div_tag)
