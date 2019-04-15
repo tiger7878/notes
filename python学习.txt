@@ -344,3 +344,69 @@
 		# 获取多个元素里面的值
 		div_tag = sel.xpath('//p[@class="pxx"]/text()|//p[@class="pcc"]/text()').extract()
 		print(div_tag)
+		
+22、实战一抓取静态网站
+	①制定策略（如何一步一步获取数据）
+	②分析网站时静态还是动态
+	③明确抓取数据
+	④思考的问题：
+		1、将获取初始的url放到单独的线程中去完成
+		2、如何停止线程
+		3、手动停止线程：ctrl+c
+			①接收ctrl+c
+			②保存临时变量
+			③下次启动程序的时候，我们应该如何从文件（mysql）中启动
+		4、程序有可能直接崩溃
+			① queue是内存中的，是否安全
+			② queue这种模式就不合适了，使用mysql来同步
+			③ redis
+		5、爬虫完成以后的退出
+			如何去判断爬虫数据已经抓取完成了
+	
+23、pymysql
+	官网：https://pymysql.readthedocs.io/en/latest/
+	连接mysql的驱动
+	新建数据库：spider
+		字符集：utf8mb4 -- UTF-8 Unicode、排序规则：utf8mb4_general_ci
+	安装：pip install PyMySQL
+	导入包：import pymysql.cursors
+	
+24、peewee
+	一个轻量级的ORM框架
+	官网：http://docs.peewee-orm.com/en/latest/
+	安装：pip install peewee
+	
+25、多线程Thread
+	并行：同一个时间点同时运行
+	并发：一个时间段执行
+	导入包：from threading import Thread
+	join方法：等待线程执行完成再执行后面的方法
+	setDaemon方法：主线程结束，子线程也结束
+	GIL：全局解释器锁，CPU在同一个时间只会执行一个线程。也就是GIL无法利用多CPU
+		释放：
+			时间片释放、io释放
+	同步锁：（好像没有效果）
+		from threading import Lock
+		total_lock = Lock()
+		# 加锁
+		total_lock.acquire()
+		# 释放锁
+		total_lock.release()
+	Queue：线程间通信
+		导包：from queue import Queue
+		对象：my_queue = Queue()
+		# 创建queue时指定最大长度，超过这个长度的就不能存放进去，控制并发用
+		message_queue = Queue(maxsize=2)
+		# 存数据
+		message_queue.put("Tom")
+		message_queue.put("Jack")
+		# 取数据，先进先出
+		text = message_queue.get()
+		print(text)
+	
+26、动态网站抓取
+	思路：使用谷歌浏览器，按Ctrl+U，然后把代码复制到一个html文件，然后删除里面的js文件，就可以发现哪些是动态加载的，哪些是静态的
+	XHR：谷歌浏览器中Network→XHR→代表异步请求
+	url分析：尝试删除url中没有用的参数
+	
+	
