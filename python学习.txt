@@ -53,6 +53,13 @@
 	
 	if：
 		if 、else 、elif 表达式后面都有冒号：
+		if x:
+			print('True')
+		只要x是非零数值、非空字符串、非空list等，就判断为True，否则为False
+	
+	input()：接收用户的输入，字符串类型
+		示例：birth = input('birth: ')
+	
 	for循环：
 		示例：L = ['Adam', 'Lisa', 'Bart']
 				for name in L:
