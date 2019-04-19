@@ -1,3 +1,4 @@
+0：下载地址：https://git-scm.com/download/win
 1、克隆远程仓库中的代码
 	git clone xxx.git
 2、添加所有文件监控
