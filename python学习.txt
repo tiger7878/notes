@@ -437,15 +437,38 @@
 	pip install E:\python\package\Twisted-19.2.0-cp36-cp36m-win_amd64.whl
 	pip install E:\python\package\Scrapy-1.6.0-py2.py3-none-any.whl
 	
-29、实战技术文章网站：
-	创建虚拟环境：mkvirtualenv --python=D:\Python\Python36\python.exe article_spider
+29、scrapy项目构建
+	创建虚拟环境：mkvirtualenv --python=D:\Python\Python36\python.exe article_spider（在Envs目录下）
 	安装scrapy
-	创建scrapy项目：scrapy startproject AtricleSpider自定义项目名称
-	然后用pycharm打开项目
-	在终端中
+	创建scrapy项目：
+		在项目文件存放路径下打开cmd
 		workon：列出所有虚拟环境
 		workon atricle：切换到atricle虚拟环境
+		scrapy startproject ArticleSpider
+	然后用pycharm打开项目
+	在终端中（或者在上面的cmd中cd到 ArticleSpider目录下）
 		scrapy genspider jobbole blog.jobbole.com：创建一个爬虫项目jobbole，爬取blog.jobbole.com网站
-	
+		此时就发现多了一个jobbole.py文件
+	在pycharm中选择article_spider虚拟环境：
+		settings→Project Interpreter
+	在终端中安装pypiwin32（windows下才需要）
+		pip install -i https://pypi.douban.com/simple/ pypiwin32
+	项目调试：
+		在scrapy.cfg同级创建main.py文件
+		# 项目调试
+		from scrapy.cmdline import execute
+
+		import sys
+		import os
+
+		# 把当前项目名称添加进去
+		sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+		# 执行命令
+		execute(["scrapy", "crawl"])
+	在终端中运行项目：scrapy crawl jobbole 。发现运行不报错，就证明没问题了。
+	修改main.py文件：execute(["scrapy", "crawl", "jobbole"])
+	修改settings.py文件：ROBOTSTXT_OBEY = False
+	然后右键debug我们的main.py文件
+	在终端中执行：scrapy shell http://blog.jobbole.com/110287 ，这样获取一次url中的内容可以不停的调试，防止每次调试都去获取
 	
 	
