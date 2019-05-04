@@ -462,6 +462,8 @@
 		import os
 
 		# 把当前项目名称添加进去
+		# 获取当前文件的相对路径：os.path.abspath(__file__)
+		# 获取当前文件所在目录的绝对路径：os.path.dirname(os.path.abspath(__file__))
 		sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 		# 执行命令
 		execute(["scrapy", "crawl"])
@@ -470,5 +472,26 @@
 	修改settings.py文件：ROBOTSTXT_OBEY = False
 	然后右键debug我们的main.py文件
 	在终端中执行：scrapy shell http://blog.jobbole.com/110287 ，这样获取一次url中的内容可以不停的调试，防止每次调试都去获取
+	items.py：数据项类，可以用来传递到pipelines.py文件中。（需要在settings.py文件中打开：ITEM_PIPELINES节点）
+	meta传递参数：
+		传递方：yield Request(url=parse.urljoin(response.url, post_url), meta={"front_image_url": image_url}, callback=self.parse_detail)
+		接收方：front_image_url = response.meta.get("front_image_url", "")  # 封面图，从response中获取
 	
-	
+	图片保存：
+		在settings.py中引入：import os
+		在终端中执行命令安装：pipllow
+			pip install -i https://pypi.douban.com/simple pillow
+		在settings.py文件中配置ITEM_PIPELINES
+			'scrapy.pipelines.images.ImagesPipeline': 1  #数字越小就越先处理
+		在工程目录下创建文件夹：images
+		在ITEM_PIPELINES的同级配置：
+			# 图片字段名称
+			IMAGES_URLS_FIELD = "front_image_url"
+			# 项目绝对路径
+			project_dir = os.path.abspath(os.path.dirname(__file__))
+			# 图片存储路径
+			IMAGES_STORE = os.path.join(project_dir, "images")
+		
+	定制图片的pipeline
+		在pipeline.py文件中：自定义pipeline类，重载item_completed函数，文件存储路径在results参数中，已下载的文件不会重复下载。
+		
