@@ -426,7 +426,7 @@
 	进入某个虚拟环境：workon 虚拟环境名称
 	
 28、scrapy
-	方式一：安装 Microsoft visual c++ 14.0（E:\python\tool\BuildTools_Full.exe）
+	方式一：安装 Microsoft visual c++ 14.0（E:\python\tool\visualcppbuildtools_full.exe）
 	从豆瓣源来安装：pip install -i https://pypi.douban.com/simple/ scrapy
 	如果安装失败就去找文件：https://www.lfd.uci.edu/~gohlke/pythonlibs/，搜索lxml、twisted、scrapy。注意版本.
 	找到文件以后，执行一下下载的文件的安装，然后再执行从豆瓣安装的命令。
