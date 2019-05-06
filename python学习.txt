@@ -94,7 +94,16 @@
 	如果没有return语句，函数执行完毕后也会返回结果，只是结果为 None.return None可以简写为return。
 	return x,y：表示返回多个值
 	默认参数：def power(x, n=2): 。第二个参数可传，可不传。默认参数只能定义在必需参数的后面：
-	可变参数：* 。示例：def fn(*args):
+	*args可变参数：表示的就是将实参中按照位置传值，多出来的值都给args，且以元祖的方式呈现
+		示例：def fn(*args):
+				print(args)
+		传参：fn(1,2,3,4)
+		得到：(1,2,3,4)
+	**kwargs：是形参中按照关键字传值把多余的传值以字典的方式呈现
+		示例：def foo(**kwargs):
+					print(kwargs)
+		传参：foo(y=1,a=2,b=3,c=4)
+		得到：{'y': 1, 'a': 2, 'b': 3, 'c': 4}
 	
 8、迭代
 	索引迭代： enumerate()
@@ -494,4 +503,20 @@
 		
 	定制图片的pipeline
 		在pipeline.py文件中：自定义pipeline类，重载item_completed函数，文件存储路径在results参数中，已下载的文件不会重复下载。
+	
+	mysql相关：
+		mysql的驱动安装：pip install -i https://pypi.douban.com/simple/ mysqlclient
+		centos下安装驱动：yum install python-devel mysql-devel
+		保存到数据库分为同步和异步两种操作，异步操作是Twisted框架提供的连接池的方式。异步使得mysql的插入不再是爬取时的瓶颈
+		自定mysql的同步插入pipelines：MysqlPipeline
+		需要在settings.py中的ITEM_PIPELINES节点中配置:
+			'ArticleSpider.pipelines.MysqlPipeline': 1
+		异步操作：
+			from twisted.enterprise import adbapi #异步操作归功于它
+			import MySQLdb
+			import MySQLdb.cursors
+		ORM框架：scrapy-djangoitem，github中有源码
+		
+		
+			
 		
