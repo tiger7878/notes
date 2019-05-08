@@ -1,5 +1,6 @@
 1、官网：https://www.python.org/
 	选择python 3.6版本：Windows x86-64 executable installer
+	windows平台的软件包：https://www.lfd.uci.edu/~gohlke/pythonlibs/
 	
 2、开发工具PyCharm
 	网址：https://www.jetbrains.com/pycharm/download/#section=windows
@@ -506,6 +507,9 @@
 	
 	mysql相关：
 		mysql的驱动安装：pip install -i https://pypi.douban.com/simple/ mysqlclient
+			如果是win32的python：
+				那么上面安装有可能失败（MySQLdb/_mysql.c(29): fatal error C1083: Cannot open include file: 'mysql.h': No such file or directory）
+				就需要到：https://www.lfd.uci.edu/~gohlke/pythonlibs/#mysqlclient 下32位的whl来安装
 		centos下安装驱动：yum install python-devel mysql-devel
 		保存到数据库分为同步和异步两种操作，异步操作是Twisted框架提供的连接池的方式。异步使得mysql的插入不再是爬取时的瓶颈
 		自定mysql的同步插入pipelines：MysqlPipeline
