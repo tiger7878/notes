@@ -45,6 +45,7 @@
 		range(1,101)得到一个数列：[1, 2, 3, ..., 100]
 		
 	tuple：（）元组，一旦创建完毕，就不能修改
+		只有1个元素的tuple定义时必须加一个逗号，来消除歧义
 		示例：t = ('Adam', 'Lisa', 'Bart')
 		通过索引获取值：t[0]
 		只有一个元素时在最后加,来表示它是一个tuple
@@ -75,6 +76,7 @@
 		d.get(key)：获取value，如果获取不到返回None
 		判断key是否存在：if 'Paul' in d:
 		d[key]=value：向dict中更新/插入键值对
+		d.pop(key)：删除key和value
 		for key in d：循环遍历key
 	
 	defaultdict ：比dict更加好用
@@ -88,13 +90,23 @@
 		for name in s: 遍历元素
 		s.add(value)：添加元素，如果已经存在，也不会报错
 		s.remove(value)：删除元素，如果删除元素不存在，会报错，所以删除前需要判断
+		& ：求两个set的交集
+		| ：求两个set的合集
 		
 7、函数
 	定义一个函数要使用 def 语句，依次写出函数名、括号、括号中的参数和冒号:，然后，在缩进块中编写函数体，函数的返回值用 return 语句返回
 	实例：def my_abs(x):
 	如果没有return语句，函数执行完毕后也会返回结果，只是结果为 None.return None可以简写为return。
 	return x,y：表示返回多个值
-	默认参数：def power(x, n=2): 。第二个参数可传，可不传。默认参数只能定义在必需参数的后面：
+	默认参数：def power(x, n=2): 。第二个参数可传，可不传。默认参数只能定义在必需参数的后面。
+	常用函数：
+		abs：接受一个参数，求绝对值
+		max：接受多个参数，求最大值
+		int：转换为int类型
+		float：转换为float类型
+		str：转换为字符串类型
+		bool：转换为bool类型
+		hex()：函数把一个整数转换成十六进制表示的字符串
 	*args可变参数：表示的就是将实参中按照位置传值，多出来的值都给args，且以元祖的方式呈现
 		示例：def fn(*args):
 				print(args)
