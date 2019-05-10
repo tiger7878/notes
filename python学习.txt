@@ -533,6 +533,49 @@
 			import MySQLdb.cursors
 		ORM框架：scrapy-djangoitem，github中有源码
 		
-		
+	ItemLoader：
+		在这个容器里面可以配置item中各个字段的提取规则。可以通过函数分析原始数据，并对Item字段进行赋值，非常的便捷
+		导包：
+			from scrapy.loader import ItemLoader
+			from scrapy.loader.processors import TakeFirst, MapCompose, Identity, Join
+		自定义ItemLoader，继承自ItemLoader
+			class ArticleItemLoader(ItemLoader):
+				# 实现之前是在没一项解析时写extract_first()方法
+				# 这里只是重载这个属性，设置为只选取第一个值
+				# TakeFirst()是Scrapy提供的内置处理器，用于提取List中的第一个非空元素
+				default_output_processor = TakeFirst()
+		input_processor：输入处理器，当这个字段的值传过来时，可以在传进来的值上面做一些预处理
+		output_processor：输出处理器，这个字段被预处理完之后，输出前最后的一步处理
+		scrapy内置的处理器：
+			TakeFirst()：返回第一个非空（non-null/ non-empty）值，常用于单值字段的输出处理器，无参数
+			Identity()：最简单的处理器，不进行任何处理，直接返回原来的数据。无参数
+			Join()：返回用分隔符连接后的值。分隔符默认为空格。不接受Loader contexts。
+			Compose()：
+				用给定的多个函数的组合，来构造的处理器。list对象（注意不是指list中的元素），依次被传递到第一个函数，然后输出，再传递到第二个函数，一个接着一个，直到最后一个函数返回整个处理器的输出。
+				默认情况下，当遇到None值（list中有None值）的时候停止处理。可以通过传递参数stop_on_none = False改变这种行为。
+			MapCompose()：
+				与Compose处理器类似，区别在于各个函数结果在内部传递的方式（会涉及到list对象解包的步骤）
+				输入值是被迭代的处理的，List对象中的每一个元素被单独传入，第一个函数进行处理，然后处理的结果被连接起来形成一个新的迭代器，并被传入第二个函数，以此类推，直到最后一个函数。最后一个函数的输出被连接起来形成处理器的输出
+				每个函数能返回一个值或者一个值列表，也能返回None（会被下一个函数所忽略）
+				这个处理器提供了很方便的方式来组合多个处理单值的函数。因此它常用于输入处理器，因为传递过来的是一个List对象。
+		简单示例：
+			# 注意第一个参数必须是一个对象，并不是类名
+			item_loader = ArticleItemLoader(item=JobBoleArticleItem(), response=response)
+			# 装入Item
+			article_item = item_loader.load_item()
 			
+			# 剔除“评论”
+			def tags_convert(value):
+				if "评论" in value:
+					return ""
+				else:
+					return value
+			JobBoleArticleItem里面的字段：	
+			tags = scrapy.Field(
+				# 剔除评论
+				input_processor=MapCompose(tags_convert),
+				# 以逗号连接输出，使用processor自带的Join拼接方法
+				output_processor=Join(",")
+			)
+		
 		
