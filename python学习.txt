@@ -460,6 +460,7 @@
 	pip install E:\python\package\Scrapy-1.6.0-py2.py3-none-any.whl
 	
 29、scrapy项目构建
+	文档：百度 scrapy document 或者scrapy 文档
 	创建虚拟环境：mkvirtualenv --python=D:\Python\Python36\python.exe article_spider（在Envs目录下）
 	安装scrapy
 	创建scrapy项目：
@@ -578,4 +579,42 @@
 				output_processor=Join(",")
 			)
 		
+30、自动切换user_agent
+		scrapy的官网：http://doc.scrapy.org/en/latest/
+		middleware文档：http://doc.scrapy.org/en/latest/topics/downloader-middleware.html
+		首先在settings.py文件
+			中打开DOWNLOADER_MIDDLEWARES节点
+			# 添加默认的USER_AGENT
+			USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36"
+		获取很多useragent的插件： 
+			网址：https://github.com/hellysmile/fake-useragent
+			pip install fake-useragent
+			from fake_useragent import UserAgent
+		完善：高级做法配置文件中配置随机的类型（学习资料里面有）
+		
+31、IP代理服务器
+	免费的：
+		https://www.xicidaili.com/nn/，选择高匿代理（不太稳定，很多人用）
+		https://www.kuaidaili.com/free/inha/1/
+		http://ip.zdaye.com/dayProxy.html
+		http://www.qydaili.com/free/?action=china&page=1
+	pip install requests
+	在settings.py的DOWNLOADER_MIDDLEWARES节点配置我们写的middlewares
+	开源代码：https://github.com/aivarsk/scrapy-proxies（参考它改动自己的）
+	收费项目：https://github.com/scrapy-plugins/scrapy-crawlera（比免费的要稳定，只需要拿到key，不用自己维护ip池，收费的建议使用它）
+	收费ip代理：https://www.abuyun.com/
+	tor：洋葱网络，比较安全，需要配合vpn来使用，也会隐藏我们的ip。比我们用的免费和收费的ip代理都稳定。
+	
+32、其他反扒手段
+		禁用cookie：（在settings.py中打开配置文件并修改：）
+			COOKIES_ENABLED = False #禁用cookie，有些网站需要禁用，有些不能禁用
+		自动限速：（在settings.py中打开配置文件并修改：）
+			文档：https://scrapy-chs.readthedocs.io/zh_CN/latest/topics/autothrottle.html?highlight=%E8%87%AA%E5%8A%A8%E9%99%90%E9%80%9F
+			AUTOTHROTTLE_ENABLED = True #启用AutoThrottle扩展
+			AUTOTHROTTLE_START_DELAY = 5 #初始下载延迟(单位:秒)
+			DOWNLOAD_DELAY = 10 #下载延迟
+		自定义settings：（在自己写的spider类中写属性，这样每个爬虫就有自己的配置）
+			custom_settings={
+				"COOKIES_ENABLED" = True
+			}
 		
