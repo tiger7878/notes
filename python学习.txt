@@ -584,6 +584,12 @@
 		middleware文档：http://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 		首先在settings.py文件
 			中打开DOWNLOADER_MIDDLEWARES节点
+			DOWNLOADER_MIDDLEWARES = {
+				# 随机切换useragent
+				'ArticleSpider.middlewares.RandomUserAgentMiddleware': 543,
+				# 将scrapy默认的middleware设置为none，否则会覆盖我们自定义的
+				'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+			}
 			# 添加默认的USER_AGENT
 			USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36"
 		获取很多useragent的插件： 
