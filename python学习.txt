@@ -624,3 +624,40 @@
 				"COOKIES_ENABLED" = True
 			}
 		
+33、selenium：
+	安装：pip install selenium
+	官方文档：https://selenium-python.readthedocs.io/index.html
+	下载Drivers：https://selenium-python.readthedocs.io/installation.html → 1.3 Drivers → 选择Chrome→根据自己装从chrome选择版本，一定要对应
+	如果有些网站识别了ChromeDriver时需要做如下操作：手动启动chrome
+		首先找到本机chrome.exe的文件位置，然后cmd到那里
+		然后关闭所有的chrome
+		然后执行：chrome.exe --remote-debugging-port=9222
+		在打开的chrome中输入：http://127.0.0.1:9222/json  ，当看见内容表示成功
+		重写 start_requests()方法
+	python控制鼠标：https://github.com/boppreh/mouse
+		安装：pip install mouse
+		引入包：from mouse import move,click
+	屏幕坐标获取工具：http://www.greenxiazai.com/soft/35439.html
+	获取浏览器里面的cookie：
+		先在settings.py中把COOKIE_ENABLE=True；COOKIE_DEBUG=True。还要有user-agent
+		#保存cookie到文件
+		import json
+		cookies=browser.get_cookies()
+		jsonCookies = json.dumps(cookies)
+		with open('../cookies/qccNLCookie.json', 'w') as f:
+			f.write(jsonCookies)
+			
+		#从文件中读取cookie
+		import json
+ 
+		str=''
+		with open('qqhomepage.json','r',encoding='utf-8') as f:
+			listCookies=json.loads(f.read())
+		cookie = [item["name"] + "=" + item["value"] for item in listCookies]
+		cookiestr = '; '.join(item for item in cookie)
+		print(cookiestr)
+
+		
+		
+		
+	
