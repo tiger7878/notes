@@ -336,6 +336,7 @@
 		# 这个正则匹配好像不管用
 		div_tag = bs.find(string=re.compile("list"))
 		print(div_tag)
+	匹配多行文本：记得在参数里面加re.DOTALL
 	
 21、xpath
 	它比bs更好
@@ -637,6 +638,8 @@
 	python控制鼠标：https://github.com/boppreh/mouse
 		安装：pip install mouse
 		引入包：from mouse import move,click
+		move(x,y) #鼠标移动到x、y坐标的位置
+		click() #鼠标点击
 	屏幕坐标获取工具：http://www.greenxiazai.com/soft/35439.html
 	获取浏览器里面的cookie：
 		先在settings.py中把COOKIE_ENABLE=True；COOKIE_DEBUG=True。还要有user-agent
@@ -657,7 +660,18 @@
 		cookiestr = '; '.join(item for item in cookie)
 		print(cookiestr)
 
-		
-		
-		
+34、requests登录知乎
+	cookie：python3 是 import http.cookiejar as cookielib
+	session = requests.session() #长连接，不用每次请求都建立连接，效率高
+	session.cookies=cookielib.LWPCookieJar(filename="cookie.txt") #这样使我们保存和读取cookie很容易
+		session.get(url,allow_redirects=False) #get请求，用来控制请求未登录的页面时，设置为false就不会调整到登录页，判断用户是否登录用
+		session.post(url) #post请求
+	session.cookies.save() #保存cookie
+	session.cookies.load(ignore_discard=True) #读取cookie
+	
+35、scrapy登录知乎
+	 get请求：scrapy.Request
+	 post请求：scrapy.FormRequst
+	 登录成功以后，scrapy会把我们的cookie保存起来，以后的请求不需要加上cookie
+	 
 	
