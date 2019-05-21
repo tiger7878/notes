@@ -674,5 +674,11 @@
 	 get请求：scrapy.Request
 	 post请求：scrapy.FormRequst
 	 登录成功以后，scrapy会把我们的cookie保存起来，以后的请求不需要加上cookie
-	 
+	 url处理：from urllib import parse
+			parse.join(response.url,'获取的href中的url') #这样就可以得到完整的url路径
+			示例：[parse.join(response.url,url) for url in all_urls] #把all_urls的每个url都补成全路径
+	 filter函数：用来过滤不需要的。
+			示例：new_urls=filter(lambda x:True if x.startswith('https') else False,all_urls) #过滤出以https开头的url
+	 yeid：是传输出去的写法，不如说给下载器，给pipeline等
+	
 	
