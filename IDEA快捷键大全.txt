@@ -1,3 +1,6 @@
+基础设置：
+	忽略大小写：settings→Editor→General→Code Completion→取消勾选：Match case
+
 区域和文件切换：
 	Alt+数字：比如说1，就可以打开左边、底部工具栏，再按一次就隐藏。具体的数字得看数字是啥。再按ESC就可以回到编辑区。
 	Alt+左右箭头：在编辑区左右移动
