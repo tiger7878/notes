@@ -533,7 +533,7 @@
 		异步操作：
 			from twisted.enterprise import adbapi #异步操作归功于它
 			import MySQLdb
-			import MySQLdb.cursors
+			import MySQLdb.cursors #这个如果不引入会报错
 		ORM框架：scrapy-djangoitem，github中有源码
 		
 	ItemLoader：
