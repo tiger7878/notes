@@ -681,6 +681,22 @@
 			示例：[parse.join(response.url,url) for url in all_urls] #把all_urls的每个url都补成全路径
 	 filter函数：用来过滤不需要的。
 			示例：new_urls=filter(lambda x:True if x.startswith('https') else False,all_urls) #过滤出以https开头的url
-	 yeid：是传输出去的写法，不如说给下载器，给pipeline等
-	
+	 yield：是传输出去的写法，不如说给下载器，给pipeline等
+			可以同时存在多个yield。
+			yield scrapy.Request()  #交给异步去请求
+			yield item #交给pipeline
+	start_requests：是整个爬虫的入口
+	一个pipeline处理所有的item：
+		方式一：获取item的classname来判断（不推荐）
+			if item.__class__.__name__ == "xxxItem"
+				xxsql
+		方式二：利用Django的思想，在每个item里面定义get_inset_sql方法（注意字段不能错，否则sql报错），返回sql和params参数，
+				然后在pipeline中调用item的方法获取sql和params参数，
+				然后在pipelines中的mysql异步插入中修改do_insert方法
+	日期格式化：
+		在settings.py中定义：
+			SQL_DATETIME_FORMART="%Y-%m-%d %H:%M%S"
+			SQL_DATE_FORMART="%Y-%m-%d"
+		在需要使用的文件中引用
+			from settings import SQL_DATETIME_FORMART,SQL_DATE_FORMART
 	
