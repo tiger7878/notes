@@ -700,3 +700,10 @@
 		在需要使用的文件中引用
 			from settings import SQL_DATETIME_FORMART,SQL_DATE_FORMART
 	
+36、CrawlSpider爬取拉钩
+	工具：cmder，是windows下的一个模拟linux的工具，可以使用linux的部分命令
+	查看默认的spider模板：scrapy genspider --list  #默认是basic模板
+	创建一个基于crawl模板的spider：scrapy gendspider -t crawl laogou www.laogou.com
+	注意：不能重载parse函数，因为它本身就重载了
+	核心函数：self._parse_response
+	
