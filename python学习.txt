@@ -534,6 +534,8 @@
 			from twisted.enterprise import adbapi #异步操作归功于它
 			import MySQLdb
 			import MySQLdb.cursors #这个如果不引入会报错
+			报错：MySQLdb and (2006, 'MySQL server has gone away') 的解决方案是：加入 cp_reconnect=True
+				self.pool = adbapi.ConnectionPool("MySQLdb", self.parms['host'], self.parms['username'], self.parms['password'], self.parms['database'], cp_reconnect=True)
 		ORM框架：scrapy-djangoitem，github中有源码
 		
 	ItemLoader：
