@@ -701,9 +701,48 @@
 			from settings import SQL_DATETIME_FORMART,SQL_DATE_FORMART
 	
 36、CrawlSpider爬取拉钩
-	工具：cmder，是windows下的一个模拟linux的工具，可以使用linux的部分命令
+	cmder工具：是windows下的一个模拟linux的工具，可以使用linux的部分命令，
+		网址：https://cmder.net/  #选择Download Full
+		创建环境变量指向安装路径
 	查看默认的spider模板：scrapy genspider --list  #默认是basic模板
 	创建一个基于crawl模板的spider：scrapy gendspider -t crawl laogou www.laogou.com
 	注意：不能重载parse函数，因为它本身就重载了
 	核心函数：self._parse_response
+	
+项目部署
+	项目官网：https://github.com/scrapy/scrapyd
+	文档说明：https://scrapyd.readthedocs.io/en/stable/
+	在虚拟环境中安装scrapyd：pip install scrapyd  #安装成功后在虚拟环境目录下的Scripts目录下出现一个scrapyd.exe
+	创建服务器文件夹：E:\python\scrapyd
+	切换到scrapyd目录后运行scrapyd：直接输入 scrapyd #它是服务器，然后就可以看见里面有个dbs目录，最开始是空的
+	访问检查服务是否开启：http://127.0.0.1:6800 #点Jobs查看是否正常
+		报错：web.Server Traceback (most recent call last): builtins.AttributeError: 'int' object has no attribute 'splitlines' 
+		解决方案：尝试将Twisted 版本重新安装成 18.9.0
+			卸载Twisted命令：pip uninstall Twisted
+			安装指定版本Twisted：pip install Twisted==18.9
+			
+	安装客户端：pip install scrapyd-client #用于把本地的scrpy爬虫部署到scrapyd服务中
+		#不用在虚拟环境中安装，python的安装目录下的Scripts目录中就会有scrapyd-deploy文件
+		#建议在虚拟环境中安装，这样在虚拟环境中的Scripts目录中就会有scrapyd-deploy文件
+	修改项目的scrapy.cfg文件：
+		[deploy] 修改为：[deploy:qichacha]
+		打开url的注释
+	mac和linux下：在虚拟环境中执行scrapyd-deploy就可以运行
+	windows下：
+		在虚拟环境的目录的Scripts目录下创建一个名字叫scrapyd-deploy.bat文件，内容如下：
+		@echo off
+		
+		"E:\python\Envs\qichacha_spider\Scripts\python.exe" "E:\python\Envs\qichacha_spider\Scripts\scrapyd-deploy" %1 %2 %3 %4 %5 %6 %7 %8 %9
+		在虚拟环境中运行：scrapyd-deploy #就可以看见可以用了
+	运行：scrapyd-deploy -l #查看到scrapy.cfg文件中配置的信息，如果报错则修改文件
+	项目目录下打包发布：scrapyd-deploy qichacha -p QichachaSpider
+	然后查看：E:\python\scrapyd就可以看见有eggs目录，里面就是我们的爬虫项目
+	API说明：https://scrapyd.readthedocs.io/en/stable/api.html  #下面的api都是从这里查的
+	打开cmder 运行：curl http://localhost:6800/daemonstatus.json #看项目，curl的都是在cmder中使用的
+	启动任务调度：curl http://localhost:6800/schedule.json -d project=QichachaSpider -d spider=nologincompany  #运行myproject项目下的somespider爬虫
+		如果项目报错TypeError: __init__() got an unexpected keyword argument '_job'，就去修改该spider文件的init方法，添加一个**kwargs参数
+	删除任务：curl http://localhost:6800/delproject.json -d project=QichachaSpider
+	取消任务：curl http://localhost:6800/cancel.json -d project=QichachaSpider -d job=0b7cd0c688ef11e9a99c005056c00008  #job对应的就是jobid
+	查看多少个projects：curl http://localhost:6800/listprojects.json
+	查看多少个spider：curl http://localhost:6800/listspiders.json?project=myproject
 	
