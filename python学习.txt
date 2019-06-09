@@ -701,13 +701,22 @@
 			from settings import SQL_DATETIME_FORMART,SQL_DATE_FORMART
 	
 36、CrawlSpider爬取拉钩
+	CrawlSpider：是一个整站爬取策略
 	cmder工具：是windows下的一个模拟linux的工具，可以使用linux的部分命令，
 		网址：https://cmder.net/  #选择Download Full
 		创建环境变量指向安装路径
-	查看默认的spider模板：scrapy genspider --list  #默认是basic模板
-	创建一个基于crawl模板的spider：scrapy gendspider -t crawl laogou www.laogou.com
+	cmder中查看默认的spider模板：scrapy genspider --list  #默认是basic模板
+	虚拟环境中创建一个基于crawl模板的spider：scrapy genspider -t crawl laogou www.laogou.com  #如果报错就要看视频6-2进行配置
 	注意：不能重载parse函数，因为它本身就重载了
 	核心函数：self._parse_response
+	cb_kwargs：传递给link_extractor的参数
+	restrict_xpaths：对url进行xpath限定，控制只抓取部分url
+	restrict_css：对url进行css限定，控制只抓取部分url
+	open方法中的wbr：w：写、b：二级制、r：读
+	需要使用cookie的网站在settings.py中配置如下后，第一个scrapy中会进行cookie传递
+		COOKIES_ENABLED=True #网站需要用到cookie
+		COOKIE_DEBUG=True #控制台打印cookie
+	思路：在start_request中用selenium模拟登录获取cookie，以后都可以使用了
 	
 项目部署
 	项目官网：https://github.com/scrapy/scrapyd
