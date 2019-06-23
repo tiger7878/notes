@@ -447,6 +447,7 @@
 	退出虚拟环境：deactivate
 	列出虚拟环境：workon（在E:\python\Envs目录下使用cmd命令）
 	进入某个虚拟环境：workon 虚拟环境名称
+	删除虚拟环境：直接删除某个虚拟环境的目录即可
 	
 28、scrapy
 	方式一：安装 Microsoft visual c++ 14.0（E:\python\tool\visualcppbuildtools_full.exe）
