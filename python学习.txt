@@ -442,7 +442,7 @@
 27、python虚拟环境
 	windows下安装：pip install virtualenvwrapper-win
 	非windows环境下安装：pip install virtualenvwrapper
-	创建环境变量：WORKON_HOME E:\python\Envs。如果不创建，默认的虚拟环境会安装到：C:\Users\Administrator.WIN7U-20140512U\Envs
+	创建环境变量：WORKON_HOME E:\python\Envs。如果不创建，默认的虚拟环境会安装到：C:\Users\Administrator.WIN7U-20140512U\Envs，不用添加到Path中
 	cmd创建虚拟环境：mkvirtualenv --python=D:\Python\Python36\python.exe 自定义虚拟环境名称。创建以后就自动进入虚拟环境了。
 	退出虚拟环境：deactivate
 	列出虚拟环境：workon（在E:\python\Envs目录下使用cmd命令）
