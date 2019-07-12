@@ -29,6 +29,8 @@
 			isinstance(x, str) 可以判断变量 x 是否是字符串
 			x.upper()：把字符串x变成大写
 			s.strip(rm)：删除 s 字符串中开头、结尾处的 rm 序列的字符。当rm为空时，默认删除空白符（包括'\n', '\r', '\t', ' ')
+			s.index(y):字符串y在字符串s中的第一次出现的索引位置，如果字符串不存在就会报错
+			s[start:end]：字符串截取，从start到end
 			
 	布尔类型：Python把0、空字符串''和None看成 False，其他数值和非空字符串都看成 True
 	
