@@ -666,6 +666,12 @@
 		cookie = [item["name"] + "=" + item["value"] for item in listCookies]
 		cookiestr = '; '.join(item for item in cookie)
 		print(cookiestr)
+	selenium 控制元素：
+		source_url = driver.find_element_by_xpath('//span[@class="from"]/a').get_attribute("href")
+	Selector 控制元素：（from scrapy import Selector  #它更加的高效率）
+		page_source = driver.page_source
+        selector = Selector(text=page_source)
+        content = selector.xpath('//div[contains(@class,"news-content")]').extract_first('')
 
 34、requests登录知乎
 	cookie：python3 是 import http.cookiejar as cookielib
