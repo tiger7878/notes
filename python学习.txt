@@ -672,7 +672,18 @@
 		page_source = driver.page_source
         selector = Selector(text=page_source)
         content = selector.xpath('//div[contains(@class,"news-content")]').extract_first('')
-
+	selenium找不到元素：
+		可以尝试在selenium.get("http://xxx.html") 后 time.sleep(2)，然后再获取元素
+	执行javascript代码：模拟鼠标下拉
+		#执行一次下拉，如果要执行多次就写for循环，每次记得sleep
+		browser.excecute_script("window.scrollTo(0,document.body.scrollHeight);var lenOfPage=document.body.scrollHeight;return lenOfPage;") 
+	chrome不加载图片：（有的时候加载图片很慢，可以加速请求）
+		chrome_opt=webdriver.ChromeOptions()
+		prefs = {"profile.managed_default_content_settings.images":2}
+		chrome_opt.add_experimetal_option("prefs",prefs)
+		browser = webdriver.Chrome(executable_path="E:/python/chromedriver.exe",chrome_options=chrome_opt)
+	chrome也可以在无界面的情况下使用：待完善
+		
 34、requests登录知乎
 	cookie：python3 是 import http.cookiejar as cookielib
 	session = requests.session() #长连接，不用每次请求都建立连接，效率高
@@ -744,7 +755,16 @@
 		if os.path.exists('全路径/xxx.json'):
 	去除html标签：
 		from w3lib.html import remove_tags  #remove_tags就是我们要的方法
-	
+
+37、phantomJS：
+	它是一个无界面浏览器，在linux和centos中使用，性能没有selenium高，多线程下性能降低
+	下载界面：https://phantomjs.org/download.html
+	使用：
+		browser = webdriver.PhantomJS(executable_path="E:/python/phantomJS.exe")
+		browser.get("http://www.html")
+		browser.quit()
+	phantomJS也可以设置为不加载图片
+		
 项目部署
 	项目官网：https://github.com/scrapy/scrapyd
 	文档说明：https://scrapyd.readthedocs.io/en/stable/
