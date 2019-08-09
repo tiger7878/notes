@@ -136,3 +136,7 @@ windows端口查看和关闭
 	netstat -ano | findstr "8002" #查询端口8002对应的PID
 	tasklist | findstr "7592" #查询PID对应的应用程序
 	taskkill /f /t /pid 7592 #根据PID删除进程
+	
+常用插件：
+	Free Mybatis plugin #mybatis的插件，方便跳转和谢mapper.xml文件
+	
