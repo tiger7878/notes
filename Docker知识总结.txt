@@ -20,3 +20,9 @@
 	进程隔离：每个容器都运行在自己的进程环境中
 	网络隔离：容器间的虚拟网络接口和ip地址都是分开的
 	资源隔离和分组：使用cgroups将CPU和内存资料的资源独立分配给每个Docker容器
+	
+4、Docker安装
+	windows平台：访问Github上的Boot2Docker
+	Mac OS系统：访问Github上的Boot2Docker
+	
+	
