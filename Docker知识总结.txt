@@ -1,10 +1,11 @@
 1、Docker的基本组成
 	官网：https://docs.docker.com/engine/docker-overview/
+		https://www.docker.com/get-started
 	源码：https://github.com/docker
 	Client：客户端
 	Daemon：守护进程（服务器端）
-	Image：镜像，它是容器的基石，层叠的文件系统。
-	Container：容器，通过镜像启动，是启动和执行阶段。
+	Image：镜像，它是容器的基石，层叠的文件系统。它是只读的。
+	Container：容器，通过镜像启动，是启动和执行阶段。它是在镜像的最上层创建一个可写层。
 	Registry：仓库，共有（Docker Hub），私有
 	
 2、命名空间
@@ -26,4 +27,6 @@
 	windows平台：访问Github上的Boot2Docker
 	Mac OS系统：访问Github上的Boot2Docker
 	
+5、Docker服务
+	centos和ubuntu查看日志：journalctl -u docker.service
 	
