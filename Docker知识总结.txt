@@ -30,3 +30,58 @@
 5、Docker服务
 	centos和ubuntu查看日志：journalctl -u docker.service
 	
+6、Docker命令
+	查看容器：
+		docker run 镜像 命令 参数：#一次性启动和执行容器的命令
+		docker run -i -t 镜像 /bin/bash #启动交互式容器，命令结束后就停止了
+		docker ps	#查看正在运行的容器
+		docker ps -a #列出所有容器
+		docker ps -l #列出最新的容器
+		docker inspect 容器id/容器名称 #查看某个容器相关信息
+		docker run --name=自定义容器名称  #运行自定义名称的容器
+	重启停止的容器：
+		docker start [-i] 容器名	#重启停止的容器
+	删除已经停止的容器：
+		docker rm 容器名
+		
+7、守护式容器
+	用途：用于运行网站和服务，不会命令结束后就停止了
+	启动守护式容器方式一：
+		docker run -i -t 镜像 /bin/bash #启动交互式容器
+		ctrl+p 或者 ctrl+q
+	启动守护式容器方式二：docker run -d
+	查看日志：docker logs
+	查看容器的进程：.docker top
+	为运行中的容器启动一个新进程：docker exec
+	停止容器：
+		docker stop：发送信号等容器停止
+		docker kill：直接干掉一个容器
+	
+8、容器中部署Nginx
+	端口映射：
+		docker run -p 容器端口 -i -t 镜像 /bin/bash
+		docker run -p 宿主机端口:容器端口 -i -t 镜像 /bin/bash
+		docker run -p ip地址:容器端口 -i -t 镜像 /bin/bash
+		docker run -p ip地址:宿主机端口:容器端口 -i -t 镜像 /bin/bash
+	安装nginx
+		apt-get install -y nginx
+	安装vim：
+		apt-get install -y vim
+	创建目录：
+		mkdir -p /var/www/html
+		在该目录下创建index.html静态页面
+	编辑nginx的配置文件
+		whereis nginx #查看nginx安装在哪里
+		修改配置文件中root的位置
+	启动nginx：
+		nginx
+	查看：ps -ef
+	退出：ctrl+p 或者ctrl+q
+	查看端口映射情况：docker port 容器名称
+	访问：curl http://宿主机ip：端口
+			curl http://容器ip
+	重启容器后发现nginx并没有启动
+	需要使用：docker exec web nginx：就是在容器中启动nginx进程
+	如果容器的ip没有设置，每次重启容器会变化ip和端口
+		
+	
