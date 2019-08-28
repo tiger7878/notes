@@ -27,10 +27,33 @@
 	windows平台：访问Github上的Boot2Docker
 	Mac OS系统：访问Github上的Boot2Docker
 	
-5、Docker服务
-	centos和ubuntu查看日志：journalctl -u docker.service
+5、Docker镜像	
+	获取镜像：docker [image] pull NAME[:TAG] #从Docker Hub镜像源下载镜像
+		NAME：镜像仓库的名称，用来区分镜像
+		TAG：镜像标签，用来区分镜像版本，如果不指定，默认选择latest标签。切记不要在生产环境中用latest，因为很可能不稳定，需要用稳定版。
+	查看镜像信息：
+		docker images #列出所有镜像
+		docker image ls 镜像仓库名	#查看单个镜像
+	添加镜像标签：	docker tag ubuntu:18.04 myubuntu:latest  #可以直接使用，镜像ID相同，只是一个链接，并不是新的镜像
+	查看镜像历史：docker history ubuntu:18.04
+	搜索进行：docker search [option] keyword #在Docker Hub官方仓库中搜索镜像
+		docker search --filter=is-official=true nginx #	搜索官方提供的nginx镜像
+	删除镜像：docker rmi 镜像名称:TAG 	#删除
+		docker rmi -f 镜像名称:TAG		#强制删除
+		docker rmi 镜像ID
+	删除顺序：先删除容器，然后再删除镜像
+	清理镜像：docker image prune #清理临时的镜像文件和没有被使用的镜像
+	创建镜像：
+		基于已有的容器创建：sudo docker commit -m '提交消息说明' -a '作者说明' 原容器ID 新镜像名称:新TAG  
+		基于本地模板导入：
+		基于Dockerfile创建：最常用的方式
+	导出镜像：docker [image] save
+		docker save -o test.tar test:0.1 #把镜像test导出成test.tar
+	载入镜像：docker [image] load
+		docker load -i test.tar  #导入镜像文件test.tar，这样就把镜像迁移了
+	上传镜像：docker [image] push NAME:[:TAG]
 	
-6、Docker命令
+6、Docker容器
 	查看容器：
 		docker run 镜像 命令 参数：#一次性启动和执行容器的命令
 		docker run -i -t 镜像 /bin/bash #启动交互式容器，命令结束后就停止了
@@ -38,12 +61,14 @@
 		docker ps -a #列出所有容器
 		docker ps -l #列出最新的容器
 		docker inspect 容器id/容器名称 #查看某个容器相关信息
+				docker [image] inspect -f { {" . Architecture"}} ubuntu:18. 04	#获取镜像的Architecture信息
 		docker run --name=自定义容器名称  #运行自定义名称的容器
 	重启停止的容器：
 		docker start [-i] 容器名	#重启停止的容器
 	删除已经停止的容器：
 		docker rm 容器名
-		
+	centos和ubuntu查看日志：journalctl -u docker.service
+	
 7、守护式容器
 	用途：用于运行网站和服务，不会命令结束后就停止了
 	启动守护式容器方式一：
