@@ -54,20 +54,33 @@
 	上传镜像：docker [image] push NAME:[:TAG]
 	
 6、Docker容器
-	查看容器：
+	创建容器：docker [container] create [option] #新建的容器处于停止状态
+		示例：docker create -it ubuntu:latest 
+	启动容器：docker [container] start [option] #启动停止的容器
+	重启容器：docker [container] restart
+	新建并启动容器：
 		docker run 镜像 命令 参数：#一次性启动和执行容器的命令
-		docker run -i -t 镜像 /bin/bash #启动交互式容器，命令结束后就停止了
+		docker run -it 镜像 /bin/bash #启动交互式容器，命令结束后就停止了
+		docker run --name=自定义容器名称  #运行自定义名称的容器
+	查看容器：
 		docker ps	#查看正在运行的容器
 		docker ps -a #列出所有容器
 		docker ps -l #列出最新的容器
 		docker inspect 容器id/容器名称 #查看某个容器相关信息
 				docker [image] inspect -f { {" . Architecture"}} ubuntu:18. 04	#获取镜像的Architecture信息
-		docker run --name=自定义容器名称  #运行自定义名称的容器
-	重启停止的容器：
-		docker start [-i] 容器名	#重启停止的容器
-	删除已经停止的容器：
-		docker rm 容器名
+	查看容器输出日志： docker logs 容器ID
+	删除已经停止的容器： docker rm 容器名
+		docker rm -f 容器名 #强制删除一个运行中的容器
 	centos和ubuntu查看日志：journalctl -u docker.service
+	导出容器：docker [container] export -o xxx.tar 容器名称
+	导入容器：docker [container] import xxx.tar - 仓库:TAG
+	#注意：镜像文件保存完整记录，体积大。容器快照讲丢失所有的历史记录和元信息，只保存容器当时的快照状态，使用时注意
+	查看统计信息：docker stats [options]  #CPU、内存、存储、网络
+	复制文件：docker cp
+	查看变更：docker diff
+	查看端口映射：docker port 容器名称
+	更新配置：docker update #更新容器的运行时配置
+	查看Docker支持的容器操作子命令：docker container help
 	
 7、守护式容器
 	用途：用于运行网站和服务，不会命令结束后就停止了
@@ -75,12 +88,16 @@
 		docker run -i -t 镜像 /bin/bash #启动交互式容器
 		ctrl+p 或者 ctrl+q
 	启动守护式容器方式二：docker run -d
+	进入容器：docker [container] attach #后台运行的容器可以通过这种进入的方式来操作
 	查看日志：docker logs
 	查看容器的进程：.docker top
-	为运行中的容器启动一个新进程：docker exec
+	在运行中的容器中执行命令：docker exec 
+		示例：docker exec -it 容器ID /bin/bash	#进入容器
 	停止容器：
 		docker stop：发送信号等容器停止
 		docker kill：直接干掉一个容器
+		docker pause：暂停容器
+		docker unpause：把暂停的容器恢复成运行状态
 	
 8、容器中部署Nginx
 	端口映射：
@@ -109,4 +126,6 @@
 	需要使用：docker exec web nginx：就是在容器中启动nginx进程
 	如果容器的ip没有设置，每次重启容器会变化ip和端口
 		
-	
+
+辅助工具：
+	HAProxy：处理负载均衡，自动切换估值的应用容器
