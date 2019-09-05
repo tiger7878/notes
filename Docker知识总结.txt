@@ -98,8 +98,17 @@
 		docker kill：直接干掉一个容器
 		docker pause：暂停容器
 		docker unpause：把暂停的容器恢复成运行状态
+		
+8、Docker仓库
+	仓库分类：公有仓库、私有仓库
+	仓库Repository：存放镜像的地方
+	注册服务器Registry：存放仓库的服务器
+	公共镜像仓库：Docker Hub，官网：https://hub.docker.com/
+	第三方镜像市场：腾讯云、网易云、阿里云、时速云
+	本地私有仓库：
+		docker run -d -p 5000:5000 registry:2
 	
-8、容器中部署Nginx
+9、容器中部署Nginx
 	端口映射：
 		docker run -p 容器端口 -i -t 镜像 /bin/bash
 		docker run -p 宿主机端口:容器端口 -i -t 镜像 /bin/bash
