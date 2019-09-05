@@ -62,6 +62,7 @@
 		docker run 镜像 命令 参数：#一次性启动和执行容器的命令
 		docker run -it 镜像 /bin/bash #启动交互式容器，命令结束后就停止了
 		docker run --name=自定义容器名称  #运行自定义名称的容器
+		参数：-P ：随机映射一个49000-49900的端口，给容器外部访问
 	查看容器：
 		docker ps	#查看正在运行的容器
 		docker ps -a #列出所有容器
@@ -108,12 +109,17 @@
 	本地私有仓库：
 		docker run -d -p 5000:5000 registry:2
 	
-9、容器中部署Nginx
-	端口映射：
+9、端口映射与容器互联
+	端口映射：-P随机一个端口，-p指定端口
 		docker run -p 容器端口 -i -t 镜像 /bin/bash
 		docker run -p 宿主机端口:容器端口 -i -t 镜像 /bin/bash
 		docker run -p ip地址:容器端口 -i -t 镜像 /bin/bash
 		docker run -p ip地址:宿主机端口:容器端口 -i -t 镜像 /bin/bash
+	查看端口映射情况：docker port 容器名称
+	互联机制：--link
+		docker run -d -P --name web --link db:db training/webapp python app.py  #db容器与web容器简历互联关系，避免了数据库服务端口到外部网络
+		
+10、容器中部署Nginx	
 	安装nginx
 		apt-get install -y nginx
 	安装vim：
@@ -128,7 +134,6 @@
 		nginx
 	查看：ps -ef
 	退出：ctrl+p 或者ctrl+q
-	查看端口映射情况：docker port 容器名称
 	访问：curl http://宿主机ip：端口
 			curl http://容器ip
 	重启容器后发现nginx并没有启动
