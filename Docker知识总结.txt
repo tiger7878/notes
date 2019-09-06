@@ -1,3 +1,4 @@
+基础篇
 1、Docker的基本组成
 	官网：https://docs.docker.com/engine/docker-overview/
 		https://www.docker.com/get-started
@@ -118,8 +119,25 @@
 	查看端口映射情况：docker port 容器名称
 	互联机制：--link
 		docker run -d -P --name web --link db:db training/webapp python app.py  #db容器与web容器简历互联关系，避免了数据库服务端口到外部网络
-		
-10、容器中部署Nginx	
+	
+10、使用Dockerfile创建镜像
+	Dockerfile是一个文件格式的配置文件
+	基本结构：基础镜像信息、维护者信息、镜像操作指令和启动时执行的指令
+	nginx简单的dockerfile示例：
+		FROM ubuntu		#基础镜像信息
+		LABEL maintainer docker user<docker user@email.com>  #维护者信息
+		RUN echo "deb http://archive.ubuntu.com/ubuntu/ xeniel main universe" apt/sources.list >> /etc/  #镜像操作指令
+		CMD /usr/sbin/nginx		#启动时执行的指令
+	EXPOSE：申明镜像内服务监听的端口，只是申明，不会自动完成端口映射，需要启动容器时指定端口映射
+	ENV：环境变量
+	ADD：复制指定内容到容器中
+	COPY：复制指定内容到容器中，当使用本地目录作为源目录时，推荐使用它
+	注意：
+		一个dockerfile文件的第一条指令必须是FROM
+		一个dockerfile只能有一条CMD命令，有多条时只会执行最后一条
+	
+实战篇：
+1、	容器中部署Nginx	
 	安装nginx
 		apt-get install -y nginx
 	安装vim：
