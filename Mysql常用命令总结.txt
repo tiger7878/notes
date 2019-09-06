@@ -1,0 +1,3 @@
+1、查询
+	查询表的字段信息：SHOW FULL COLUMNS FROM 表名
+	查询表中所有字段到一列：select group_concat(COLUMN_NAME) from information_schema.COLUMNS where table_name = '表名';
