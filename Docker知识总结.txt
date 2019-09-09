@@ -95,6 +95,8 @@
 	查看容器的进程：.docker top
 	在运行中的容器中执行命令：docker exec 
 		示例：docker exec -it 容器ID /bin/bash	#进入容器
+	拷贝一个文件到容器：docker cp 文件 容器:目录
+	目录挂载：-v 宿主机目录:容器目录
 	停止容器：
 		docker stop：发送信号等容器停止
 		docker kill：直接干掉一个容器
