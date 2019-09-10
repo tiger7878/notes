@@ -27,6 +27,26 @@
 4、Docker安装
 	windows平台：访问Github上的Boot2Docker
 	Mac OS系统：访问Github上的Boot2Docker
+	CentOS7安装docker：
+		参考网址：https://yq.aliyun.com/articles/110806?spm=5176.8351553.0.0.6a7219912MUsPW
+		# step 1: 安装必要的一些系统工具
+		sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+		# Step 2: 添加软件源信息
+		sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+		# Step 3: 更新并安装 Docker-CE
+		sudo yum makecache fast
+		sudo yum -y install docker-ce
+		# Step 4: 开启Docker服务
+		sudo service docker start
+		# Step 5: 安装校验
+		docker version
+	镜像加速器：阿里云-控制台-弹性计算-容器镜像服务-镜像中心-镜像加速器
+		vim /etc/docker/daemon.json
+		{
+		  "registry-mirrors": ["https://自己的.mirror.aliyuncs.com"]
+		}
+		sudo systemctl daemon-reload
+		sudo systemctl restart docker
 	
 5、Docker镜像	
 	获取镜像：docker [image] pull NAME[:TAG] #从Docker Hub镜像源下载镜像
@@ -88,13 +108,15 @@
 	用途：用于运行网站和服务，不会命令结束后就停止了
 	启动守护式容器方式一：
 		docker run -i -t 镜像 /bin/bash #启动交互式容器
-		ctrl+p 或者 ctrl+q
+	退出容器：ctrl+p 或者 ctrl+q 
 	启动守护式容器方式二：docker run -d
 	进入容器：docker [container] attach #后台运行的容器可以通过这种进入的方式来操作
 	查看日志：docker logs
 	查看容器的进程：.docker top
 	在运行中的容器中执行命令：docker exec 
 		示例：docker exec -it 容器ID /bin/bash	#进入容器
+			 docker exec -it centos /bin/bash  #进入centos容器
+			 exit	#退出
 	拷贝一个文件到容器：docker cp 文件 容器:目录
 	目录挂载：-v 宿主机目录:容器目录
 	停止容器：
