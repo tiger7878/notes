@@ -56,7 +56,7 @@
 		docker images #列出所有镜像
 		docker image ls 镜像仓库名	#查看单个镜像
 	添加镜像标签：	docker tag ubuntu:18.04 myubuntu:latest  #可以直接使用，镜像ID相同，只是一个链接，并不是新的镜像
-	查看镜像历史：docker history ubuntu:18.04
+	查看镜像历史：docker history ubuntu:18.04 #可以查看到文件层级结构
 	搜索进行：docker search [option] keyword #在Docker Hub官方仓库中搜索镜像
 		docker search --filter=is-official=true nginx #	搜索官方提供的nginx镜像
 	删除镜像：docker rmi 镜像名称:TAG 	#删除
@@ -103,6 +103,7 @@
 	查看端口映射：docker port 容器名称
 	更新配置：docker update #更新容器的运行时配置
 	查看Docker支持的容器操作子命令：docker container help
+	把容器打包成镜像：docker commit  #有弊端，因为容器会有临时文件，临时文件就是垃圾文件，不推荐这种方式创建镜像
 	
 7、守护式容器
 	用途：用于运行网站和服务，不会命令结束后就停止了
@@ -156,9 +157,11 @@
 	ENV：环境变量
 	ADD：复制指定内容到容器中
 	COPY：复制指定内容到容器中，当使用本地目录作为源目录时，推荐使用它
+	ENTRYPOINT：推荐用它来替代CMD，明确容器的命令，防止启动时输入CMD替代了文件中的CMD。当ENTRYPOINT存在时CMD只是传参的作用
 	注意：
 		一个dockerfile文件的第一条指令必须是FROM
 		一个dockerfile只能有一条CMD命令，有多条时只会执行最后一条
+		创建镜像就是盖楼，每个run命令就是盖一层楼
 	创建镜像：docker build [options] path
 	配置匹配忽略：.dockerignore，支持正则
 	多步骤创建：比如java，需要一个编译环境镜像和一个运行环境镜像
@@ -166,6 +169,7 @@
 		Docker Hub 官方仓库中提供了大量的优秀镜像和对应的Dockefile ，可以通过阅读它们来学习如何撰写高效的Dockerfile
 		精简镜像用途：尽量让每个镜像用途单一
 		选择合适的基础镜像
+	使用Maven插件以后，可以用一条maven命令可以打包并且创建镜像
 	
 实战篇：
 1、	容器中部署Nginx	
