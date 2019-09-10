@@ -159,6 +159,13 @@
 	注意：
 		一个dockerfile文件的第一条指令必须是FROM
 		一个dockerfile只能有一条CMD命令，有多条时只会执行最后一条
+	创建镜像：docker build [options] path
+	配置匹配忽略：.dockerignore，支持正则
+	多步骤创建：比如java，需要一个编译环境镜像和一个运行环境镜像
+	最佳实践：
+		Docker Hub 官方仓库中提供了大量的优秀镜像和对应的Dockefile ，可以通过阅读它们来学习如何撰写高效的Dockerfile
+		精简镜像用途：尽量让每个镜像用途单一
+		选择合适的基础镜像
 	
 实战篇：
 1、	容器中部署Nginx	
