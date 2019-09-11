@@ -119,13 +119,14 @@
 			 docker exec -it centos /bin/bash  #进入centos容器
 			 exit	#退出
 	拷贝一个文件到容器：docker cp 文件 容器:目录
-	目录挂载：-v 宿主机目录:容器目录
+	目录挂载：-v 宿主机目录:容器目录	#注意，挂载后宿主机的目录会覆盖掉容器目录里面的原内容
 	停止容器：
 		docker stop：发送信号等容器停止
 		docker kill：直接干掉一个容器
 		docker pause：暂停容器
 		docker unpause：把暂停的容器恢复成运行状态
-		
+	数据挂载：可以用一个容器把各个容器的挂载配置起来，然后使用--volums-from 自定义的配置容器*(相当重要)
+	
 8、Docker仓库
 	仓库分类：公有仓库、私有仓库
 	仓库Repository：存放镜像的地方
@@ -134,6 +135,11 @@
 	第三方镜像市场：腾讯云、网易云、阿里云、时速云
 	本地私有仓库：
 		docker run -d -p 5000:5000 registry:2
+		第二步：把镜像打上仓库地址
+		第三步：修改私有仓库的配置以支持http，也就是私服地址insecure-registries：["ip地址","ip地址"]
+				systemctl daemon-reload
+				systemctl restart docker
+		第三步：push镜像到私有仓库
 	
 9、端口映射与容器互联
 	端口映射：-P随机一个端口，-p指定端口
