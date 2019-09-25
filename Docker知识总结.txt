@@ -198,7 +198,14 @@
 	重启容器后发现nginx并没有启动
 	需要使用：docker exec web nginx：就是在容器中启动nginx进程
 	如果容器的ip没有设置，每次重启容器会变化ip和端口
-		
+	
+2、构建一个nginx容器
+	创建一个Dockerfile
+	FROM nginx	#基础镜像来源
+	COPY index.html /usr/share/nginx/html	#把宿主机的index页面拷贝到nginx里面，自定义首页
+	docker build -t my-nginx .	#在Dockerfile目录构建镜像
+	docker run --name nginx2 -p 81:80 -d my-nginx	#运行容器并指定端口号
+	
 
 辅助工具：
 	HAProxy：处理负载均衡，自动切换估值的应用容器
