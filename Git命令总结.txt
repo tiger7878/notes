@@ -45,3 +45,6 @@
 		git push
 19、本地分支关联远程分支
 	git pull origin dev 本地分支与远程分支相关联
+	
+20、生成秘钥
+	ssh-keygen -t rsa -C 'zhcw63@163.com'
