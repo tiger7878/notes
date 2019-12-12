@@ -43,6 +43,8 @@
 		git rm -r --cached target              # 删除target文件夹
 		git commit -m '删除了target'        # 提交,添加操作说明
 		git push
+	rm缓存错误的还原方法：
+		git reset --hard HEAD
 19、本地分支关联远程分支
 	git pull origin dev 本地分支与远程分支相关联
 	
