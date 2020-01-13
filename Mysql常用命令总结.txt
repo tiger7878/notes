@@ -5,3 +5,15 @@
 2、表修改
 	表添加字段
 	alter table   table1 add id int unsigned not Null auto_increment primary key
+	
+	-- 在test_table 表的 valid_status 字段之后，新增一个字段，设置对应的类型，长度，是否为null，默认值，注释
+	ALTER TABLE test_table ADD COLUMN `is_staff` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否是从业人员 0否 1是' AFTER `valid_status`;
+	
+	-- 修改一个字段的类型
+	ALTER TABLE test_table MODIFY test_value VARCHAR(10) NOT NULL DEFAULT '' COMMENT '字段注释';
+	 
+	-- 修改一个字段的名称，此时要重新指定该字段的类型
+	ALTER TABLE test_table CHANGE test_value_old test_value_new VARCHAR(10) NOT NULL DEFAULT '' COMMENT '字段注释';
+	
+	-- 删除test_table表的 test_value字段 
+	ALTER TABLE test_table DROP COLUMN test_value;
