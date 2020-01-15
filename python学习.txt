@@ -16,6 +16,15 @@
 	windows环境：cmd下执行
 		pip install virtualenv
 		pip install virtualenvwrapper-win
+	创建虚拟环境
+		mkvirtualenv 虚拟环境名称	#默认的python版本创建虚拟环境
+		mkvirtualenv -p D:\Python\Python36\python.exe	虚拟环境名称	#指定python版本
+	退出虚拟环境：deactivate
+	列出所有虚拟环境：workon
+	进入某个虚拟环境：workon 虚拟环境名称
+	删除虚拟环境：直接删除某个虚拟环境的目录即可
+	配置虚拟环境目录：在系统环境变量中配置
+		WORKON_HOME		E:\python\Envs
 		
 5、计算机网络
 	书籍：计算机网络自顶向下方法（第六版）、TCP/IP协议族（第4版）
