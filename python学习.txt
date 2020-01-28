@@ -33,6 +33,7 @@
 	TCP协议：负责将需要传输的数据分解成一定长度的片段
 	IP协议：将数据贴上标签，包含源IP地址和目标IP地址
 	路由器：记录着与自己相邻的路由器地址，并形成一个表格-路由表，路由表是一个动态的数据库
+	XMPP：聊天协议
 	
 6、基础数据类型
 	r：多行字符串
@@ -97,6 +98,13 @@
 	defaultdict ：比dict更加好用
 		参数是dict：defaultdict(dict)
 		参数是list：defaultdict(list)
+		获取值时给默认值：dict.get('a','cc') 当a没有值时，默认返回cc
+		defaultdict还可以接受一个方法名称，该方法返回dict
+	
+	json：
+		json.dumps(data)：用于将字典形式的数据转化为字符串
+		json.loads(data)：用于将字符串形式的数据转化为字典
+		如果直接将dict类型的数据写入json文件中会发生报错，因此在将数据写入时需要用到json.dump(),json.load()用于从json文件中读取数据.
 	
 	set：没有重复元素，无序集合，区分大小写
 		示例：s = set(['A', 'B', 'C'])
@@ -323,6 +331,14 @@
 	print("返回的内容：" + res.text)
 	# 把响应的数据转换为json
 	print(res.json())
+	
+	http响应码说明：
+	2xx：成功
+	3xx：跳转（重定向）
+	4xx：客户端错误
+	5xx：服务器端错误
+	
+	小结：因为http是无状态的，所以通过request是可以模拟浏览器发起请求，服务器是区分不了的
 	
 19、正则表达式
 	引入包：re
