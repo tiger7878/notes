@@ -342,9 +342,10 @@
 	
 19、正则表达式
 	引入包：re
-	math方法：从字符串最开始匹配的，返回的是一个对象
-	sub方法：字符串替换
-	search：不是从字符串最开始匹配
+	math方法：从字符串最开始匹配的，返回的是一个对象，并且只会去第一行查找，多行匹配不能用它
+	sub方法：字符串替换，原始的字符串是不变的
+	search：不是从字符串最开始匹配，多行数据匹配可以用它
+	re.IGNORECASE：忽略大小写匹配
 	
 20、beautifulsoup4
 	官网：https://www.crummy.com/software/BeautifulSoup/bs4/doc/index.zh.html
@@ -364,13 +365,24 @@
 		# div_tag = bs.find("div", id=re.compile("info-\d+"))
 		# 根据字符串来查找
 		# div_tag = bs.find(string="胜多负少121")
-		# 这个正则匹配好像不管用
-		div_tag = bs.find(string=re.compile("list"))
+		# 正则匹配html标签中的内容
+		div_tag = bs.find(string=re.compile("胜多"))
 		print(div_tag)
+	find_all方法：
+		#查找所有的div
+		bs.find_all("div")
+	contents：获取一级子元素
+	descendants：获取所有的子元素，子元素的子元素也能获取
+	parent：获取父元素
+	parents：获取所有的父元素
+	获取属性：
+		p_tag["id"]
+		p_tag.get("id")
+	说明：回车换行符也是一个元素，所以经常会获取到None
 	匹配多行文本：记得在参数里面加re.DOTALL
 	
 21、xpath
-	它比bs更好
+	它比beautifulsoup4更好，可以使得解析变成可配置的解析，也就是把xpath配置起来，对方网站变了以后，只需要改解析配置就好
 	内置方法：https://developer.mozilla.org/en-US/docs/Web/XPath/Functions
 	windows安装scrpay
 		先安装c++ buildtools：https://www.microsoft.com/en-us/download/details.aspx?id=48159
@@ -387,7 +399,7 @@
 		# 获取到元素，用索引来控制某一个，取到的可能是多个
 		tag = sel.xpath('//*[@id="myP"]').extract()[0]
 		print(tag)
-		# 获取元素里面的值
+		# 获取元素里面的值text()
 		tag_text = sel.xpath('//*[@id="myP"]/text()').extract()[0]
 		print(tag_text)
 	
@@ -405,7 +417,28 @@
 		# 获取多个元素里面的值
 		div_tag = sel.xpath('//p[@class="pxx"]/text()|//p[@class="pcc"]/text()').extract()
 		print(div_tag)
-		
+	
+	css选择器：
+		sel = Selector(text=html)
+		# 通过class获取元素
+		# tag = sel.css(".teacher_info")
+		# 通过id获取元素
+		# tag = sel.css("#myP")
+		# 获取第一个元素
+		# tag = sel.css("#ixc > p")
+		# 获取元素的值text
+		# value = sel.css("#ixc > p::text").extract()[0]
+		# 获取第二个p元素，这里的数字4是这个元素所在的位置
+		# tag = sel.css("#ixc > p:nth-child(4)")
+		# 获取本元素后面的一个元素
+		# tag = sel.css(".teacher_info + p")
+		# 获取本元素后面的相邻的多个元素
+		# tag = sel.css(".teacher_info ~ p")
+		# 根据属性值提取元素
+		# tag = sel.css("a[href='http://www.baidu.com']::text").extract()[0]
+		# 属性包含提取元素
+		# tag = sel.css("a[href*='baidu']::text").extract()
+	
 22、实战一抓取静态网站
 	①制定策略（如何一步一步获取数据）
 	②分析网站时静态还是动态
