@@ -425,6 +425,8 @@
 		# 获取多个元素里面的值
 		div_tag = sel.xpath('//p[@class="pxx"]/text()|//p[@class="pcc"]/text()').extract()
 		print(div_tag)
+		# 获取id以post开始的div
+		all_divs = sel.xpath("//div[starts-with(@id,'post-')]")
 	
 	css选择器：
 		sel = Selector(text=html)
@@ -486,6 +488,7 @@
 	获取所有：Person.select().where()
 	新增、修改：person.save()
 	删除：person.delete_instance()
+	自定义id作为主键并赋值时：topic.save(force_insert=True)
 	
 25、多线程Thread
 	并行：同一个时间点同时运行
