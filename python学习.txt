@@ -491,32 +491,52 @@
 	自定义id作为主键并赋值时：topic.save(force_insert=True)
 	
 25、多线程Thread
-	并行：同一个时间点同时运行
-	并发：一个时间段执行
+	并行：同一个时间点同时运行，指的是多个CPU
+	并发：一个时间段执行，指的是一个CPU
 	导入包：from threading import Thread
-	join方法：等待线程执行完成再执行后面的方法
+	方式一：实例化Thread
+		t1 = Thread(target=sleep_task)
+	方式二：继承Thread类
+		class SleepThread(Thread):
+		t1 = SleepThread()
+	join方法：等待线程执行完成再执行后面的方法，可以测试到多线程的真实耗时
 	setDaemon方法：主线程结束，子线程也结束
 	GIL：全局解释器锁，CPU在同一个时间只会执行一个线程。也就是GIL无法利用多CPU
-		释放：
-			时间片释放、io释放
-	同步锁：（好像没有效果）
+		释放：时间片释放、io释放，所以对性能影响不大
+		它是cpython（python的解释器）的产物
+	IO操作：操作数据库、请求网络等，web系统中最占时间的部分
+	
+	同步锁：保证代码段完整执行，比如购买火车票
 		from threading import Lock
 		total_lock = Lock()
 		# 加锁
 		total_lock.acquire()
 		# 释放锁
 		total_lock.release()
-	Queue：线程间通信
+		
+		# 程序执行完成才往下执行
+		t1.join()
+		t2.join()
+		print(total)
+		
+	Queue：线程间通信，它是线程间同步的，线程安全的
 		导包：from queue import Queue
 		对象：my_queue = Queue()
 		# 创建queue时指定最大长度，超过这个长度的就不能存放进去，控制并发用
 		message_queue = Queue(maxsize=2)
-		# 存数据
+		# 存数据，会线程阻塞
 		message_queue.put("Tom")
 		message_queue.put("Jack")
-		# 取数据，先进先出
+		# 设置了timeout后，就会抛出异常，不会被阻塞
+		message_queue.put("Rose", timeout=2)
+		# 添加不进去就立刻抛出异常，不用等待
+        message_queue.put_nowait("Rose")
+		# 取数据，先进先出，会线程阻塞
 		text = message_queue.get()
 		print(text)
+		# 取数据时线程不等待，没有数据就报错
+		text = message_queue.get_nowait()
+		
 	
 26、动态网站抓取
 	思路：使用谷歌浏览器，按Ctrl+U，然后把代码复制到一个html文件，然后删除里面的js文件，就可以发现哪些是动态加载的，哪些是静态的
