@@ -45,6 +45,7 @@
 			s.strip(rm)：删除 s 字符串中开头、结尾处的 rm 序列的字符。当rm为空时，默认删除空白符（包括'\n', '\r', '\t', ' ')
 			s.index(y):字符串y在字符串s中的第一次出现的索引位置，如果字符串不存在就会报错
 			s[start:end]：字符串截取，从start到end
+			s[-1]：表示取最后一个字符
 			
 	布尔类型：Python把0、空字符串''和None看成 False，其他数值和非空字符串都看成 True
 	
@@ -427,6 +428,7 @@
 		print(div_tag)
 		# 获取id以post开始的div
 		all_divs = sel.xpath("//div[starts-with(@id,'post-')]")
+		备注：有text()就是获取值，没有text()就是获取html
 	
 	css选择器：
 		sel = Selector(text=html)
@@ -489,6 +491,7 @@
 	新增、修改：person.save()
 	删除：person.delete_instance()
 	自定义id作为主键并赋值时：topic.save(force_insert=True)
+	字段说明verbose_name：praised_nums = IntegerField(default=0, verbose_name="点赞数")
 	
 25、多线程Thread
 	并行：同一个时间点同时运行，指的是多个CPU
@@ -537,6 +540,7 @@
 		# 取数据时线程不等待，没有数据就报错
 		text = message_queue.get_nowait()
 		
+	ThreadPoolExecutor：线程池
 	
 26、动态网站抓取
 	思路：使用谷歌浏览器，按Ctrl+U，然后把代码复制到一个html文件，然后删除里面的js文件，就可以发现哪些是动态加载的，哪些是静态的
@@ -738,6 +742,34 @@
 	官方文档：https://selenium-python.readthedocs.io/index.html
 	下载Drivers：https://selenium-python.readthedocs.io/installation.html → 1.3 Drivers → 选择Chrome→根据自己装从chrome选择版本，一定要对应
 		如果访问不了，记得开代理
+	第二种下载Drivers的方法：http://npm.taobao.org/mirrors/chromedriver 淘宝的连接，这里的版本号要跟chrome的一致
+	基本用法：
+		import time
+		from scrapy import Selector
+		from selenium import webdriver
+		
+		# 初始化，设置chromedriver的位置
+		browser = webdriver.Chrome(executable_path="E:/python/chromedriver/chromedriver-79.exe")
+		# 打开一个url地址获取数据
+		browser.get("https://item.jd.com/100004770235.html#none")
+
+		# 点击页面上的元素 ，每次点击元素以后，先延迟几秒然后重新创建下Selector，因为点击后页面内容不同了
+		click_ele = browser.find_element_by_xpath("//li[@clstag='shangpin|keycount|product|shangpinpingjia_1']")
+		click_ele.click()
+
+		# 获取运行js之后的html，包含了静态和动态的值
+		html = browser.page_source
+		print(html)
+
+		# 使用xpath提取元素
+		sel = Selector(text=html)
+		price = sel.xpath("//span[@class='price J-p-100004770235']/text()").extract_first()
+		print("获取到价格：{}".format(price))
+
+		time.sleep(20)
+
+		# 关闭浏览器
+		browser.close()
 	如果有些网站识别了ChromeDriver时需要做如下操作：手动启动chrome
 		首先找到本机chrome.exe的文件位置，然后cmd到那里
 		然后关闭所有的chrome
@@ -784,7 +816,20 @@
 		prefs = {"profile.managed_default_content_settings.images":2}
 		chrome_opt.add_experimetal_option("prefs",prefs)
 		browser = webdriver.Chrome(executable_path="E:/python/chromedriver.exe",chrome_options=chrome_opt)
-	chrome也可以在无界面的情况下使用：待完善
+	chrome也可以在无界面的情况下使用(便于在linux中使用)：
+		from selenium.webdriver.chrome.options import Options
+		# 配置
+		chrome_options = Options()
+		# 设置headless模式
+		chrome_options.add_argument("--headless")
+		# 防止一些bug出现
+		chrome_options.add_argument("--disable-gpu")
+		# 设置不加载图片
+		chrome_options.add_argument("blink-settings=imagesEnabled=false")
+		browser = webdriver.Chrome(executable_path="E:/python/chromedriver/chromedriver-79.exe", chrome_options=chrome_options)
+	高性能方式：
+		scrapy-splash提高并发性
+		分布式selenium+grid提高并发性能
 		
 34、requests登录知乎
 	cookie：python3 是 import http.cookiejar as cookielib
@@ -866,7 +911,12 @@
 		browser.get("http://www.html")
 		browser.quit()
 	phantomJS也可以设置为不加载图片
-		
+	
+开发小技巧：
+	list的join："".join(sel.xpath("xx").extract()).strip() #当有html中有回车换行时，要取一个文本可以用它把list连接起来，然后strip一下
+	方法注释：在方法名下面，连续3个双引号，然后回车
+	
+	
 项目部署
 	项目官网：https://github.com/scrapy/scrapyd
 	文档说明：https://scrapyd.readthedocs.io/en/stable/
