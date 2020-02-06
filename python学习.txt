@@ -734,23 +734,29 @@
 	30.1、自动切换user_agent
 		scrapy的官网：http://doc.scrapy.org/en/latest/
 		middleware文档：http://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-		首先在settings.py文件
-			中打开DOWNLOADER_MIDDLEWARES节点
+		随机获取useragent的插件：https://github.com/hellysmile/fake-useragent
+		安装：pip install fake-useragent
+		导入依赖包：from fake_useragent import UserAgent
+		
+		首先在middlewares.py文件中添加RandomUserAgentMiddleware类：
+			# 自定义随机切换useragent
+			class RandomUserAgentMiddleware(object):
+
+				def process_request(self, request, spider):
+					# UserAgent().random 就是随机生成一个 UserAgent
+					request.headers.setdefault('User-Agent', UserAgent().random)
+		
+		然后在settings.py文件中
+			打开DOWNLOADER_MIDDLEWARES节点，并添加如下配置：
 			DOWNLOADER_MIDDLEWARES = {
 				# 随机切换useragent
 				'ArticleSpider.middlewares.RandomUserAgentMiddleware': 543,
 				# 将scrapy默认的middleware设置为none，否则会覆盖我们自定义的
 				'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
 			}
-			# 添加默认的USER_AGENT
-			USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36"
-		获取很多useragent的插件： 
-			网址：https://github.com/hellysmile/fake-useragent
-			pip install fake-useragent
-			from fake_useragent import UserAgent
-			#随机生成useragent
-			ua = UserAgent()
-			print(ua.random)
+		
+		# 添加默认的USER_AGENT，即使没有随机切换，就可以用这个默认的
+		USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36"
 		完善：高级做法配置文件中配置随机的类型（学习资料里面有）
 		
 	30.2、IP代理服务器
@@ -763,7 +769,7 @@
 			在settings.py的DOWNLOADER_MIDDLEWARES节点配置我们写的middlewares
 			开源代码：https://github.com/aivarsk/scrapy-proxies（参考它改动自己的）
 			收费项目：https://github.com/scrapy-plugins/scrapy-crawlera（比免费的要稳定，只需要拿到key，不用自己维护ip池，收费的建议使用它）
-			收费ip代理：https://www.abuyun.com/
+			收费ip代理：https://www.abuyun.com/ 
 			tor：洋葱网络，比较安全，需要配合vpn来使用，也会隐藏我们的ip。比我们用的免费和收费的ip代理都稳定。
 		收费的：
 			阿布云：费用比较贵 https://www.abuyun.com/  随机取的ip，用的ip可能失效，获取失败就try一下多尝试几次就够我们使用了，需要登录的网站就没用
