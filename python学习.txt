@@ -299,7 +299,7 @@
 		__slots__ = ('name', 'gender', 'score')
 	__call__：重写该方法可以使一个对象被调用
 	
-16、格式化
+16、字符串格式化
 	编码：# -*- coding: utf-8 -*-
 	格式化的字符串：'(I am %s、I am %d years old)' % ('Tom', 18) 得到的是：(I am Tom、I am 18 years old)
 	%d：整数
@@ -309,6 +309,7 @@
 	%%：字符串里面的%是一个普通字符怎么办？这个时候就需要转义，用%%来表示一个%
 	format：用传入的参数依次替换字符串内的占位符{0}、{1}..，不过这种方式写起来比%要麻烦得多
 		'Hello, {0}, 成绩提升了 {1:.1f}%'.format('小明', 17.125)，得到：'Hello, 小明, 成绩提升了 17.1%'。
+		'xx{}xxx{}'.format(a,b) 这样也可以，不用数字
 		
 17、HTTP协议
 	它本质还是一串字符串
@@ -556,8 +557,45 @@
 	列出虚拟环境：workon（在E:\python\Envs目录下使用cmd命令）
 	进入某个虚拟环境：workon 虚拟环境名称
 	删除虚拟环境：直接删除某个虚拟环境的目录即可，或者 rmvirtualenv 某个虚拟环境名称
+	查看安装的依赖包：pip list
+
+28、模拟登录保存cookie
+	requests获取cookie
+		pickle：一个不错的工具，将对象写入到文件中，比如cookie保存到文件中
+		import pickle
+		# post进行登录
+		res = requests.post(url=url, data=post_data, headers=headers)
+		#cookie保存到文件
+		# 把cookie保存到文件中，这里是相对路径，可以写全路径
+        with open("douban.cookie", "wb") as f:
+            pickle.dump(res.cookies, f)
+		
+		#从文件中读取cookie
+		with open("douban.cookie", "rb") as f:
+			cookies = pickle.load(f)
+			
+	selenium登录豆瓣
+		url = "https://www.douban.com/"
+		# 打开一个url地址获取数据
+		browser.get(url)
+		time.sleep(3)
+		# 由于登录框是在iframe中，所以要切换
+		browser.switch_to_frame(browser.find_element_by_tag_name("iframe"))
+		# 获取cookies
+		cookies = browser.get_cookies()
+		# 把cookie保存到dict中
+		cookie_dict = {}
+		for item in cookies:
+			cookie_dict[item["name"]] = item["value"]
+		# 使用selenium获取的cookie来使用requet访问地址，测试是否登录
+		html = requests.get("https://www.douban.com/", headers=headers, cookies=cookie_dict).text
+		
+	selenium登录拖动验证码
+		屏幕截图时一定要保证操作系统的显示里面的缩放与布局设置是100%，否则有问题
+		
 	
-28、scrapy
+29、scrapy
+	29.1、scrapy安装：
 	方式一：安装 Microsoft visual c++ 14.0（E:\python\tool\visualcppbuildtools_full.exe）
 	从豆瓣源来安装：pip install -i https://pypi.douban.com/simple/ scrapy
 	如果安装失败就去找文件：https://www.lfd.uci.edu/~gohlke/pythonlibs/，搜索lxml、twisted、scrapy。注意版本.
@@ -569,8 +607,8 @@
 	pip install E:\python\package\Twisted-19.2.0-cp36-cp36m-win_amd64.whl
 	pip install E:\python\package\Scrapy-1.6.0-py2.py3-none-any.whl
 	
-29、scrapy项目构建
-	文档：百度 scrapy document 或者scrapy 文档
+	29.2、scrapy项目构建
+	文档：百度 scrapy document 或者scrapy 文档 https://scrapy-chs.readthedocs.io/zh_CN/latest/
 	创建虚拟环境：mkvirtualenv --python=D:\Python\Python36\python.exe article_spider（在Envs目录下）
 	安装scrapy
 	创建scrapy项目：
@@ -600,9 +638,9 @@
 		sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 		# 执行命令
 		execute(["scrapy", "crawl"])
-	在终端中运行项目：scrapy crawl jobbole 。发现运行不报错，就证明没问题了。
+	在终端中运行项目：scrapy crawl jobbole ，若发现运行不报错，就证明没问题了，这就是终端运行一个项目
 	修改main.py文件：execute(["scrapy", "crawl", "jobbole"])
-	修改settings.py文件：ROBOTSTXT_OBEY = False
+	修改settings.py文件：ROBOTSTXT_OBEY = False #不遵循这个爬虫协议，大网站才有这种协议
 	然后右键debug我们的main.py文件
 	在终端或者cmder中执行：scrapy shell http://blog.jobbole.com/110287 ，这样获取一次url中的内容可以不停的调试，防止每次调试都去获取
 	items.py：数据项类，可以用来传递到pipelines.py文件中。（需要在settings.py文件中打开：ITEM_PIPELINES节点）
@@ -692,7 +730,8 @@
 				output_processor=Join(",")
 			)
 		
-30、自动切换user_agent
+30、反扒技术
+	30.1、自动切换user_agent
 		scrapy的官网：http://doc.scrapy.org/en/latest/
 		middleware文档：http://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 		首先在settings.py文件
@@ -709,22 +748,28 @@
 			网址：https://github.com/hellysmile/fake-useragent
 			pip install fake-useragent
 			from fake_useragent import UserAgent
+			#随机生成useragent
+			ua = UserAgent()
+			print(ua.random)
 		完善：高级做法配置文件中配置随机的类型（学习资料里面有）
 		
-31、IP代理服务器
-	免费的：
-		https://www.xicidaili.com/nn/，选择高匿代理（不太稳定，很多人用）
-		https://www.kuaidaili.com/free/inha/1/
-		http://ip.zdaye.com/dayProxy.html
-		http://www.qydaili.com/free/?action=china&page=1
-	pip install requests
-	在settings.py的DOWNLOADER_MIDDLEWARES节点配置我们写的middlewares
-	开源代码：https://github.com/aivarsk/scrapy-proxies（参考它改动自己的）
-	收费项目：https://github.com/scrapy-plugins/scrapy-crawlera（比免费的要稳定，只需要拿到key，不用自己维护ip池，收费的建议使用它）
-	收费ip代理：https://www.abuyun.com/
-	tor：洋葱网络，比较安全，需要配合vpn来使用，也会隐藏我们的ip。比我们用的免费和收费的ip代理都稳定。
+	30.2、IP代理服务器
+		免费的：很多人用，不稳定
+			https://www.xicidaili.com/nn/，选择高匿代理（不太稳定，很多人用）
+			https://www.kuaidaili.com/free/inha/1/
+			http://ip.zdaye.com/dayProxy.html
+			http://www.qydaili.com/free/?action=china&page=1
+			pip install requests
+			在settings.py的DOWNLOADER_MIDDLEWARES节点配置我们写的middlewares
+			开源代码：https://github.com/aivarsk/scrapy-proxies（参考它改动自己的）
+			收费项目：https://github.com/scrapy-plugins/scrapy-crawlera（比免费的要稳定，只需要拿到key，不用自己维护ip池，收费的建议使用它）
+			收费ip代理：https://www.abuyun.com/
+			tor：洋葱网络，比较安全，需要配合vpn来使用，也会隐藏我们的ip。比我们用的免费和收费的ip代理都稳定。
+		收费的：
+			阿布云：费用比较贵 https://www.abuyun.com/  随机取的ip，用的ip可能失效，获取失败就try一下多尝试几次就够我们使用了，需要登录的网站就没用
+			
 	
-32、其他反扒手段
+	30.3、其他反扒手段
 		禁用cookie：（在settings.py中打开配置文件并修改：）
 			COOKIES_ENABLED = False #禁用cookie，有些网站需要禁用，有些不能禁用
 		自动限速：（在settings.py中打开配置文件并修改：）
@@ -736,6 +781,8 @@
 			custom_settings={
 				"COOKIES_ENABLED" = True
 			}
+		Referer：记录的从哪个地址跳转过来到本链接地址的，这个也很重要
+		比对headers：看自己的和原网站的区别在哪里
 		
 33、selenium：
 	安装：pip install selenium
@@ -886,14 +933,7 @@
 		COOKIES_ENABLED=True #网站需要用到cookie
 		COOKIE_DEBUG=True #控制台打印cookie
 	思路：在start_request中用selenium模拟登录获取cookie，以后都可以使用了
-	pickle：一个不错的工具，将对象写入到文件中，比如cookie保存到文件中
-		import pickle
-		cookies=browser.get_cookies()
-		#cookie保存到文件
-		pickle.dump(cookies,open('全路径/cookie.json','wb'))
-		
-		#从文件中读取cookie
-		cookies=pickle.load(open('全路径/cookie.json','rb'))
+	cookies=browser.get_cookies()
 	scrapy认识的cookie转换：通过selenium保存的cookie默认给scrapy是识别不了的，所以要做此转换
 		cookies_dict=[]
 		for cookie in cookies:
@@ -911,6 +951,10 @@
 		browser.get("http://www.html")
 		browser.quit()
 	phantomJS也可以设置为不加载图片
+
+打码平台：
+	云打码：识别率很高。http://www.yundama.com/demo.html
+	超级鹰：验证码类型较多。http://www.chaojiying.com/
 	
 开发小技巧：
 	list的join："".join(sel.xpath("xx").extract()).strip() #当有html中有回车换行时，要取一个文本可以用它把list连接起来，然后strip一下
