@@ -17,3 +17,6 @@
 	
 	-- 删除test_table表的 test_value字段 
 	ALTER TABLE test_table DROP COLUMN test_value;
+	
+	-- 添加索引
+	ALTER TABLE table_name ADD INDEX index_name (column) 
