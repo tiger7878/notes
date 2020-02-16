@@ -33,15 +33,20 @@
 	
 4、Restfull
 	用url来描述资源：/user/1
-	用http方法来描述行为：get、post、put、delete
+	用http方法来描述行为：get、post、put、delete，使用http状态码来表示不同的结果
 	使用json交互数据
 	它只是一种风格，不是一种强制的标准
 	jsonPath表达式：https://github.com/json-path/JsonPath
+	@RestController：说明这是提供restfull风格的服务
 	Pageable：对象spring-data里面的，用来做分页
 	@PathVariable:标准方法参数，可以使它在url上使用
 	RequestMapping的value值里面可以写正则表达式：
 		@RequestMapping(value = "/user2/{id:\\d+}",method = RequestMethod.GET)
-	@RequestParam：默认参数必须要传，@RequestParam(required = false)可以控制不必传
+	@RequestParam：默认参数必须要传，如果不传会报错，
+		@RequestParam(name="na",required = false,defaultValue="1")
+			required = false 可以控制不必传，
+			name属性来指定参数名，不写就默认参数名
+			defaultValue用来设置默认值
 	@GetMapping和@PostMapping可以简化代码
 	@RequestBody可以把请求的json字符串转换成实体对象中的属性值
 		public User create(@RequestBody User user){}
