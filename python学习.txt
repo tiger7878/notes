@@ -150,6 +150,10 @@
 		传参：foo(y=1,a=2,b=3,c=4)
 		得到：{'y': 1, 'a': 2, 'b': 3, 'c': 4}
 	
+	全局变量：在方法外定义的是全局变量，想在方法内部对全局变量赋值，需要先在方法内部使用global关键字，然后就可以赋值了
+		例如：global my_driver
+			  my_driver='xxx'
+	
 8、迭代
 	索引迭代： enumerate()
 		实例：L = ['Adam', 'Lisa', 'Bart', 'Paul']
@@ -322,6 +326,7 @@
 	它是Python的http库
 	文档：http://docs.python-requests.org/zh_CN/latest/user/quickstart.html
 	安装：pip install requests
+	豆瓣源安装：pip install requests -i "https://pypi.doubanio.com/simple/"
 	使用requests是完全可以伪装成一个浏览器，来做get、post等http请求
 	get请求：
 	# res = requests.get(url)
