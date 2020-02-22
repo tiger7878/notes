@@ -63,8 +63,9 @@
 		public User create(@Valid @RequestBody User user){}
 	@BindingResult：加上这个参数后，校验不通过也能进入方法，可以收集所有错误信息；如果没有该参数时，校验不通过就不进入该方法
 	@NotBlank(message="xx不能为空")：不能为空
-	@DecimalMin(value=,inclusive=)：大于等于、大于，由inclusive控制。可以放在字符串上
+	@DecimalMin(value=,inclusive=)：大于等于、大于，当inclusive为true时，就会加上等于，否则没有等于。可以放在字符串上
 	@Past：过去的时间
+	@Future：未来的日期
 	自定义错误校验：（视频：3-5 修改和删除请求）
 		校验注解：必须要有message、groups、payload三个方法
 		校验类：需要实现ConstraintValidator<A,T>接口。它是spring的一个bean，可以注入其他spring容器中的bean
