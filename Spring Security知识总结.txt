@@ -73,12 +73,13 @@
 		
 7、Spring Boot服务异常处理
 	出现异常时：spring boot判断请求是否是浏览器，如果是就响应html，如果不是就响应json。源码见：BasicErrorController中的方法
+		@RequestMapping(produces="text/html")：这个代表是浏览器，如果没有produces就代表app。也就是同一个url，可以返回html和json
 	自定义异常页面：（适用于浏览器请求）
 		在resources下创建resources/error目录，然后新建404.html，这就是404的页面。它影响的浏览器的请求，不影响非浏览器的请求。
 	自定义异常响应：（适用于非浏览器请求）
 		自定义异常类继承：RuntimeException类，然后写自己的属性和方法。spring对于RuntimeException会进行事务回滚。
 		@ControllerAdvice：拦截控制器上的所有异常，标注处理自定义异常的类
-	统一异常处理：https://www.imooc.com/learn/810
+	统一异常处理（详细介绍）：https://www.imooc.com/learn/810
 
 8、RestfullAPI的拦截(参考：3-7 使用切片拦截REST服务)
 	过滤器：Filter（缺点：是J2EE框架提供的，不知道请求是哪个控制器，哪个方法来处理的）

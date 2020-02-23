@@ -890,6 +890,9 @@
 	高性能方式：
 		scrapy-splash提高并发性
 		分布式selenium+grid提高并发性能
+	
+	注意报错：
+		Message: invalid cookie domain	：是因为创建driver时就添加了cookie，实际添加cookie需要在获取网页后再添加
 		
 34、requests登录知乎
 	cookie：python3 是 import http.cookiejar as cookielib
