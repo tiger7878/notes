@@ -85,12 +85,16 @@
 	过滤器：Filter（缺点：是J2EE框架提供的，不知道请求是哪个控制器，哪个方法来处理的）
 		自定义过滤器需要实现Filter接口，并且标注@Component，所有的url请求都会经过这个过滤器。可以通过自定义Bean来控制某些url才经过。
 		第三方过滤器：没有办法直接在它们的类上标注@Component，就必须在配置类中定义FilterRegistrationBean，指定在哪些路径上起作用
+		优点：可以拿到原始的http请求和响应的信息
 	拦截器：Interceptor（缺点：不能拿到请求的方法的参数值）
 		自定义拦截器需要实现：HandlerInterceptor接口，同时标注：@Component注解
 		配置类：继承WebMvcConfigurerAdapter，重写：addInterceptors方法进行注册
-		优点：spring框架本身提供的，可以知道是哪个控制器，哪个方法被拦截了。它会拦截自己写的controller也会拦截spring自己的controller
+		优点：
+			spring框架本身提供的，可以拿到原始的http请求和响应的信息，也可以知道是哪个控制器，哪个方法被拦截了。
+			它会拦截自己写的controller也会拦截spring自己的controller
 	切片：Aspect（参考：3-8 使用Filter和Interceptor拦截REST服务）
 		优点：可以替代上面两种，可以拿到请求的参数的值
+		缺点：拿不到原始http的请求和响应信息
 		切片类：包含了切入点（注解）和增强（方法）
 		切入点：
 			在哪些方法上起作用
