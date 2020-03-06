@@ -60,3 +60,11 @@
 	nohup java -jar xxx.jar > xxx.out 2>&1 
 	端口查看
 	netstat -nltp
+	
+6、vim常用操作
+	显示行号
+	:set nu
+	取消行号显示
+	:set nonu
+	删除多行
+	:7,10d #删除7-10行
