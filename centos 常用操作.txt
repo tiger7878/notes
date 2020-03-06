@@ -58,4 +58,5 @@
 	kill -9 pid 上面查询的PID
 	启动项目
 	nohup java -jar xxx.jar > xxx.out 2>&1 
-	
+	端口查看
+	netstat -nltp
