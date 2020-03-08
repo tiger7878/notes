@@ -184,6 +184,25 @@
 15、个性化用户认证流程
 	自定义登录页：专门的类（BrowserSecurityController）来处理需要认证时的登录页面跳转或者是json响应
 	配置类：统一安全配置类（SecurityProperties）、浏览器安全配置类（BrowserProperties）
+		最佳实践：①在SecurityProperties中new BrowserProperties对象，可以保证实体不为空
+					在BrowserProperties中给属性默认值，可以保证该属性有值，写框架时用它
+				  ②org.springframework.security.web包下的：RedirectStrategy和DefaultRedirectStrategy可以控制restcontroller跳转到网页，对接第三方时跳转有用
+						<dependency>
+							<groupId>org.springframework.boot</groupId>
+							<artifactId>spring-boot-starter-security</artifactId>
+							<version>1.5.15.RELEASE</version>
+						</dependency>
+					当有shiro时可以如下配置，关闭security拦截
+					@Configuration
+					@EnableWebSecurity
+					public class SecurityConfig extends WebSecurityConfigurerAdapter {
+						@Override
+						protected void configure(HttpSecurity http) throws Exception {
+							//控制所有方法都放过，不拦截
+							http.authorizeRequests().anyRequest().permitAll()
+									.and().logout().permitAll();
+						}
+					}
 	自定义登录成功处理：自定义类继承SavedRequestAwareAuthenticationSuccessHandler类
 	自定义登录失败处理：自定义类继承SimpleUrlAuthenticationFailureHandler类
 	用户名密码默认的认证token：UsernamePasswordAuthenticationToken
