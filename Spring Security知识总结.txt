@@ -148,27 +148,39 @@
 	核心功能：认证、授权、攻击防护
 	重要类：
 		WebSecurityConfigurerAdapter：web安全相关的配置类
+	登录界面：
+		表单登录：http.formLogin()
+		弹框登录：http.httpBasic()
 	它本质是过滤器链，请求和响应都要经过
 	重要的过滤器（从前到后的顺序）：
-		UsernamePasswordAuthenticationFilter：用户名密码认证方式的过滤器
-		BasicAuthenticationFilter：Basic认证方式的过滤器
-		ExceptionTranslationFilter：异常处理的过滤器
-		FilterSecurityInterceptor：安全的拦截器，它来判断能否访问服务器上的资源
+		UsernamePasswordAuthenticationFilter：用户名密码认证方式的过滤器，可以控制是否生效
+		BasicAuthenticationFilter：Basic认证方式的过滤器，可以控制是否生效
+		ExceptionTranslationFilter：异常处理的过滤器，不可以控制，一定会执行
+		FilterSecurityInterceptor：安全的拦截器，它来判断能否访问服务器上的资源，不可以控制，一定会执行
+	流程：
+		①用户访问受保护的资源，一开始会到FilterSecurityInterceptor，发现没有登录就抛出异常，
+		②然后被ExceptionTranslationFilter处理后跳转到UsernamePasswordAuthenticationFilter，
+		③登录成功以后再次来到FilterSecurityInterceptor，然后就可以访问受保护的资源了
 	
 14、自定义用户认证
 	处理用户信息获取的逻辑
-		自定义用户信息获取类，需要实现：UserDetailsService接口
+		自定义用户信息获取类，需要实现：UserDetailsService接口，重写loadUserByUsername接口
+		UserDeails接口：里面存放了用户信息
+		User类：它实现了UserDeails接口，可以直接使用，也可以自定义一个实现了UserDeails接口的类，或者继承User类的类
 	处理用户校验逻辑
 		UserDeails接口中的几个方法介绍：
-			isAccountNonExpired()：账户是否有过期
+			isAccountNonExpired()：账户是否有过期，可以用来判断token是否失效
 			isAccountNonLocked()：账户是否被锁定了，可以用来锁定账号。
 			isCredentialsNonExpired()：密码是否过期，安全级别高的网站，30天要求变化密码时用。
 			isEnabled()：账户是否可用，用于假删除，删除的用户不能恢复。
 		自定义类实现UserDeails接口，来处理这些业务逻辑。
+		密码校验逻辑：不需要自己写，有Spring Security实现了
 	处理密码加解密的逻辑
-		PasswordEncoder：它随机生成盐和密码然后加密，相同的原始密码，每次加密得到的结果都是不同的，推荐使用这个。（思路不错）
+		PasswordEncoder：在crypto包中，它随机生成盐和密码然后加密，相同的原始密码，每次加密得到的结果都是不同的，推荐使用这个。（思路不错）
+			encode方法：把明文密码进行加密，要开发者自行调用后保存到数据库中。
+			matches方法：Spring Security来调用
 		需要在配置类中配置它的实体bean，注册时使用它进行加密后保存到数据库中，至于登录时匹配明文由它来完成。
-		
+				
 15、个性化用户认证流程
 	自定义登录页：专门的类（BrowserSecurityController）来处理需要认证时的登录页面跳转或者是json响应
 	配置类：统一安全配置类（SecurityProperties）、浏览器安全配置类（BrowserProperties）
