@@ -235,7 +235,7 @@
 	图片验证码类：ImageCode
 	验证码生成接口：ValidateCodeGenerator、图片验证码生成类：ImageCodeGenerator
 	验证码配置类：ValidateCodeProperites、图片验证码配置类：ImageCodeProperties（思路：先从请求中获取→若无再读取配置文件→若无再读取默认值）
-	验证码异常类：ValidateCodeException
+	验证码异常类：ValidateCodeException，继承与AuthenticationException（Security 认证异常类的基类）
 	验证码过滤器：ValidateCodeFilter
 	验证码实体Bean配置类：ValidateCodeBeanConfig
 	默认验证码输出控制器：ValidateCodeController
@@ -247,7 +247,7 @@
 	RequestCache：缓存了当前的请求，可以获取到引发跳转的请求，通过它可以知道该请求是html还是非html请求
 	ServletWebRequest：封装了request和response。转换：new ServletWebRequest(HttpServletRequest request)
 	SessionStrategy：对session的操作。包：spring-social
-	RedirectStrategy：跳转redirect工具。包：spring-security
+	RedirectStrategy：跳转redirect工具，可以在RestController中进行跳转到指定页面，特殊情况下很有用。包：spring-security
 	ServletRequestUtils：从request获取请求参数的值，例如：ServletRequestUtils.getStringParameter(request.getRequest(), "imageCode")
 	StringUtils：对String的操作，比如equals，isblank等。包：commons-lang
 	AntPathMatcher：用于ant的匹配。比如/user/*的匹配。
