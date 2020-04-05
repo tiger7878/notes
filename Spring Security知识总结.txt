@@ -242,6 +242,9 @@
 	在UserNamePasswordAuthenticationFilter之前添加我们的自定义过滤器
 	重构思路：
 		参数可配置、验证码的拦截地址url可配置、验证码的生成逻辑可配置
+		参数可配置：默认配置（core）、应用配置（demo）、请求配置（controller），可以一级一级覆盖
+		验证码的拦截地址url可配置：在配置文件中配置多个，在校验时判断是否匹配上
+		验证码生成逻辑可配置：配置中@Bean @ConditionalOnMissingBean(name="imageCodeGenerator") ：当spring中没有imageCodeGenerator实体时采用配置的Bean。重要的开发技巧。
 	
 17、有用的工具类
 	RequestCache：缓存了当前的请求，可以获取到引发跳转的请求，通过它可以知道该请求是html还是非html请求
@@ -249,22 +252,24 @@
 	SessionStrategy：对session的操作。包：spring-social
 	RedirectStrategy：跳转redirect工具，可以在RestController中进行跳转到指定页面，特殊情况下很有用。包：spring-security
 	ServletRequestUtils：从request获取请求参数的值，例如：ServletRequestUtils.getStringParameter(request.getRequest(), "imageCode")
-	StringUtils：对String的操作，比如equals，isblank等。包：commons-lang
+	StringUtils：对String的操作，比如equals，isblank，substringAfter（字符串截取）等。包：commons-lang
 	AntPathMatcher：用于ant的匹配。比如/user/*的匹配。
 	PasswordEncoder：用于密码加密，相同的明文每次加密得到不同的结果。包spring-security
 	RandomStringUtils：用于生存随机的字符串
 	RestTemplate：请求rest服务时的工具
 	ObjectMapper：把json格式的字符串转换为实体对象
 	
-18、短信验证码（重构时模板方法思路在里面）
+18、短信验证码生成和发送（重构时模板方法思路在里面）
 	短信验证码类：SmsCode
 	验证码处理接口：ValidateCodeProcessor
-	验证码处理接口抽象实现类：AbstractValidateCodeProcessor
+	验证码处理接口抽象实现类：AbstractValidateCodeProcessor。包含了：生成、保存、发送
 	验证码生成接口：ValidateCodeGenerator、短信验证码生成类：SmsCodeGnenerator
-	图片验证码处理类：ImageCodeProecessor
-	短信验证码处理类：SmsCodeProcessor
+	图片验证码处理类：ImageCodeProecessor，继承自AbstractValidateCodeProcessor
+	短信验证码处理类：SmsCodeProcessor，继承自AbstractValidateCodeProcessor
 	短信验证码发送接口：SmsCodeSender、短信验证码发送接口默认实现类：DefaultSmsCodeSender
 	同一个接口的不同实现可以通过给实体命名来进行不同的实体注入@Componet("xx")
+	分层构造思想：
+		AbstractValidateCodeProcessor包含了：生成、保存、发送，其中的生成又由ValidateCodeGenerator来控制。其实保存和发送也可以这样应对复杂逻辑
 	
 19、依赖查找
 	@Autowired
