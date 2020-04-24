@@ -1,7 +1,12 @@
 1、查询
 	查询表的字段信息：SHOW FULL COLUMNS FROM 表名
 	查询表中所有字段到一列：select group_concat(COLUMN_NAME) from information_schema.COLUMNS where table_name = '表名';
-	
+	获取当前日期: select curdate(); 
+	获取当月最后一天: select last_day(curdate());   
+	获取本月第一天: select DATE_ADD(curdate(),interval -day(curdate())+1 day); 
+	获取下个月的第一天: select date_add(curdate()-day(curdate())+1,interval 1 month); 
+	获取当前月的天数: select DATEDIFF(date_add(curdate()-day(curdate())+1,interval 1 month ),DATE_ADD(curdate(),interval -day(curdate())+1 day)) from dual;
+
 2、表修改
 	表添加字段
 	alter table   table1 add id int unsigned not Null auto_increment primary key
@@ -20,3 +25,8 @@
 	
 	-- 添加索引
 	ALTER TABLE table_name ADD INDEX index_name (column) 
+	
+3、关联更新
+	UPDATE del_sheet1 a
+	JOIN bi_enterprise_info b ON a.enterprise_name=b.enterprise_name
+	SET a.score=b.score
