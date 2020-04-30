@@ -50,3 +50,9 @@
 	
 20、生成秘钥
 	ssh-keygen -t rsa -C 'zhcw63@163.com'
+	
+21、从git仓库中拉取本地不存在的一个分支
+	git checkout -b 本地分支名 origin/远程分支名
+	如果报错：我们需要先执行
+	git fetch
+	然后再执行最上面的命令
