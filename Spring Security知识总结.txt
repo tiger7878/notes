@@ -165,10 +165,10 @@
 14、自定义用户认证
 	处理用户信息获取的逻辑
 		自定义用户信息获取类，需要实现：UserDetailsService接口，重写loadUserByUsername接口
-		UserDeails接口：里面存放了用户信息
-		User类：它实现了UserDeails接口，可以直接使用，也可以自定义一个实现了UserDeails接口的类，或者继承User类的类
+		UserDetails接口：里面存放了用户信息
+		User类：它实现了UserDetails接口，可以直接使用，也可以自定义一个实现了UserDetails接口的类，或者继承User类的类
 	处理用户校验逻辑
-		UserDeails接口中的几个方法介绍：
+		UserDetails接口中的几个方法介绍：
 			isAccountNonExpired()：账户是否有过期，可以用来判断token是否失效
 			isAccountNonLocked()：账户是否被锁定了，可以用来锁定账号。
 			isCredentialsNonExpired()：密码是否过期，安全级别高的网站，30天要求变化密码时用。
@@ -234,7 +234,7 @@
 	流程：根据随机数生成图片→把随机数保存到session中→把图片响应到输出流→在认证流程中加入图形验证码校验逻辑
 	图片验证码类：ImageCode
 	验证码生成接口：ValidateCodeGenerator、图片验证码生成类：ImageCodeGenerator
-	验证码配置类：ValidateCodeProperites、图片验证码配置类：ImageCodeProperties（思路：先从请求中获取→若无再读取配置文件→若无再读取默认值）
+	验证码配置类：ValidateCodeProperties、图片验证码配置类：ImageCodeProperties（思路：先从请求中获取→若无再读取配置文件→若无再读取默认值）
 	验证码异常类：ValidateCodeException，继承与AuthenticationException（Security 认证异常类的基类）
 	验证码过滤器：ValidateCodeFilter
 	验证码实体Bean配置类：ValidateCodeBeanConfig
