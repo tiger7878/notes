@@ -30,3 +30,6 @@
 	UPDATE del_sheet1 a
 	JOIN bi_enterprise_info b ON a.enterprise_name=b.enterprise_name
 	SET a.score=b.score
+	
+4、日期
+	格式化：date_format(sysdate(),'%Y-%m-%d') 得到的是：年-月-日
