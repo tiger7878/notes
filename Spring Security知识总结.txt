@@ -308,8 +308,8 @@
 	获取用户信息：Api(默认实现：AbstractOAuth2ApiBinding)
 	OAuth协议中相关的，封装了OAuth2协议处理的流程：OAuth2Operations（默认实现OAuth2Template）
 	Api：AbstractOauth2ApiBinding抽象的api获取用户信息，需要自己实现
-	Connection：连接，Oauth2Connection，包含了用户信息的对象
-	ConnectionFactory：连接工厂，Oauth2ConnectionFactory
+	Connection：连接，它的默认实现Oauth2Connection，包含了用户信息的对象
+	ConnectionFactory：连接工厂，它的默认实现Oauth2ConnectionFactory
 	API的适配器：ApiAdapter
 	UserConnection：存在数据库中，存放的是业务系统的用户和服务提供商的用户的关联关系
 	UsersConnectionRepository：实现类JdbcUsersConnectionRepository用来操作UserConnection
@@ -318,19 +318,25 @@
 		Session超时处理
 			server.session.timeout=120 #单位是秒，session超时时间，默认是30分钟，在spring boot中session超时时间最少设置是1分钟，看源码可知道
 		Session并发控制
-			方式一：相同的账号，首先在A浏览器登录，然后在B浏览器再登录时把A浏览器上的账号T下线。
+			方式一：相同的账号，首先在A浏览器登录，然后在B浏览器再登录时把A浏览器上的账号T下线。添加.sessionManagement().maximumSessions(1).expiredSessionStrategy("并发策略")
 			方式二：相同的账号，首先在A浏览器登录，然后在B浏览器登录时就不能登录。加maxSessionPreventsLogin(true)配置
+			SessionProperties：session相关的配置
+			AbstractSessionStrategy：session失效的基类，主要包含session失效的处理逻辑
+			MonkeyInvalidSessionStrategy：session失效策略
+			MonkeyExpiredSessionStrategy：session并发策略
+			BrowserSecurityBeanConfig：浏览器实体bean配置
 			发现问题：使用数据库中读取用户时并发控制失效
 		集群Session管理
 			把session存储到独立的服务器，此时往session里面放的数据需要实现Serializable接口，因为需要序列化以后再存放
 			使用spring-session+Redis（4.0的稳定版）
-			yml配置文件：spring.session.store-type=redis
+			yml配置文件：spring.session.store-type=redis ，这是spring boot提供的一种方案
 			说明：集群后，上面的Session失效和并发策略仍然有效
 		退出处理（思路：有配置退出页面就跳转退出页面，如果没有配置就响应json）
 			.logout()
                 .logoutUrl("/signOut")//自定义退出的url地址，默认logout，就是一个名字而已，不需要我们写控制器来处理
                 .logoutSuccessHandler(MonkeyLogoutSuccessHander)//自定义退出成功后的控制器，需要实现LogoutSuccessHandler接口
 				.logoutSuccessUrl("/xx.html")//自定义退出成功后的跳转页面，它和logoutSuccessHandler只能同时存在一个
+				.deleteCookies("JSESSIONID") //退出成功后要删除的cookie名，可以多条，对于html页面来说，不配置它会跳转到session失效页面，对于json来说不影响
 		
 25、Spring Security OAtuth
 	OAtuth 2官网：https://oauth.net/2/
