@@ -353,28 +353,32 @@
 	获取code：http://localhost:8080/oauth/authorize?response_type=code&client_id=mkapp&redirect_uri=http://monkey78.com&scope=all
 	
 26、Spring Security OAtuth源码分析（参考：6-3 SpringSecurityOAuth核心源码解析）
-	TokenEndpoint：入口点，它里面有/oauth/token方法
-	ClientDetailsService：它是用来读取第三方应用信息的，默认实现是InMemoryClientDetailsService。
+	TokenEndpoint：获取授权码的入口点，它里面有/oauth/token方法
+	ClientDetailsService：它是用来读取第三方应用信息的，默认实现是InMemoryClientDetailsService。有点类似UserDetailsService
 	ClientDetails：第三方应用的信息，我们可以对第三方应用进行很多项的配置。
-	TokenRequest：封装了 grant_type、scope等请求/oauth/token时的参数和值 相关信息。DefaultOAuth2RequestFactory的createTokenRequest方法
+	TokenRequest：封装了grant_type、scope等请求/oauth/token时的参数和值相关信息。DefaultOAuth2RequestFactory的createTokenRequest方法
 	TokenGranter：令牌授权者，它封装了4种授权模式（授权码、密码等）的不同实现，它根据grant_type创建对应的授权默认的实现。默认实现是CompositeTokenGranter。
 	OAtuth2Request：它是ClientDetails和TokenRequest的整合
 	Authorization：封装的是当前授权用户的一些信息，主要是通过UserDetailsService根据用户名从数据库中读取出来的。
 	OAtuth2Authorization：它是OAtuth2Request和Authorization的整合对象。它里面包含了：第三方应用、授权码模式，授权用户等信息。
 	AuthorizationServerTokenServices ：认证服务器的令牌服务，生成和刷新令牌，默认实现是DefaultTokenServices，包含：TokenStore（令牌存取）、TokenEnhancer（令牌增强器）。
 	OAtuth2AccessToken：令牌
+	TokenEnhancer：令牌的增强器，改造令牌，支持往令牌里面添加东西。
+	重点：它的主要目的是颁发令牌
 	
 27、重构3中登录方式
 	BasicAuthenticationFilter：Basic认证方式的过滤器，参考它获取一些basic认证的信息
 	MonkeyAuthenticationSuccessHandler：方法写在这里
-	获取：ClientDetails
-	创建：TokenRequest
+	获取：ClientDetails，通过ClientDetailsService根据ClientId查询出来
+	创建：TokenRequest，new出来的
 	创建：OAtuth2Request
 	创建：OAtuth2Authorization
 	创建：OAtuth2AccessToken
+	MonkeyResourceServerConfig：对资源服务器进行安全配置
 	重构图片和短信验证码：
 		在请求参数中加入deviceId即可，以它作为key保存到redis中，生成和校验验证码时都带上这个deviceId
 		新创建一个接口ValidateCodeRepository，对验证码保存、查询、删除操作，由app和browser两个模块具体实现：RedisValidateCodeRepository和SessionValidateCodeRepository
+		AbstractValidateCodeProcessor：验证码处理逻辑调整，原来跟session相关的，修改为ValidateCodeRepository接口来做
 		待解决问题：由于key生成的策略导致所有用户的key都是同一个，大家同时登录时只有最后一个人可以登录成功，因为其他人的验证码key中的值都被覆盖了。
 			个人认为可以把用户名作为key的一部分，这样就避免了所有用户使用相同的key
 28、Token的配置
