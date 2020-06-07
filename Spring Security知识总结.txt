@@ -381,6 +381,13 @@
 		AbstractValidateCodeProcessor：验证码处理逻辑调整，原来跟session相关的，修改为ValidateCodeRepository接口来做
 		待解决问题：由于key生成的策略导致所有用户的key都是同一个，大家同时登录时只有最后一个人可以登录成功，因为其他人的验证码key中的值都被覆盖了。
 			个人认为可以把用户名作为key的一部分，这样就避免了所有用户使用相同的key
+	重构社交登录(OpenId登录)：
+		OpenIdAuthenticationToken：登录令牌
+		OpenIdAuthenticationFilter：过滤器
+		OpenIdAuthenticationProvider：验证器
+		OpenIdAuthenticationSecurityConfig：配置类
+		
+	
 28、Token的配置
 	MonkeyAuthorizationServerConfig：自定义认证服务器配置类，实现AuthorizationServerConfigurerAdapter接口
 		重写endpoints作为参数的方法：配置：AuthenticationManager、UserDetailsService、TokenStore
