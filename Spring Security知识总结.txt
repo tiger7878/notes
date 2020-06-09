@@ -391,14 +391,17 @@
 28、Token的配置
 	MonkeyAuthorizationServerConfig：自定义认证服务器配置类，实现AuthorizationServerConfigurerAdapter接口
 		重写endpoints作为参数的方法：配置：AuthenticationManager、UserDetailsService、TokenStore
-		重写clients作为参数的方法：对应用做配置，决定可以给哪些应用发令牌，可以配置多个。可以保存在内存、数据库、redis中
-			withClient：配置的是clientId
+		重写clients作为参数的方法：对应用做配置，决定可以给哪些应用发令牌，可以配置多个。可以保存在内存inMemory()、数据库、redis中
+			withClient：配置的是clientId（这里配置以后再yml中的配置是失效了），支持配置多个
 			secret：配置的是clientId对应的密钥
 			accessTokenValiditySeconds：配置的是生成的token的有效期，重要！
 			refreshTokenValiditySeconds：配置的是刷新token的有效期
 			authorizedGrantTypes：配置的是该第三方应用支持的授权类型（授权码、密码、简化、客户端）中的哪些？
-			scopes：授权范围
-		TokenStore令牌存储：推荐存储到redis中，可以在令牌失效后自动删除，不用我们维护，而且性能比数据库快很多。
+			scopes：授权范围（all,read,write）
+	TokenStoreConfig：token存储的配置，如果不写它默认存在内存中，服务器重启就丢失了
+	TokenStore令牌存储：推荐存储到redis中，可以在令牌失效后自动删除，不用我们维护，而且性能比数据库快很多。
+	OAtuth2ClientPropertis：用来配置多个client，做框架这么用就很灵活，而不是在代码中写死
+	OAtuth2Propertis：包含了OAtuth2ClientPropertis的数组
 
 29、JWT（Json Web Token）
 	特点：
