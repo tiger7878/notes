@@ -7,6 +7,7 @@
 2、版本控制
 	spring io：用于管理maven引入的各种jar包的版本，保证了兼容性
 	spring cloud：微服务相关的jar的版本
+	版本对照查看：https://start.spring.io/actuator/info
 	
 3、打包
 	在父项目上执行：clean package -Dmaven.test.skip=true 就可以把所有项目打包
