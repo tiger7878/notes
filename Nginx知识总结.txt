@@ -1,19 +1,86 @@
 1、Nginx基础命令
 		window：（需要切换到nginx.exe目录下cmd运行以下命令）
-			版本：nginx -v
+			版本：nginx -v #这里是小写的v
+			详细信息：nginx -V #这里是大写的V，可以查看到对应的安装信息
 			启动：start nginx
 			检测配置文件：nginx -t
 			重新加载配置文件：nginx -s reload
-			快速停止：nginx -s stop #不保存相关信息
-			完整停止：nginx -s quit #保存相关信息
-2、性能优化：
+			快速停止：nginx -s stop #立刻停止，有用户在访问都会停止
+			完整停止：nginx -s quit #优雅停止，有用户在访问，不会立刻停止，等用户访问完再停止
+
+2、进程
+	查看命令：ps -ef | grep nginx
+	master：主进程，只有1个，主要工作是管理worker进程
+	worker：工作者进程，可以有多个，当把worker_processes配置为多个时，可以通过查看命令看见
+
+3、配置文件
+	user：默认是nobody，最好改成root，这样工作进程就有足够的权限
+	worker_processes：工作进程数量，可以配置成跟CPU数量一致，如果服务器上有其他软件可以配置为CPU数量-1
+	error_log：日志存放路径，编译安装时可以指定。日志级别由低到高：debug、info、notice、warn、error、crit
+	worker_connections：每个进程的连接数，跟硬件配置相关，硬件配置越高这个值就可以配置越大
+	include ：导入其他文件，由于我们的server会很多，所以采用这种导入的方式是最好的
+	sendfile ：高效传输文件，需要保持打开
+	tcp_nopush : 必须是在sendfile=on时使用，也是一种高效的方式，先获取，然后达到一定数量再发送。否则就是获取一次发送一次
+	keepalive_timeout ：保持客户端连接的超时时间65秒
+	gzip ：压缩功能，开启以后可以提高传输效率，节约带宽
+	
+4、nginx.pid异常处理
+	nginx.pid 无法打开：需要根据提示创建下nginx.pid所在的目录文件夹
+	nginx.pid number无效：需要使用./nginx -c nginx.conf全路径，重新配置下，然后再用./nginx -s reload重新加载就好了
+
+5、日志切割
+	手动切割：手动运行脚本
+	自动切割：定时任务
+	完善：找到windows下的实现方法
+	
+6、静态资源
+	一个server对多个资源提供服务
+	server {
+		listen       90;
+		server_name  localhost;
+		
+		# web站点静态资源，存放在E:/Nginx/web目录下，
+		# 访问路径：http://localhost:90/
+		location / {
+			root   E:/Nginx/web;
+			index  index.html index.htm;
+		}
+		
+		# 图片、视频等资源，存放在E:/Nginx/images目录下，这种方式不好的就是客户知道我们真实路径-作废
+		# 访问路径：http://localhost:90/images/a.png
+		#location /images {
+		#	root   E:/Nginx;
+		#}
+		
+		# 图片、视频等资源，存放在E:/Nginx/images目录，这种方式客户不知道我们真实路径-推荐
+		# 访问路径：http://localhost:90/static/a.png
+		location /static {
+			alias	E:/Nginx/images;
+		}
+
+	}
+
+7、Gzip压缩
+		目的：提高传输效率，节约带宽
+		缺点：消耗CPU的资源
+		gzip on #开启压缩功能
+		gzip_min_length #限制最小压缩字节数，低于这个字节的文件就不压缩
+		gzip_comp_level #压缩级别，文件越大，压缩越多，消耗CPU资源也多
+		gzip_types #定义压缩文件的类型
+	
+8、location
+		模糊匹配：直接location 后面是/xx
+		精确匹配：location = /xx 
+		正则表达式：location ~*  #其中~代表正则方法方式，其中*代表不区分大小写（不是必要的）
+	
+	性能优化：
 	worker_processes ：进程数、配置跟CPU核心数一样
 	worker_connections：每个进程链接数、受操作系统的nofile数影响，比如linux通过ulimit -n查看到值
 		最大并发数：
 		对于HTTP请求本地资源来说，能够支持的最大并发数量是worker_connections * worker_processes。例如VPN就是正向代理。
 		而如果是HTTP作为反向代理来说，最大并发数量应该是worker_connections * worker_processes/2。因为作为反向代理服务器，每个并发会建立与客户端的连接和与后端服务的连接，会占用两个连接。例如nginx负载均衡就是反向代理。
 		
-3、常用配置：	
+	常用配置：	
 	文件上传：
 		默认只支持1M文件，如果超过1M会提示：
 			Access to XMLHttpRequest at 'http://b.w.com/file/upload/' from origin 'http://a.w.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
