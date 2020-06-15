@@ -1,3 +1,6 @@
+0、参考资料
+	阿里文档：http://tengine.taobao.org/book/chapter_02.html
+	
 1、Nginx基础命令
 		window：（需要切换到nginx.exe目录下cmd运行以下命令）
 			版本：nginx -v #这里是小写的v
