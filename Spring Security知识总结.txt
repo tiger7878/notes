@@ -480,7 +480,12 @@
 			http.authorizeRequests().antMatchers("xx","这里写多个不需要认证就可以访问的").permitAll().anyRequest().authenticated()
 		情况二：区分简单角色（比如：普通用户和VIP），比如：访问路径/user必须要角色是ADMIN才能可以
 			http.authorizeRequests().antMatchers("这里写多个不需要认证就可以访问的").permitAll().antMatchers("/user").hasRole("ADMIN").anyRequest().authenticated()
-			更加细粒度的写法：.antMatchers(HttpMethod.GET,"/user/*").hasRole("ADMIN")//GET请求，/user/所有路径需要ADMIN角色
+			更加细粒度的写法：
+				.antMatchers(HttpMethod.GET,"/user/*").hasRole("ADMIN")//GET请求，/user/所有路径需要ADMIN角色
+				.hasAnyRole(["admin","user"]) //拥有任意一个角色都看访问
+				.hasAuthority("write")  //授权时给write权限就好，前面不会加ROLE_
+				.hasAnyAuthority(["read","write"]) //拥有任意一个权限都可以访问
+				.access("组合表达式") //这里的写法就比较复杂了
 			需要在UserDetails的实现类中配置权限为：ROLE_ADMIN
 			public Collection<? extends GrantedAuthority> getAuthorities() {
 				// TODO: 2019/2/8 需要修改成真实情况
