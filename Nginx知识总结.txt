@@ -64,17 +64,76 @@
 	}
 
 7、Gzip压缩
-		目的：提高传输效率，节约带宽
-		缺点：消耗CPU的资源
-		gzip on #开启压缩功能
-		gzip_min_length #限制最小压缩字节数，低于这个字节的文件就不压缩
-		gzip_comp_level #压缩级别，文件越大，压缩越多，消耗CPU资源也多
-		gzip_types #定义压缩文件的类型
+	目的：提高传输效率，节约带宽
+	缺点：消耗CPU的资源
+	gzip on #开启压缩功能
+	gzip_min_length #限制最小压缩字节数，低于这个字节的文件就不压缩
+	gzip_comp_level #压缩级别，文件越大，压缩越多，消耗CPU资源也多
+	gzip_types #定义压缩文件的类型
 	
 8、location
-		模糊匹配：直接location 后面是/xx
-		精确匹配：location = /xx 
-		正则表达式：location ~*  #其中~代表正则方法方式，其中*代表不区分大小写（不是必要的）
+	模糊匹配：直接location 后面是/xx
+	精确匹配：location = /xx 
+	正则表达式：location ~*  #其中~代表正则方法方式，其中*代表不区分大小写（不是必要的）
+	
+9、Nginx跨域支持
+	#在server节点里面添加：
+	#允许跨域请求的域，*代表所有
+	add_header 'Access-Control-Allow-Origin' *;
+	#允许带上cookie请求
+	add_header 'Access-Control-Allow-Credentials' 'true';
+	#允许请求的方法，比如 GET/POST/PUT/DELETE
+	add_header 'Access-Control-Allow-Methods' *;
+	#允许请求的header
+	add_header 'Access-Control-Allow-Headers' *;	
+	
+10、静态资源防盗链
+	#在server节点里面添加：
+	#对源站点验证
+	valid_referers *.imooc.com;
+	#非法引入会进入下方判断
+	if ($invalid_referer) {
+	return 404;
+	}
+	
+11、Nginx负载均衡
+	四层负载均衡：（基于协议层的TCP/UDP）F5、LVS、Haproxy
+	七层负载均衡：（基于应用层的HTTP）Nginx、Haproxy、apache
+	DNS地域负载均衡：
+
+12、Jmeter性能测试
+	网址：https://jmeter.apache.org/download_jmeter.cgi #下载Binaries的zip即可
+	启动：
+		windows环境：解压路径下bin/jmeter.bat
+		mac环境：解压路径下bin/jmeter
+	线程用户：
+		右键测试计划-线程用户-线程组
+		线程数：就是用户数
+		循环次数：单个用户的累计请求数量
+	取样器：
+		右键线程组-取样器-HTTP请求
+		协议：http
+	监听器：
+		右键测试计划-监听器
+		查看结果树、聚合报告(可以认为当异常率为百分之多少都算正常)、用户表格查看结果
+	
+13、Nginx集群
+	#在http节点内部配置：
+	upstream tomcats {
+		server 192.168.1.173:8080;
+		server 192.168.1.174:8080;
+		server 192.168.1.175:8080;
+	}
+	
+	server {
+		listen       80;
+		server_name  www.mknginx.com;
+		
+		location / {
+			proxy_pass  http://tomcats;
+		}
+	}  
+	
 	
 	性能优化：
 	worker_processes ：进程数、配置跟CPU核心数一样
