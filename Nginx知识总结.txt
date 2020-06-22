@@ -134,6 +134,52 @@
 		}
 	}  
 	
+14、负载均衡策略
+	轮询（默认）：所有服务器的机会是均等的
+	加权轮询：weight=1 (默认的权重)，值越大被分配的访问量就越大。
+	
+	#在http节点内部配置：
+	upstream tomcats {
+		server 192.168.1.173:8080 weight=1;
+		server 192.168.1.174:8080 weight=2;
+		server 192.168.1.175:8080 weight=3;
+	}
+	
+15、upstream参数：
+	网址：http://nginx.org/en/docs/http/ngx_http_upstream_module.html
+	max_conns：单个server的并发最大连接数，默认是0，表示没有限制
+	slow_start：慢慢的启动到weight指定的值，商业版才可以用
+	down：指定某台服务器挂掉了
+	backup：备用机，有服务器挂了以后才会启用它
+	max_fails：最大的错误次数。默认值1.
+	fail_timeout：达到最大次数以后，一定的时间段内不会再请求这台，过了这个时间才会再请求。默认值10秒
+	
+16、keeplive
+	网址：http://nginx.org/en/docs/http/ngx_http_upstream_module.html#keepalive
+	#在http节点内部配置：
+	upstream tomcats {
+		server 192.168.1.173:8080 weight=1;
+		#server 192.168.1.174:8080 weight=2;
+		#server 192.168.1.175:8080 weight=3;
+		
+		keepalive 32;
+	}
+	server {
+		listen 80;
+		server_name www.tomcats.com;
+		location / {
+			proxy_pass http://tomcats;
+			proxy_http_version 1.1;
+			proxy_set_header Connection "";
+		}
+	}
+	
+	字段说明：
+	keepalived ： 设置长连接处理的数量，用于提高吞吐量
+	proxy_http_version ：设置长连接http版本为1.1
+	proxy_set_header ：清除connection header 信息
+	
+	
 	
 	性能优化：
 	worker_processes ：进程数、配置跟CPU核心数一样
