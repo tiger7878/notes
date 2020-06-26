@@ -267,6 +267,23 @@
 	tail xxx.log -f #动态查看最后的信息，一旦日志变化，界面也会变化
 	ctrl+c ：退出tail命令
 	
+21、keepalived
+	对于nginx的高可用，防止一台nginx挂了以后，整个服务都挂掉了
+	网址：https://www.keepalived.org/download.html 
+	核心配置文件：需要安装到/etc下面，在/etc/keepalived下会有keepalived.conf
+	安装路径：/usr/local/keepalived
+	启动：切换到安装路径下sbin/下执行： ./keepalived #启动后通过ip addr发现多了一个虚拟ip，备节点在没有启用时是不会多一个虚拟ip的
+	注意：哪台机器存活时，哪台机器就会多一个虚拟ip
+	注册成服务：
+		cp /解压路径下/keepalive/etc/init.d/keepalived /etc/init.d/
+		cp /解压路径下/keepalive/etc/sysconfig/keepalived /etc/sysconfig/
+	刷新服务： systemctl daemon-reload
+	启动服务： systemctl start keepalived.service
+	停止服务： systemctl stop keepalived.service
+	重启服务： systemctl restart keepalived.service
+	监控nginx服务并自动重启：需要写脚本来实现定时监听nginx的请。#如果只是nginx挂了，keeealived没有挂，那么网站是不能访问的，也不会切换到备的keeealived
+	双机主备：主机挂了以后，自动切换为备机提供服务。这里一个资源浪费的问题，备机一直闲置。
+	双主热备：依赖于DNS轮询（同一个域名解析到不同的ip地址的服务器上），实现两台主keeealived同时在线。资源没有浪费，主机和备机都在提供服务。
 	
 	
 	性能优化：
