@@ -179,7 +179,7 @@
 	处理密码加解密的逻辑
 		PasswordEncoder：在crypto包中，它随机生成盐和密码然后加密，相同的原始密码，每次加密得到的结果都是不同的，推荐使用这个。（思路不错）
 			encode方法：把明文密码进行加密，要开发者自行调用后保存到数据库中。
-			matches方法：Spring Security来调用
+			matches方法：Spring Security来调用，参数是明文和加密后的密文，修改密码时调用它来判断原密码是否正确
 		需要在配置类中配置它的实体bean，注册时使用它进行加密后保存到数据库中，至于登录时匹配明文由它来完成。
 				
 15、个性化用户认证流程
@@ -522,6 +522,7 @@
 33、Spring Security动态授权（内部管理系统）
 	通用RBAC数据模型：用户表、角色表、资源表（菜单、按钮、url）、用户角色关系表（多对多）、角色资源关系表（多对多）
 	@Order(Integer.MAX_VALUE)：标明该组件最后加载
+	方式一：
 	Spring Security和RBAC数据模型的模块关联起来主要利用的是权限表达式：
 		//验证数据库里面的动态权限
         config.anyRequest().access("@rbacServiceImpl.hasPermission(request,authentication)");
@@ -542,4 +543,11 @@
 			public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
 				resources.expressionHandler(expressionHandler);
 			}
+			
+	方式二：
+	@PreAuthorize注解
+	开启安全校验：@EnableGlobalMethodSecurity(prePostEnabled=true)
+	@PreAuthorize(value="isAuthenticated()")//添加登录权限判断，登录才可以调用
+	@PreAuthorize("hasRole('ADMIN')") //是ADMIN角色才能访问
+	@PreAuthorize("hasAuthority('fin:brokerage:list')") //有fin:brokerage:list权限才能访问
 	
