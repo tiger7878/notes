@@ -551,3 +551,26 @@
 	@PreAuthorize("hasRole('ADMIN')") //是ADMIN角色才能访问
 	@PreAuthorize("hasAuthority('fin:brokerage:list')") //有fin:brokerage:list权限才能访问
 	
+34、跨域问题
+	跨域配置文件
+	@Configuration
+	public class CorsConfig implements WebMvcConfigurer {
+
+		@Override
+		public void addCorsMappings(CorsRegistry registry) {
+			registry.addMapping("/**")
+					.allowedOrigins("*")
+					.allowedMethods("*")
+					.allowedHeaders("*")
+					.allowCredentials(true)
+					.maxAge(3600);
+		}
+	}
+	
+	跨域配置：
+	@Override
+    public void configure(HttpSecurity http) throws Exception {
+		http.cors()
+			.and()
+			.authorizeRequests().requestMatchers(CorsUtils::isPreFlightRequest).permitAll();
+	}
