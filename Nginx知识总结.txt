@@ -216,6 +216,7 @@
 	}
 	
 19、https配置
+	下载路径：http://nginx.org/en/download.html
 	免费的ssl：可以在腾讯云上申请一个免费的ssl，但是只能给www域名使用
 	创建临时文件：mkdir -p /var/temp/nginx  否则启动时报错
 	编译时需要把ssl模块编译进去
