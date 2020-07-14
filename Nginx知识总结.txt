@@ -87,6 +87,34 @@
 	#允许请求的header
 	add_header 'Access-Control-Allow-Headers' *;	
 	
+	vue + nginx 出现跨域404 和401的解决方案：
+	vue配置：
+	proxyTable: {
+      '/api': {
+        target: baseUrl,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    }
+	
+	nginx配置：
+	server {
+        listen       80;
+        server_name  localhost;
+
+        location / {
+			root   E:/nginx/dist;
+            index  index.html index.htm;
+        }
+		
+		# 跨域请求出现404和401的问题，注意必须带/
+		location /api/ {
+			proxy_pass http://42.194.146.219:8090/;
+		}
+	}
+	
 10、静态资源防盗链
 	#在server节点里面添加：
 	#对源站点验证
