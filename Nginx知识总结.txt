@@ -222,7 +222,7 @@
 	编译时需要把ssl模块编译进去
 	./configure \
 	--prefix=/usr/local/nginx \
-	--pid-path=/var/run/nginx/nginx.pid \
+	--pid-path=/var/local/nginx/nginx.pid \
 	--lock-path=/var/lock/nginx.lock \
 	--error-log-path=/var/log/nginx/error.log \
 	--http-log-path=/var/log/nginx/access.log \
@@ -263,6 +263,11 @@
 			proxy_pass http://tomcats/;
 		}
 	}
+	
+	开机启动：
+	vim /etc/rc.local
+	在最后一行增加 /usr/local/nginx/sbin/nginx
+	查看下它是否有执行权限，如果没有执行： chmod 755 rc.local ，如果有就不执行了
 	
 20、日志查看
 	tail xxx.log #打印最后的一些信息
