@@ -141,4 +141,6 @@ windows端口查看和关闭
 	
 常用插件：
 	Free Mybatis plugin #mybatis的插件，方便跳转和谢mapper.xml文件
+	Lombok #简化实体get和set
+	Maven Helper #解决jar包冲突
 	
