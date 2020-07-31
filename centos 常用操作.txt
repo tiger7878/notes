@@ -28,9 +28,25 @@
 	安装prce： 	yum -y install pcre-devel
 	安装zlib： 	yum -y install zlib zlib-devel
 	安装openssl：	yum -y install openssl openssl-devel
-	解压：tar -zxvf nginx-1.16.1.tar.gz
-	进入nginx目录：cd nginx-1.16.1 
-	执行：./config
+	解压：tar -zxvf nginx-1.18.0.tar.gz
+	进入nginx目录：cd nginx-1.18.0 
+	执行默认安装：./config
+	执行自定义安装：
+		创建临时文件：mkdir -p /var/temp/nginx  否则启动时报错
+		./configure \
+		--prefix=/usr/local/nginx \
+		--pid-path=/var/local/nginx/nginx.pid \
+		--lock-path=/var/lock/nginx.lock \
+		--error-log-path=/var/log/nginx/error.log \
+		--http-log-path=/var/log/nginx/access.log \
+		--with-http_gzip_static_module \
+		--http-client-body-temp-path=/var/temp/nginx/client \
+		--http-proxy-temp-path=/var/temp/nginx/proxy \
+		--http-fastcgi-temp-path=/var/temp/nginx/fastcgi \
+		--http-uwsgi-temp-path=/var/temp/nginx/uwsgi \
+		--http-scgi-temp-path=/var/temp/nginx/scgi \
+		--with-http_ssl_module
+		
 	执行：make
 	执行：make install
 	查询安装到哪里了：whereis nginx

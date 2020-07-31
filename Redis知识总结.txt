@@ -1,0 +1,62 @@
+1、安装gcc依赖
+	yum install -y gcc
+	
+2、解压安装包
+	tar -zxvf redis-5.0.8.tar.gz
+	
+3、安装
+	cd redis-5.0.8
+	make
+	make install PREFIX=/usr/local/redis
+	
+4、前台启动
+	cd /usr/local/redis/bin/
+	./redis-server
+	停止：ctrl + c
+	
+5、后台启动
+	cp /root/soft/redis-5.0.8/redis.conf /usr/local/redis/bin/
+	编辑/usr/local/redis/bin/下的配置文件 把 daemonize no 改为 daemonize yes
+	vim redis.conf
+	daemonize yes
+	启动：./redis-server redis.conf
+	
+6、开机启动
+	vi /etc/systemd/system/redis.service
+	
+	[Unit]
+	Description=redis-server
+	After=network.target
+
+	[Service]
+	Type=forking
+	ExecStart=/usr/local/redis/bin/redis-server /usr/local/redis/bin/redis.conf
+	PrivateTmp=true
+
+	[Install]
+	WantedBy=multi-user.target
+	
+	注意：ExecStart配置成自己的路径 
+	
+	设置开机启动
+	systemctl daemon-reload
+	systemctl start redis.service
+	systemctl enable redis.service
+	
+	创建 redis 命令软链接，直接输入redis命令打开客户端
+	ln -s /usr/local/redis/bin/redis-cli /usr/bin/redis
+	
+7、服务操作命令
+	systemctl start redis.service   #启动redis服务
+
+	systemctl stop redis.service   #停止redis服务
+
+	systemctl restart redis.service   #重新启动服务
+
+	systemctl status redis.service   #查看服务当前状态
+
+	systemctl enable redis.service   #设置开机自启动
+
+	systemctl disable redis.service   #停止开机自启动
+	
+	
