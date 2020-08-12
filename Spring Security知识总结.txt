@@ -432,10 +432,11 @@
 		从request的请求头中获取到jwtToken，然后解析
 	令牌的刷新
 		请求地址：http://localhost:8080/oauth/token
-		请求头：Authorization（client的id和secret）、Content-Type
+		请求头：Authorization（client的id和secret）、Content-Type（application/x-www-form-urlencoded）
 		请求body：grant_type：refresh_token，refresh_token：颁发令牌时的refresh_token的值，scope：颁发令牌时的范围
 		一般是用户无感知的做法，比如用户用它的token来获取信息时，服务器发现过期了，可以直接刷新一下给用户
 		刷新token的有效期可以设置长一些，比如一星期或者一个月都行
+		重要：需要在ServerConfig的configure方法里面针对secret进行passwordEncoder.encode(secret)，否则不能刷新令牌
 		待解决问题：发现刷新令牌后生成的是一个新的token，此时应该把这个token响应回客户端，否则客户端就不知道
 
 30、JWT实现SSO（单点登录）
