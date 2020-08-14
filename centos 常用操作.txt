@@ -89,3 +89,17 @@
 	:set nonu
 	删除多行
 	:7,10d #删除7-10行
+	
+7、挂载云硬盘
+	以 root 用户登录系统
+	查看连接到实例的磁盘名称：
+	fdisk -l
+	格式化该磁盘：
+	mkfs.ext4 /dev/vdb
+	将该磁盘挂载到 /data 挂载点：
+	mount /dev/vdb /data
+	进入该磁盘，并新建文件 qcloud.txt：
+	cd /data
+	vim qcloud.txt
+	
+	
