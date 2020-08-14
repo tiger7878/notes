@@ -9,12 +9,12 @@
 	1.1、centos安装：
 	查看操作系统是否已经安装了jdk：rpm -qa | grep jdk
 	卸载命令：sudo yum remove xxx(xxx 就是上一步查询到的结果)
-	给jdk文件权限：sudo chmod 777 jdk-8u241-linux-x64.rpm
-	安装：sudo rpm -ivh jdk-8u241-linux-x64.rpm
+	给jdk文件权限：sudo chmod 777 jdk-8u251-linux-x64.rpm
+	安装：sudo rpm -ivh jdk-8u251-linux-x64.rpm
 	默认安装路径： /usr/java
 	jdk环境变量：sudo vim /etc/profile
 		在最下方追加：
-		export JAVA_HOME=/usr/java/jdk1.8.0_211-amd64
+		export JAVA_HOME=/usr/java/jdk1.8.0_251-amd64
 		export CLASSPATH=.:$JAVA_HOME/jre/lib/rt.jar:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
 		
 		export PATH=$JAVA_HOME/bin:$PATH
@@ -101,5 +101,13 @@
 	进入该磁盘，并新建文件 qcloud.txt：
 	cd /data
 	vim qcloud.txt
-	
+	开机自动挂载磁盘:（单个硬盘不分成多个区直接自动挂载）
+	备份 /etc/fstab 文件：
+	cp -r /etc/fstab /home
+	编辑器打开 /etc/fstab 文件：
+	vi /etc/fstab
+	以使用设备名称自动挂载为例，在最后一行添加：
+	/dev/vdb /data   ext4 defaults     0   0
+	检查 /etc/fstab 文件是否写入成功：
+	mount -a
 	
