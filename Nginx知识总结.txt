@@ -291,6 +291,7 @@
 			proxy_pass http://tomcats/;
 		}
 	}
+	免费的ssl网站：https://freessl.cn/ #它生成的证书是full_chain.pem，直接使用，生成时选择：验证类型：文件验证，CSR生成：浏览器生成
 	
 	开机启动：
 	vim /etc/rc.local
