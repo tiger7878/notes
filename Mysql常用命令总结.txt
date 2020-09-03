@@ -48,8 +48,11 @@
 	索引个数：一张表的单个索引越多，新增，修改时越慢，联合索引可以解决这个问题，但是联合索引的使用要注意顺序和个数
 	不等于、is null 、is not null 走全表扫描
 	like通配符，针对%在右边可以走索引。如果一定要用like %%，那么就用查询联合所有中的字段就会走索引，如果查询的字段超出了联合索引可以使用搜索引擎比如ElasticSearch
-	字符串如果不加单银行也会导致索引失效
+	字符串如果不加单引号也会导致索引失效
+	少用or或in
 	建表建议：不要给字段用null，一般都要给一个默认的值，整形就是0，可以为空的就给空字符串
-	
-	
-	
+	trace工具：索引分析工具，开启后会影响性能，不要在生产环境开启，用了要关闭
+		开启方式：set session optimizer_trace="enabled=on",end_markers_in_json=on;
+		使用方式：先执行sql语句，紧接着再执行：select * from information_schema.OPTIMIZER_TRACE;
+		
+		
