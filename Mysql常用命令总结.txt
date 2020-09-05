@@ -43,6 +43,7 @@
 		联合索引的所有字段用上或者用到第一个字段也会走索引，否则全表扫描，
 		范围查找之后的索引字段是不会再走索引了
 		可以看key_len判断走了几个索引字段
+	覆盖索引：就是查询的字段都在联合索引字段里面，这是最高效的一种做法，但是通常可能达不到
 	不要在索引列做任何操作（计算，函数，类型转换），这些都会导致索引失效
 	日期类型：对于有datetime类型的数据加索引以后，要想选择某个天或者某区间的数据，不要用日期函数，要用大于小于这些比较方法就可以走索引
 	索引个数：一张表的单个索引越多，新增，修改时越慢，联合索引可以解决这个问题，但是联合索引的使用要注意顺序和个数
@@ -54,5 +55,13 @@
 	trace工具：索引分析工具，开启后会影响性能，不要在生产环境开启，用了要关闭
 		开启方式：set session optimizer_trace="enabled=on",end_markers_in_json=on;
 		使用方式：先执行sql语句，紧接着再执行：select * from information_schema.OPTIMIZER_TRACE;
-		
-		
+	order by排序时也会按照索引树来的，也是最左原则，如果where里面有第一个字段，order by先是第二个字段，再是第三个字段就走索引，如果先是第三个字段，后是第二个字段就不走索引。
+		优化：原来order by 日期的，可以修改为order by 主键自增长id，因为id和日期是同步的，这样就不用走文件排序，而是走索引排序
+		示例：
+			EXPLAIN SELECT * FROM bz_customer ORDER BY id LIMIT 0,3;
+			EXPLAIN SELECT * FROM bz_customer ORDER BY gmt_create LIMIT 0,3;
+	group by的规则跟order by是一模一样的
+		如果不需要排序可以写order by null
+		where性能高于having，能写在where里面的就不要写在having里面
+	
+	
