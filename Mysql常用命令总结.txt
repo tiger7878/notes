@@ -65,12 +65,12 @@
 		where性能高于having，能写在where里面的就不要写在having里面
 	分页查询优化：
 		原始语句（不效率）：SELECT * FROM bi_enterprise_info LIMIT 10000,10;
-		优化后的语句：
+		优化方式一：
 			SELECT * FROM bi_enterprise_info a
 			INNER JOIN 
 			(
 				SELECT id FROM bi_enterprise_info ORDER BY id DESC LIMIT 10000,10
 			)b
 			on b.id=a.id
-	
+		优化方式二：SELECT * FROM bi_enterprise_info ORDER BY id DESC LIMIT 10000,10;  根据索引字段进行排序都会走索引，所以这种方式也是一种优化
 	
