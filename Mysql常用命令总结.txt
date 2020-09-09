@@ -63,5 +63,14 @@
 	group by的规则跟order by是一模一样的
 		如果不需要排序可以写order by null
 		where性能高于having，能写在where里面的就不要写在having里面
+	分页查询优化：
+		原始语句（不效率）：SELECT * FROM bi_enterprise_info LIMIT 10000,10;
+		优化后的语句：
+			SELECT * FROM bi_enterprise_info a
+			INNER JOIN 
+			(
+				SELECT id FROM bi_enterprise_info ORDER BY id DESC LIMIT 10000,10
+			)b
+			on b.id=a.id
 	
 	
