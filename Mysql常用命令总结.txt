@@ -51,7 +51,7 @@
 	like通配符，针对%在右边可以走索引。如果一定要用like %%，那么就用查询联合所有中的字段就会走索引，如果查询的字段超出了联合索引可以使用搜索引擎比如ElasticSearch
 	字符串如果不加单引号也会导致索引失效
 	少用or或in
-	建表建议：不要给字段用null，一般都要给一个默认的值，整形就是0，可以为空的就给空字符串
+	建表建议：不要给字段用null，一般都要给一个默认的值，整形就是0，可以为空的就给空字符串。索引字段，一定不能为null
 	trace工具：索引分析工具，开启后会影响性能，不要在生产环境开启，用了要关闭
 		开启方式：set session optimizer_trace="enabled=on",end_markers_in_json=on;
 		使用方式：先执行sql语句，紧接着再执行：select * from information_schema.OPTIMIZER_TRACE;
@@ -73,4 +73,13 @@
 			)b
 			on b.id=a.id
 		优化方式二：SELECT * FROM bi_enterprise_info ORDER BY id DESC LIMIT 10000,10;  根据索引字段进行排序都会走索引，所以这种方式也是一种优化
-	
+	join优化：关联字段加索引
+	in和exists优化：
+		使用in的场景：B表的数据集小于A表的数据集时
+			select * from A where id in（select id from B）  #先执行的是查询B表
+		使用exists场景：A表的数据集小于B表的数据集时
+			select * from A where exists (select 1 from B where B.id=A.id) #先执行的是查询A表
+	count优化：
+		count不要非主键，因为它扫描到空值是不会增加值的，会导致数量统计有误
+		count速度从快到慢：count(1)>count(非主键索引)==count(*)>count(主键)。如果是5.7版本推荐count(*)
+		
