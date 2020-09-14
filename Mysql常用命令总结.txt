@@ -26,6 +26,9 @@
 	-- 添加索引
 	ALTER TABLE table_name ADD INDEX index_name (column) 
 	
+	-- 删除索引
+	alter table table_name DROP INDEX index_name;
+	
 3、关联更新
 	UPDATE del_sheet1 a
 	JOIN bi_enterprise_info b ON a.enterprise_name=b.enterprise_name
