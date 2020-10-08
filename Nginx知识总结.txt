@@ -3,6 +3,7 @@
 	
 1、Nginx基础命令
 		window：（需要切换到nginx.exe目录下cmd运行以下命令）
+			查询命令：nginx -?
 			版本：nginx -v #这里是小写的v
 			详细信息：nginx -V #这里是大写的V，可以查看到对应的安装信息
 			启动：start nginx
@@ -10,6 +11,7 @@
 			重新加载配置文件：nginx -s reload
 			快速停止：nginx -s stop #立刻停止，有用户在访问都会停止
 			完整停止：nginx -s quit #优雅停止，有用户在访问，不会立刻停止，等用户访问完再停止
+			重新装载日志文件：nginx -s reopen  #当access_log文件过大，我们把它重命名后，再创建一个access_log后需要执行该命令，否则文件不会保存到这里
 
 2、进程
 	查看命令：ps -ef | grep nginx
