@@ -21,6 +21,7 @@
 3、资料网址：
 	官网：http://projects.spring.io/spring-cloud/
 	中文网站：https://springcloud.cc/
+	版本对应查看：https://start.spring.io/actuator/info
 	
 4、Lombock
 	@NoArgsConstructor  //无参构造函数
