@@ -86,4 +86,7 @@
 	count优化：
 		count不要非主键，因为它扫描到空值是不会增加值的，会导致数量统计有误
 		count速度从快到慢：count(1)>count(非主键索引)==count(*)>count(主键)。如果是5.7版本推荐count(*)
-		
+	
+6、去除重复数据保留一条
+	重复记录是根据单个字段（peopleId）来判断，只留有rowid最小的记录
+	delete from people where peopleId in (select peopleId from people group by peopleId having count(peopleId) > 1) and rowid not in (select min(rowid) from people group by peopleId having count(peopleId )>1)	
