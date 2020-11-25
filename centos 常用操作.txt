@@ -153,3 +153,11 @@
 	systemctl enable redis.service   #设置开机自启动
 	systemctl disable redis.service   #停止开机自启动
 	
+9、磁盘查看
+	查看磁盘挂载占用大小
+	df -Th
+	查看某个文件夹大小
+	du -sh xx
+	查看当前目录下文件大小
+	ll -h
+	
