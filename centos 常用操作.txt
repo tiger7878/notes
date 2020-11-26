@@ -96,6 +96,8 @@
 	fdisk -l
 	格式化该磁盘：
 	mkfs.ext4 /dev/vdb
+	创建挂载文件夹
+	mkdir /data
 	将该磁盘挂载到 /data 挂载点：
 	mount /dev/vdb /data
 	进入该磁盘，并新建文件 qcloud.txt：
