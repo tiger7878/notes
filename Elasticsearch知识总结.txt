@@ -1,0 +1,140 @@
+1、分布式搜索引擎
+	Lucence类库：是java开发的类库，使用时不太方便，需要自己封装
+	Solr：基于Lucence进行了封装，Netflix用它
+	ES：基于Lucence进行封装，github就是用它，可以支持PB级别的数据搜索，支持近实时的搜索，可以作为大数据分析
+	
+2、Elasticsearch
+	官网：https://www.elastic.co/cn/
+	简介：https://www.elastic.co/cn/what-is/elasticsearch
+	下载：https://www.elastic.co/cn/downloads/?elektra=home&storm=hero
+	
+3、ES核心术语
+	索引index      == 表
+	文档document   == 数据行
+	字段fileds	   == 表字段
+	映射mapping	   == 表字段类型
+	近实时NRT	   == 搜索时间在1秒左右
+	节点node	   == 每一个服务器 
+	shard replica  == 数据分片（shard）和备份（replica），集群时使用
+	倒排索引	   == 根据单词去搜索文档
+	
+4、ES安装
+	下载文件以后解压出来
+	在目录下面创建一个data文件夹
+	配置文件：config/elasticsearch.yml
+		cluster.name：集群服务器名称
+		node.name：节点名称
+		path.data：数据存放路径
+		path.logs：日志文件路径
+		network.host：0.0.0.0 网络地址
+		http.port：自定义端口
+	bin：命令就在这个路径下
+		前台运行：./elasticsearch  #关闭 ctrl+c
+		后台运行：./elasticsearch -d 
+	注意：root用户是不能启动es的，需要单独创建一个用户
+	报错处理：
+		max file descriptors [4096] for elasticsearch process is too low
+		max number of threads [3756] for user is too low
+		#配置1 vim /etc/security/limits.conf #文件最下方
+			* soft nofile 65536
+			* hard nofile 131072
+			* soft nproc 2048
+			* hard nproc 4096
+		#配置2 vim /etc/sysctl.conf  #文件最下方
+			# elasticsearch
+			vm.max_map_count=262144
+			保存以后使用：sysctl -p 来刷新这个文件
+	浏览器上访问：
+		http://localhost:9200
+	查看是否运行成：centos 中输入 jps 命令
+	
+5、ES可视化插件elasticsearch-head
+	网址：https://github.com/mobz/elasticsearch-head/releases
+	方式1：通过谷歌插件，但是需要翻墙
+	方式2：下载文件，解压缩，借助于node来运行(npm run start)
+	访问：http://localhost:9100
+	连接报错：是由于es的配置没有支持跨域，需要在elasticsearch.yml中配置跨域支持
+		http.cors.enabled: true 
+		http.cors.allow-origin: "*"
+	索引创建
+		索引名称：表名称
+		分片数：数据存放在一个分片上
+		副本数：每个分片有多少个副本
+	健康颜色：
+		green：主分片和副本都已经分配，100%可用
+		yellow：主分片完整，至少有一个副本有问题
+		red：至少有一个主分片缺失
+	在数据浏览的tab下的某个字段下面是可以输入关键字来进行搜索的
+	
+6、mapping创建
+	type：
+		text：文本，可以被分词，可以执行倒排索引
+		keyword：文本，不会被分词，只会执行精确全匹配，例如手机号码，微信号等
+	index: 是否创建索引，默认true创建，false为不创建
+	注意：一个属性创建以后就不允许修改，但是可以增加属性
+	主要数据类型：
+		text（会被分词）,keyword（不会被分词）
+		long,integer,short,byte
+		doubule,float
+		boolean
+		date
+		object
+		数组（类型必须一致）
+	两种模式：这种就代表可以进行分词检索(直接用字段)，也可以进行不分词精确检索（需要字段.keyword）
+		"type":"text"
+			"fileds":{
+				"keyword":{
+					"ignore_above":256, #字符串的长度如果超过256就不会创建keyword了
+					"type":"keyword"
+				}
+			}
+	
+7、查询
+	查询指定id的指定的某些字段：http://localhost:9200/索引/文档类型/文档id?_source=id,name（id和name就是指定的字段）
+	查询指定的某些字段：http://localhost:9200/索引/文档类型/_search?_source=id,name（id和name就是指定的字段）
+	
+8、中文分词器
+	ES默认不支持中文分词的，所以需要使用额外的分词器
+	内置分词器类型：
+		standard：默认的，按照单词拆分，大写会转换成小写
+		simple：剔除非字母，大写会转换成小写
+		whitespace：根据空格进行拆分
+		stop：一些没有任何意义的单词is、the、a这些都会被去掉
+		keyword：不会进行任何拆分
+	网址：https://github.com/medcl/elasticsearch-analysis-ik
+	下载地址：https://github.com/medcl/elasticsearch-analysis-ik/releases
+	版本注意：版本要跟ES使用同一个版本
+	操作：
+		把下载下来的zip文件解压
+		解压以后再ES目录的plugins下创建文件夹ik
+		把分词器解压后的文件放到ik中
+	中文分词器的两种类型：
+		ik_max_word：会将文本做最细粒度的拆分
+		ik_smart：会做最粗粒度的拆分
+	自定义词汇
+		在ik的config/IKAnalyzer.cfg.xml中配置ext_dict的值
+		然后创建对应的文件，在文件里面添加一些自定义的词汇
+
+9、DSL查询
+	match ：分词匹配，全文检索
+	exists：判断字段是否存在，如果存在这个字段，就把数据都查询出来
+	match_all：匹配所有
+	term：不分词全匹配，也就是精确匹配
+	terms：一个字段检索多个关键词
+	match_phrase：关键字模糊匹配，也就是不分词模糊匹配，整个关键字不会被分词进行模糊匹配
+	_source：指定要查询结果返回的字段，一个或者多个
+	分页：from:0,size:10。from是从0开始，size是每页数据大小。注意from=(pageIndex-1)*pageSize，pageIndex是从1开始
+	match的操作符：
+		or：或者
+		and：并且
+		minimum_should_match：满足最少多个词，或者最少百分比就会被搜索出来
+	ids：多个id查询
+	multi_match：在多个字段中查询某个关键词，通过fields指定要查询的多个字段，可以指定某个字段的权重boost，权重越高，显示就靠前
+	bool查询：
+		must：相当于and
+		must_not：不满足，相当于!=
+		should：相当于or
+	post_filter：过滤器，它和query是在同一级的，query是从es中检索出数据，filter是针对从es中检索出的数据再进行过滤
+	
+	
+待完善：ES的geo坐标搜索
