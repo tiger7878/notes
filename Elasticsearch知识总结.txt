@@ -135,6 +135,9 @@
 		must_not：不满足，相当于!=
 		should：相当于or
 	post_filter：过滤器，它和query是在同一级的，query是从es中检索出数据，filter是针对从es中检索出的数据再进行过滤
+	range：范围搜索
+	sort：排序，可以进行组合排序，注意text被分词以后不能进行排序，keyword不会被分词可以进行排序
+	highlight：高亮显示，pre_tags：文字的前缀标签，post_tags：文字的后缀标签，fields：需要被高亮的字段
 	
 	
 待完善：ES的geo坐标搜索
