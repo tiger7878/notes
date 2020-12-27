@@ -142,6 +142,12 @@
 	滚动搜索：该搜索效率很高，需要设置scroll过期的时间，第一次搜索时拿到scroll_id，后续的搜索每次都有新的scroll_id，以便带到下一次查询中。
 		可以执行大批量的文档查询，同时不用付出深度分页的代价
 		参考文档：https://www.elastic.co/guide/cn/elasticsearch/guide/current/scroll.html
+	批量查询：_mget
+		可以使用比如 ids：查询多个id，如果某个id查询不到，会显示found：false
+		它比_search显示的信息要少很多，如果用_search搜索时，如果某个id没有数据，是不会显示了，也不会提示差不到
+	批量操作：bulk，
+		记得每行都要有\n回车符
+		关于数据大小，最好是1000-5000作为一个批次，文件大小5M-15M之间，如果太大了反而影响性能
 	
-	
+			
 待完善：ES的geo坐标搜索
