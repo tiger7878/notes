@@ -26,7 +26,7 @@
 		node.name：节点名称
 		path.data：数据存放路径
 		path.logs：日志文件路径
-		network.host：0.0.0.0 网络地址
+		network.host：0.0.0.0 网络地址，这个很重要，一定不要忘记了
 		http.port：自定义端口
 	bin：命令就在这个路径下
 		前台运行：./elasticsearch  #关闭 ctrl+c
@@ -149,5 +149,53 @@
 		记得每行都要有\n回车符
 		关于数据大小，最好是1000-5000作为一个批次，文件大小5M-15M之间，如果太大了反而影响性能
 	
+10、Spring Boot集成
+	添加maven依赖
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+            <version>2.1.5.RELEASE</version>
+            <!--<version>2.2.2.RELEASE</version>-->
+        </dependency>
+	注意引入后查看：org.elasticsearch.client.transport的版本号是否与下载的es版本号一致，比如6.4.3，如果不对，考虑修改spring boot的版本
+	application.yml中配置
+		spring:
+		  data:
+		    elasticsearch:
+		      cluster-name: elasticsearch #es的配置文件中的名字，如果没有填写，默认就是elasticsearch
+		      cluster-nodes: localhost:9300 #es安装的ip地址和端口号，如果是集群的话使用英文逗号作为分隔
+	在项目的Application方法中加入以下代码（放在run方法之前）：
+		// SpringBoot的netty和elasticsearch的netty相关jar冲突
+        System.setProperty("es.set.netty.runtime.available.processors", "false");
+	在测试类中，需要添加测试类的构造函数，并且在构造函数中加入上面的代码，否则会报错
+	对应ES中索引的实体：
+		@Document(indexName = "索引名称", type = "doc")
+		@Data
+		public class EsNews {
+			@Id
+			private Long id;
+
+			@Field(store = true)
+			private String username;
 			
+			@Field(store = true,type=FieldType.Keyword) #指定Keyword类型
+			private String nickname;
+			
+			@Field(store = true,index=false) #index=false不创建索引，默认创建索引
+			private String nickname;
+		}
+	注入类：
+		@Autowired
+		private ElasticsearchTemplate esTemplate;
+	创建索引：
+		esTemplate.index(indexQuery); #默认5个分片，每个分片1个副本
+	删除索引：
+		esTemplate.deleteIndex(es实体类.class)
+	注意：不建议使用java代码来创建、修改、删除索引的。通常我们用ElasticsearchTemplate对文档数据进行操作
+	
+	文档数据修改：
+		esTemplate.update(updateQuery);
+	
+	
+	
 待完善：ES的geo坐标搜索
