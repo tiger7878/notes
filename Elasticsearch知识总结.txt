@@ -192,9 +192,37 @@
 	删除索引：
 		esTemplate.deleteIndex(es实体类.class)
 	注意：不建议使用java代码来创建、修改、删除索引的。通常我们用ElasticsearchTemplate对文档数据进行操作
-	
+
+11、文档数据操作
 	文档数据修改：
 		esTemplate.update(updateQuery);
+	
+	文档数据查询：
+		esTemplate.queryForObject(GetQuery,es实体类.class)
+	
+	文档数据删除：
+		esTemplate.delete()
+	
+	文档数据分页查询：
+		esTemplate.queryForPage(SearchQuery,es实体类.class)
+		
+	文档数据高亮显示：
+		SearchQuery中的withHighlightFields字段
+		
+	文档数据中的排序：
+		SearchQuery中的withSort(SortBuilder)方法，可以写多个
+
+13、Logstash数据同步
+	网址：https://www.elastic.co/cn/logstash
+	下载页：https://www.elastic.co/cn/downloads/，linux使用TAR.GZ包
+	数据同步边界：id或者update_time
+		id：有个问题是只能针对新增数据
+		update_time：可以新增可以修改，推荐使用
+	版本注意：版本要跟ES使用同一个版本
+	注意基础环境：
+		jdk需要安装，比如jdk1.8
+		mysql连接驱动：mysql-connector-java-5.1.38.jar
+	索引注意：要预先创建ES索引文件
 	
 	
 	
