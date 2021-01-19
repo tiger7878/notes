@@ -138,7 +138,10 @@
 	range：范围搜索
 	sort：排序，可以进行组合排序，注意text被分词以后不能进行排序，keyword不会被分词可以进行排序
 	highlight：高亮显示，pre_tags：文字的前缀标签，post_tags：文字的后缀标签，fields：需要被高亮的字段
-	深度分页：默认是只能搜索10000条，如果超过以后会报错。所以做分页时需要控制。可以通过修改：max_result_window的值
+	深度分页：
+		默认是只能搜索10000条，如果超过以后会报错。所以做分页时需要控制。可以通过修改：max_result_window的值
+		查询搜索的最大条数，如果没有设置时是查询不出这个值的，使用get请求：http://47.106.10.223:9200/enterprise_info/_settings 看index节点的max_result_window
+		修改搜索的最大值：PUT请求：http://47.106.10.223:9200/enterprise_info/_settings ,请求头设置为json，请求数据：{"index.max_result_window":100000}
 	滚动搜索：该搜索效率很高，需要设置scroll过期的时间，第一次搜索时拿到scroll_id，后续的搜索每次都有新的scroll_id，以便带到下一次查询中。
 		可以执行大批量的文档查询，同时不用付出深度分页的代价
 		参考文档：https://www.elastic.co/guide/cn/elasticsearch/guide/current/scroll.html
