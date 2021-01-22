@@ -354,3 +354,20 @@
 					server_name _;
 					client_max_body_size 20m; #控制上传文件大小为20M
 				}
+				
+23、Nginx配置上传文件大小限制
+    server {
+		listen 80;
+		server_name www.tomcats.com;
+		
+		client_max_body_size 10M;                    #上传文件大小限制
+		sendfile        on;                          #设置为on表示启动高效传输文件的模式
+		keepalive_timeout  1800;                     #保持连接的时间，默认65s
+		
+		location / {
+			proxy_pass http://tomcats;
+			proxy_http_version 1.1;
+			proxy_set_header Connection "";
+		}
+	}
+
