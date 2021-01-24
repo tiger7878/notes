@@ -172,19 +172,20 @@
         System.setProperty("es.set.netty.runtime.available.processors", "false");
 	在测试类中，需要添加测试类的构造函数，并且在构造函数中加入上面的代码，否则会报错
 	对应ES中索引的实体：
-		@Document(indexName = "索引名称", type = "doc")
+	    createIndex 如果不写默认true，表示自动创建索引
+		@Document(indexName = "索引名称", type = "doc",createIndex=false)
 		@Data
 		public class EsNews {
 			@Id
 			private Long id;
 
-			@Field(store = true)
+			@Field(store = true, type=FieldType.Text)  #指定文本类型，会创建倒排索引
 			private String username;
 			
-			@Field(store = true,type=FieldType.Keyword) #指定Keyword类型
+			@Field(store = true, type=FieldType.Keyword) #指定Keyword类型
 			private String nickname;
 			
-			@Field(store = true,index=false) #index=false不创建索引，默认创建索引
+			@Field(store = true, index=false) #index=false不创建倒排索引，默认创建倒排索引
 			private String nickname;
 		}
 	注入类：
@@ -215,6 +216,25 @@
 	文档数据中的排序：
 		SearchQuery中的withSort(SortBuilder)方法，可以写多个
 
+12、数据查询
+	//分页信息：
+	Pageable pageable = PageRequest.of(page.intValue() - 1, limit.intValue());
+    //查询器
+    BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+	//排序 --可以多个，注意如果针对文本类型排序，此字段又有keyword的话，需要用字段.keyword来进行排序
+    SortBuilder sortBuilder = new FieldSortBuilder("id").order(SortOrder.DESC);
+	//查询条件
+	SearchQuery query = new NativeSearchQueryBuilder()
+			.withQuery(boolQueryBuilder)
+			.withPageable(pageable)
+			.withSort(sortBuilder)
+			.build();
+	//执行查询获取结果
+	AggregatedPage<EsEnterpriseInfo> esResult = esTemplate.queryForPage(query, EsEnterpriseInfo.class);
+	//打印结果信息
+	log.warn("esResult totalCount : {}, totalPage : {}, currPage : {}, pageSize : {} , list :{}",
+            esResult.getTotalElements(), esResult.getTotalPages(), esResult.getNumber(), esResult.getSize(),esResult.getContent());
+	
 13、Logstash数据同步
 	网址：https://www.elastic.co/cn/logstash
 	下载页：https://www.elastic.co/cn/downloads/，linux使用TAR.GZ包
