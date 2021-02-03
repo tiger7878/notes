@@ -56,3 +56,9 @@
 	如果报错：我们需要先执行
 	git fetch
 	然后再执行最上面的命令
+	
+22、删除分支
+	删除本地分支：
+	git branch -d dev分支
+	删除远程分支：
+	git push origin --delete dev分支
