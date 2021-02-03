@@ -62,3 +62,17 @@
 	git branch -d dev分支
 	删除远程分支：
 	git push origin --delete dev分支
+	
+23、clone项目以后再拉取其他分支
+    情况1：本次clone的是master分支
+		取回指定的dev分支
+		git fetch origin dev
+		在本地创建dev分支并切换到dev分支
+		git checkout -b dev origin/dev
+	情况2：clone的时候不指定分支，默认是全部分支都会被clone下来
+		这个时候切换进目录默认看见的是master分支
+		切换到dev分支
+		git checkout dev
+		
+
+		
