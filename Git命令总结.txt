@@ -49,7 +49,10 @@
 	git pull origin dev 本地分支与远程分支相关联
 	
 20、生成秘钥
+	默认名称：id_rsa
 	ssh-keygen -t rsa -C 'zhcw63@163.com'
+	指定生成文件路径和名称：
+	ssh-keygen -t rsa -C 'zhcw63@163.com'  -f ~/.ssh/github_id_rsa
 	
 21、从git仓库中拉取本地不存在的一个分支
 	git checkout -b 本地分支名 origin/远程分支名
