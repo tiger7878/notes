@@ -77,5 +77,32 @@
 		切换到dev分支
 		git checkout dev
 		
+24、gitee和github的ssh key冲突
+	生成两个key：
+	ssh-keygen -t rsa -C 'zhcw63@163.com'  -f ~/.ssh/github_id_rsa
+	ssh-keygen -t rsa -C 'zhcw63@163.com'  -f ~/.ssh/gitee_id_rsa
+	
+	分别在gitee和gitlab的网站上配置对应的公钥
+	
+	在本地计算机的.ssh目录下创建config文件
+	vim config
+	
+	# gitee
+	Host gitee.com
+	HostName gitee.com
+	PreferredAuthentications publickey
+	IdentityFile ~/.ssh/gitee_id_rsa
 
-		
+	# github
+	Host github.com
+	HostName github.com
+	PreferredAuthentications publickey
+	IdentityFile ~/.ssh/github_id_rsa
+	
+	保存config文件
+	
+	验证配置是否成功
+	ssh -T git@gitee.com
+	ssh -T git@github.com
+	ssh -T git@gitlab.com
+	
