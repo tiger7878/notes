@@ -1,42 +1,94 @@
-0：下载地址：https://git-scm.com/download/win
-1、克隆远程仓库中的代码
-	git clone xxx.git
-2、添加所有文件监控
-	git add .
-3、提交到本地仓库
-	git commit -m '说明'
-4、提交到远程仓库
-	git push -u origin master
-5、本地创建并检出dev分支
-	git checkout -b dev
-6、查看分支
-	git branch
-7、提交并创建远程分支dev
-	git push --set-upstream origin dev
-8、查看git配置信息
-	git config --list
-9、查看git用户名
-	git config user.name
-10、查看邮箱配置
-	git config user.email
-11、全局配置用户名
-	git config --global user.name 'monkey'
-12、全局配置邮箱
-	git config --global user.email 'zhcw63@163.com'
-13、从远程仓库克隆某个分支
-	git clone -b branch_name git://xxx/project.git
-14、切换到指定分支，并更新工作区
-	git checkout branch-name
-15、合并指定分支到当前分支
-	git merge branch
-16、git版本查看
-	git --version
-17、撤销
-	撤销指定文件：
-	git checkout -- file_name
-	撤销所有文件：
-	git checkout -- .
-18、远程服务器删除已提交的文件夹或者文件
+一、基础准备
+	Git下载地址：https://git-scm.com/download/win
+	git版本查看
+		git --version
+	查看git配置信息
+		git config --list
+	查看git用户名
+		git config user.name
+	查看邮箱配置
+		git config user.email
+	全局配置用户名
+		git config --global user.name 'monkey'
+	全局配置邮箱
+		git config --global user.email 'zhcw63@163.com'
+
+二、生成秘钥ssh key
+	默认名称：id_rsa
+		ssh-keygen -t rsa -C 'zhcw63@163.com'
+	指定生成文件路径和名称：
+		ssh-keygen -t rsa -C 'zhcw63@163.com'  -f ~/.ssh/github_id_rsa
+	
+三、初始创建
+	克隆远程仓库中的代码
+		git clone xxx.git #会clone所有分支
+		git clone -b branch_name git://xxx/project.git #clone指定的分支
+	添加所有文件监控
+		git add .
+	提交到本地仓库
+		git commit -m '说明'
+	提交到远程仓库
+		git push -u origin master
+	
+四、分支管理
+	本地创建dev分支并提交到远程
+		本地创建并检出dev分支
+			git checkout -b dev
+		查看所有分支
+			git branch
+		提交并创建远程分支dev
+			git push --set-upstream origin dev
+
+	切换到指定分支，并更新工作区
+		git checkout branch-name
+		
+	合并指定分支到当前分支
+		git merge branch
+	
+	删除分支：
+		git branch -d dev分支 #删除本地分支：
+		git push origin --delete dev分支 #删除远程分支：
+		
+	本地分支关联远程分支
+	git pull origin dev 本地分支与远程分支相关联
+	
+五、克隆代码
+	情况1：clone的时候不指定分支，默认是全部分支都会被clone下来
+		clone代码：
+			git clone xxx.git
+		这个时候切换进目录默认看见的是master分支
+		切换到dev分支
+			git checkout dev
+		
+	情况1：clone时指定了dev分支，需要取回master分支
+		clone代码：
+			git clone -b dev xxx.git 
+		取回指定的master分支
+			git fetch origin master
+		在本地创建master分支并切换到master分支
+			git checkout -b master origin/master
+
+六、修改文件的撤销
+	情况1：文件已经修改，但是没有执行add操作的文件的撤销(被修改的文件原来被git跟踪了，不是新创建的文件)
+		撤销指定文件：
+			git checkout -- file_name
+		撤销所有文件：
+			git checkout -- .
+			
+	情况2：文件已经修改，已经执行add操作的文件的撤销(被修改的文件原来被git跟踪了，不是新创建的文件)
+		让文件回到工作区的状态：
+			git reset HEAD file_name
+		撤销指定文件：
+			git checkout -- file_name
+	
+	情况3：新创建文件，已经执行add操作的文件的撤销（新创建的文件默认是没有被git跟踪的）
+		让文件回到工作区的状态：
+			git reset HEAD file_name
+		然后删除文件或者修改文件后再add
+	
+	备注：可以使用git status来查看当前可以执行哪些命令
+	
+七、远程服务器删除已提交的文件夹或者文件
 	本次举例使用target文件夹
 	首先切换到有target的目录
 	然后输入：
@@ -45,64 +97,33 @@
 		git push
 	rm缓存错误的还原方法：
 		git reset --hard HEAD
-19、本地分支关联远程分支
-	git pull origin dev 本地分支与远程分支相关联
-	
-20、生成秘钥
-	默认名称：id_rsa
-	ssh-keygen -t rsa -C 'zhcw63@163.com'
-	指定生成文件路径和名称：
-	ssh-keygen -t rsa -C 'zhcw63@163.com'  -f ~/.ssh/github_id_rsa
-	
-21、从git仓库中拉取本地不存在的一个分支
-	git checkout -b 本地分支名 origin/远程分支名
-	如果报错：我们需要先执行
-	git fetch
-	然后再执行最上面的命令
-	
-22、删除分支
-	删除本地分支：
-	git branch -d dev分支
-	删除远程分支：
-	git push origin --delete dev分支
-	
-23、clone项目以后再拉取其他分支
-    情况1：本次clone的是master分支
-		取回指定的dev分支
-		git fetch origin dev
-		在本地创建dev分支并切换到dev分支
-		git checkout -b dev origin/dev
-	情况2：clone的时候不指定分支，默认是全部分支都会被clone下来
-		这个时候切换进目录默认看见的是master分支
-		切换到dev分支
-		git checkout dev
-		
-24、gitee和github的ssh key冲突
+
+八、gitee和github的ssh key冲突
 	生成两个key：
-	ssh-keygen -t rsa -C 'zhcw63@163.com'  -f ~/.ssh/github_id_rsa
-	ssh-keygen -t rsa -C 'zhcw63@163.com'  -f ~/.ssh/gitee_id_rsa
+		ssh-keygen -t rsa -C 'zhcw63@163.com'  -f ~/.ssh/github_id_rsa
+		ssh-keygen -t rsa -C 'zhcw63@163.com'  -f ~/.ssh/gitee_id_rsa
 	
 	分别在gitee和gitlab的网站上配置对应的公钥
 	
 	在本地计算机的.ssh目录下创建config文件
-	vim config
-	
-	# gitee
-	Host gitee.com
-	HostName gitee.com
-	PreferredAuthentications publickey
-	IdentityFile ~/.ssh/gitee_id_rsa
+		vim config
+		
+		# gitee
+		Host gitee.com
+		HostName gitee.com
+		PreferredAuthentications publickey
+		IdentityFile ~/.ssh/gitee_id_rsa
 
-	# github
-	Host github.com
-	HostName github.com
-	PreferredAuthentications publickey
-	IdentityFile ~/.ssh/github_id_rsa
+		# github
+		Host github.com
+		HostName github.com
+		PreferredAuthentications publickey
+		IdentityFile ~/.ssh/github_id_rsa
 	
 	保存config文件
 	
 	验证配置是否成功
-	ssh -T git@gitee.com
-	ssh -T git@github.com
-	ssh -T git@gitlab.com
+		ssh -T git@gitee.com
+		ssh -T git@github.com
+		ssh -T git@gitlab.com
 	
