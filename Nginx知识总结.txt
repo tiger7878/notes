@@ -356,6 +356,7 @@
 				}
 				
 23、Nginx配置上传文件大小限制
+	方式一：针对其中一个服务
     server {
 		listen 80;
 		server_name www.tomcats.com;
@@ -371,3 +372,17 @@
 		}
 	}
 
+	方式二：针对所有的服务
+    还有一种方式是给http节点配置
+	http{
+		include       mime.types;
+		default_type  application/octet-stream;
+		
+		sendfile        on;
+		keepalive_timeout  65;
+		
+		# 配置nginx上传文件最大限制
+		client_max_body_size 50m;  #这里是50M的写法
+	}
+	
+	
