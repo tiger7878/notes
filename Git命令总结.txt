@@ -98,12 +98,12 @@
 	rm缓存错误的还原方法：
 		git reset --hard HEAD
 
-八、gitee和github的ssh key冲突
+八、gitee和github和gitlab的ssh key冲突
 	生成两个key：
 		ssh-keygen -t rsa -C 'zhcw63@163.com'  -f ~/.ssh/github_id_rsa
 		ssh-keygen -t rsa -C 'zhcw63@163.com'  -f ~/.ssh/gitee_id_rsa
 	
-	分别在gitee和gitlab的网站上配置对应的公钥
+	分别在gitee和github和gitlab的网站上配置对应的公钥
 	
 	在本地计算机的.ssh目录下创建config文件
 		vim config
@@ -118,7 +118,13 @@
 		Host github.com
 		HostName github.com
 		PreferredAuthentications publickey
-		IdentityFile ~/.ssh/github_id_rsa
+		IdentityFile ~/.ssh/id_rsa
+
+		# gitlab
+		Host git@gitlab.com
+		HostName gitlab.com
+		PreferredAuthentications publickey
+		IdentityFile ~/.ssh/id_rsa
 	
 	保存config文件
 	
