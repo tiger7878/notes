@@ -253,5 +253,9 @@
 	自定义模板配置中文分词：
 		可以给text类型加上中文分词器，这样子中文就不会被切分成一个一个的汉字了，从创建出的索引可以看出来，也可以自己创建索引时指定中文分词器
 	
+14、日期范围查询报错
+	错误信息：Caused by: ElasticsearchParseException[failed to parse date field [Sun Dec 31 16:00:00 UTC 2017] with format [yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis]]
+	解决方案：只需要在java中，将查询的时间字段由传入时间对象  变成   传入时间戳
+	QueryBuilder queryBuilder = QueryBuilders.rangeQuery("buildDate").from(builder.getBuildDate().getTime());
 	
 待完善：ES的geo坐标搜索
