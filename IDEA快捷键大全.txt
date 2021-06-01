@@ -144,3 +144,13 @@ windows端口查看和关闭
 	Lombok #简化实体get和set
 	Maven Helper #解决jar包冲突
 	
+类模板：
+	创建类的时候按照这个模板来创建
+	File → Settings → Editor → File and Code Templates → Includes → File Header
+	内容如下：
+	/**
+	 * ${description}
+	 * @author monkey
+	 * @date ${DATE} ${TIME}
+	 */
+	 说明：${description}加上以后，在输入了类名以后，就会强制要求输入备注信息，如果去掉就不用
