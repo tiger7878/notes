@@ -154,3 +154,6 @@ windows端口查看和关闭
 	 * @date ${DATE} ${TIME}
 	 */
 	 说明：${description}加上以后，在输入了类名以后，就会强制要求输入备注信息，如果去掉就不用
+	 
+报错处理：
+	启动时报错：maven-resources-production:xxx 。处理方式：选择idea 目录上的 Build->RebuildProject （构建->重建项目）进行idea重新编译项目后就可以了
