@@ -139,6 +139,9 @@
 	cd /usr/local/redis/bin/
 	vim redis.conf
 	把 daemonize no 改为 daemonize yes  #把redis从前台启动改为后台启动
+	bind ip地址  #控制的是访问这个redis的ip地址，如果修改为 0.0.0.0的话，就是所有ip都可以访问
+	requirepass 密码  #这里控制的是连接redis的密码，生产环境一定要配置，否则就是一个漏洞。设置密码以后，在redis-cli 里面需要使用auth 密码 进行授权才能访问。不影响下面的启动和停止服务的命令
+	port 6379   #指定redis服务的端口号
 	编写开机启动文件：
 	vim /etc/systemd/system/redis.service
 	输入如下内容：
@@ -181,3 +184,7 @@
 	在阿里云在线扩容购买，购买成功以后网站上看见磁盘空间变了，但是在centos中用df -TH发现没有变
 	如果整个数据盘没有分区，直接挂载的就使用：resize2fs /dev/vdb 进行扩容即可
 	如果数据盘还有分区的，在工单提交页面查看操作
+	
+11、Vim操作
+	搜索：使用/然后输入需要搜索的关键字，然后n代表下一个，N代表上一个
+	
