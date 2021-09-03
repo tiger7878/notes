@@ -1,5 +1,6 @@
 0、参考资料
 	阿里文档：http://tengine.taobao.org/book/chapter_02.html
+	windows版本：http://nginx-win.ecsds.eu/download/  #在windows环境要用windows版本，不然没有办法解决1024的限制。参考https://blog.csdn.net/qq_29407683/article/details/109216280
 	
 1、Nginx基础命令
 		window：（需要切换到nginx.exe目录下cmd运行以下命令）
