@@ -386,4 +386,20 @@
 		client_max_body_size 50m;  #这里是50M的写法
 	}
 	
+24、Nginx分割access.log日志
+	在nginx的log文件夹下创建目录bak
+	在nginx的log文件夹下创建脚本cut_logs.sh
+	#!/bin/bash
+	log_path=/usr/local/nginx/logs/access.log
+	save_path=/usr/local/nginx/logs/bak/access_$(date +%Y%m%d -d 'yesterday').log
+	cp $log_path $save_path && echo > $log_path
+	给脚本运行的权限：chmod +x cut_logs.sh
+	运行一次脚本看效果
+	
+	设置定时任务
+	crontab -e
+	0 0  * * * /usr/bin/sh cut_logs.sh #每天的00:00执行日志切分
+	
+	查看定时任务是否添加成功
+	crontab -l
 	
