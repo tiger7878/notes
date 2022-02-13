@@ -104,3 +104,10 @@
 	查询所有线程：
 	show full processlist;
 	
+8、还原数据库问题
+	还原时提示：MySQL server has gone away
+		show VARIABLES like '%max_allowed_packet%';
+		得到的结果是：1048576，也就是1M
+		我们可以设置为2G
+		set global max_allowed_packet = 2*1024*1024*1000
+		设置完以后再看下
