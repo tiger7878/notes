@@ -9,6 +9,8 @@
 	查看数据库文件大小：
 		进入information_schema数据
 		select concat(round(sum(DATA_LENGTH/1024/1024),2),'MB') as data from TABLES where table_schema='数据库名称bai';
+	查询某个数据库的所有表的名字
+		select table_name from information_schema.tables where table_schema='数据库名称';
 
 2、表修改
 	表添加字段
