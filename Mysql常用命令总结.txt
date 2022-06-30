@@ -11,7 +11,10 @@
 		select concat(round(sum(DATA_LENGTH/1024/1024),2),'MB') as data from TABLES where table_schema='数据库名称bai';
 	查询某个数据库的所有表的名字
 		select table_name from information_schema.tables where table_schema='数据库名称';
-
+	查询某个字段在哪些表里面
+		使用information_schema 数据库
+		select * from columns where column_name='role_id'
+	
 2、表修改
 	表添加字段
 	alter table   table1 add id int unsigned not Null auto_increment primary key
