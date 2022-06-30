@@ -1,3 +1,6 @@
+0、镜像地址
+	https://mirrors.163.com/centos/7/os/x86_64/Packages/
+
 1、上传和下载
 	rz命令安装：yum install -y lrzsz 
 	上传：rz
@@ -189,4 +192,8 @@
 	
 11、Vim操作
 	搜索：使用/然后输入需要搜索的关键字，然后n代表下一个，N代表上一个
+	
+12、远程查看
+	查看远程服务是否正常：systemctl status sshd
+	查看远程服务的端口：netstat -lnpt | grep sshd
 	
