@@ -46,3 +46,16 @@ npm run dev
 npm run build
 
 备注：打包生成的是html+css+js，所以直接放到iis、tomcat、nginx都可以运行
+
+Vue Cli3安装
+卸载：
+	npm uninstall vue-cli -g（3.0以下版本卸载）
+	npm uninstall -g @vue/cli（3.0以上版本卸载）
+安装：
+	npm install -g @vue/cli （安装的是最新版）
+	npm install vue-cli@2.9.6 （指定版本安装【指定版本为3.0以下版本】，其中2.9.6为版本号）
+	npm install -g @vue/cli@3.0.5（指定版本安装【指定版本为3.0以上版本】，其中3.0.5为版本号）-使用
+版本查看：
+	vue -V
+
+	
