@@ -64,7 +64,10 @@
 	开机启动：
 	vim /etc/rc.local
 	在最后一行增加 /usr/local/nginx/sbin/nginx
-	查看下它是否有执行权限，如果没有执行： chmod 755 rc.local ，如果有就不执行了，注意这里查看的是/etc/rc.local对应的真实文件，通过ll查看
+	查看下它是否有执行权限：
+		ll /etc/rc.local
+		ll /etc/rc.d/rc.local
+	如果没有执行： chmod 755 rc.local ，如果有就不执行了，注意这里查看的是/etc/rc.local对应的真实文件，通过ll查看
 	
 	常用修改：
 		vim nginx.conf
