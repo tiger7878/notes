@@ -1,0 +1,40 @@
+Vue官网
+	https://cn.vuejs.org/
+	
+Vue Cli3官网
+	https://cli.vuejs.org/
+	
+Element UI官网
+	https://element.eleme.cn/#/zh-CN
+	
+安装Vue Cli3
+	npm install -g @vue/cli@3.0.5
+
+卸载
+	npm uninstall -g @vue/cli
+	
+创建框架
+	vue create element-test
+
+引入Eelment-UI
+	切换到项目目录下
+	vue add element
+	在SCSS 时选择n
+	
+安装Vue-router
+	cnpm i -S vue-router@3.5.1
+	高版本可能会报错，所以选择3.5.1版本
+
+vue-element-admin项目
+	源码
+		https://github.com/PanJiaChen/vue-element-admin
+	下载
+		git clone https://github.com/PanJiaChen/vue-element-admin.git
+	安装依赖
+		npm install
+	运行
+		npm run dev
+	运行失败处理：
+		删除node_modules和package-lock.json文件，重新执行npm install命令来安装
+	
+	
