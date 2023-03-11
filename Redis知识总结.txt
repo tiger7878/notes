@@ -58,5 +58,14 @@
 	systemctl enable redis.service   #设置开机自启动
 
 	systemctl disable redis.service   #停止开机自启动
+
+
+8、mac上操作
+	brew install redis  #使用Homebrew安装命令
+
+	brew services start redis   #启动redis服务
+
+	brew services stop redis    #停止redis服务
+	
 	
 	
