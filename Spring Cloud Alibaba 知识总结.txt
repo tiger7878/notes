@@ -1,0 +1,353 @@
+一、整体架构
+	1、组件用途：
+		Nacos：服务发现
+		Ribbon：服务的负载均衡
+		Feign：Http服务远程调用
+		Sentinel：限流降级
+		RocketMQ：消息队列
+	2、常用命令
+		jps：查看启动的服务占用的端口号和服务名称
+		kill：强制终止某个端口号对应的服务（kill -9 端口号）
+
+二、Nacos
+	1、服务启动命令
+		安装目录：
+			/Users/monkey/java/study/SpringCloudAlibaba/soft/nacos/nacos-1.0.1/bin
+			/Users/monkey/java/study/SpringCloudAlibaba/soft/nacos/nacos-1.4.2/bin
+		切换到bin目录下执行以下命令
+		linux：sh startup.sh -m standalone
+	2、默认帐号和密码：nacos
+	3、服务领域模型：Namespce（命名空间）、Group（服务分组）、Service（微服务）、Cluster（集群）、Instance（微服务实例）
+		命名空间：最高层级，用来区分开发环境、测试环境、生产环境，不同命名空间的实例不能相互调用
+		服务分组：可以把不同的微服务划分到同一个组里面
+		微服务：自定义的微服务
+		集群：每个微服务可以包含多个集群
+		微服务实例：具体的每个微服务
+	4、元数据：服务级别、集群级别、实例级别
+		用途：用于解决不同版本之间的服务调用，比如用户V1版本调用订单V1版本，用户V2版本调用订单V2版本
+		
+三、Rebbion
+	1、配置负载均衡最佳实践：
+		优先级：文件属性配置高于代码配置
+		配置方式选择：文件属性配置优先考虑，然后再是代码配置
+		同一个配置尽量保持单一性，不要文件配置和代码配置混用
+	2、支持Nacos的服务权重：
+		需要编写代码：参考NacosWeightedRule
+	3、优先调用相同集群的实例：
+		比如深圳地区的服务调用深圳地区的实例，需要所有的服务在配置文件中配置cluster-name来指定集群
+		需要编写代码：参考NacosSameClusterWeightedRule
+	4、不同服务版本调用：
+		通过Nacos中的元数据来实现：比如用户V1版本调用订单V1版本，用户V2版本调用订单V2版本
+		代码实现：instance.getMetadata() 获取元数据
+		参考文档：https://www.imooc.com/article/288674
+
+四、Feign
+	1、整合方式：在服务调用方整合
+		1.1、添加依赖：
+			<dependency>
+	            <groupId>org.springframework.cloud</groupId>
+	            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        	</dependency>
+        1.2、编写FeignClient
+        1.3、在启动类添加注解：@EnableFeignClients
+	2、负载均衡：Feign通过整合Rebbion实现了负载均衡
+	3、日支级别：
+		NONE：默认方式，不记录任何日志
+		BASIC：仅记录请求方法、URL、响应状态码以及执行时间。生产环境推荐使用
+		HEADERS：在BASIC基础上增加记录：请求和响应的header
+		FULL：记录请求和响应的header、body、元数据。开发环境使用
+		参考：GlobalFeignConfiguration，注意父子上下文重复扫描的问题
+		单个微服务配置：
+			在配置文件中配置：logging.level对应的feignclient日志级别
+			在feignClient中配置：configuration
+		全局配置：
+			在配置文件中配置：logging.level对应的feignclient日志级别
+			在服务启动类上的@EnableFeignClients(defaultConfiguration=xx.class）
+			也可以支持在配置文件中做全局配置
+	4、最佳实践：推荐使用配置文件属性配置方式
+	5、多参数请求：https://www.imooc.com/article/289000
+
+五、Sentinel
+	1、用途：流量控制、服务降级、熔断
+	2、控制台版本选择：跟maven引入的版本保持一致，防止意外发生
+	3、使用：
+		3.1、添加依赖
+			<dependency>
+	            <groupId>org.springframework.cloud</groupId>
+	            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+	        </dependency>
+    	3.2、yml文件配置
+    	spring:
+    		  cloud:
+    		    sentinel:
+			      transport:
+			        # 指定sentinel 控制台的地址
+			        dashboard: localhost:8080
+    4、官网：https://github.com/alibaba/Sentinel
+    5、默认帐号和密码：sentinel
+    6、流控规则
+    	6.1、流控模式
+	    	直接：对要限制的资源直接限制
+	    	关联：关联的资源达到控制标准后，本资源被限制。
+	    		使用场景：比如关联资源是修改，本资源是查询。修改被限流以后，本资源就被限流。
+	    	链路：只是针对入口资源进行限流，而不是针对本资源
+	    6.2、流控效果
+	    	快速失败：直接失败
+	    	Warm Up：预热机制，允许流量缓慢增加
+	    	排队等待：超过阈值的就排队执行任务
+	7、降级规则
+		RT：按秒统计，默认上限是4900ms，可以修改
+		异常比例：按秒统计
+		异常数：按分钟统计，时间窗口小于60会有问题
+	8、热点规则
+		用途：主要是针对指定的参数和参数的值进行限流
+		解释：一定时间窗口范围内指定参数索引的值达到访问限制就会限流
+		参数例外：表示针对指定参数的值做不同的限流规则
+		注意：参数类型必须是基本类型或者string
+	9、支持代码方式配置规则
+	10、核心api：
+		SphU：定义资源、让资源收到监控并且可以保护资源
+		Tracer：可以对想要的异常进行统计
+		ContextUtil：实现调用来源
+	11、注解@SentinelResource可以做到核心api做的事情，比如限流、降级等
+	12、规则持久化：https://www.imooc.com/article/289402
+		通常情况下，重启服务后规则就丢失了，但是线上环境不能这么做，所以需要规则持久化
+		模式：拉模式、推模式
+	13、生产环境使用：
+		方案一：自己编写就推荐使用推模式改造
+		方案二：使用阿里云的AHAS
+	14、错误提示修改：
+		需要编写代码来实现限流、降级以后的提示信息
+	
+六、RocketMQ
+	1、搭建参考网址：https://www.imooc.com/article/290089
+		安装位置：/Users/monkey/java/study/SpringCloudAlibaba/soft/rocketmq/rocketmq-all-4.5.1-bin-release
+
+		启动 Name Server : nohup sh bin/mqnamesrv & 
+		验证 Name Server 是否启动成功：tail -f ~/logs/rocketmqlogs/namesrv.log
+		停止 Name Server : sh bin/mqshutdown namesrv
+
+		启动 Broker ： nohup sh bin/mqbroker -n localhost:9876 &
+		验证 Broker 是否启动成功：tail -f ~/logs/rocketmqlogs/broker.log 
+		停止 Broker ： sh bin/mqshutdown broker
+
+		默认端口：9876
+
+	2、控制台安装：https://www.imooc.com/article/290092
+		安装位置：/Users/monkey/java/study/SpringCloudAlibaba/soft/rocketmq
+		懒人包使用：java -jar rocketmq-console-ng-1.0.1.jar
+		懒人包端口：17890
+		访问：http://localhost:17890
+
+	3、术语：
+		主题：Topic
+		消息模型：producer生产者、broker消息代理、consumer消费者
+		部署结构：
+			name server 名字服务器，相当于服务注册组件
+			broker server 代理服务器，消息中转角色
+		消费模式：pll拉模式、push推模式
+		group组：producer group生产组、consumer group消费组
+		消息传播模式：clustering集群（单个consumer处理）、broadcasting广播（每个consumer处理）
+		消息类型：普通消息、顺序消息、定时消息、延时消息、事务消息
+
+	4、分布式事务
+		通过发送事务消息来解决分布式事务业务场景的问题
+		消息发送时使用：rocketMQTemplate.sendMessageInTransaction()来发送事务消息
+		新增本地事务消息监听器：实现RocketMQLocalTransactionListener接口，打注解：@RocketMQTransactionListener(txProducerGroup = "tx-add-bonus-group")
+		注意：txProducerGroup中的值必须跟sendMessageInTransaction()时的group参数值一致
+
+	5、Spring Cloud Stream
+		用途：是一套简化消息中间健使用的微服务框架，支持整合多个消息中间件，提供统一的接口操作消息中间件
+		Destination Binder：目标绑定器，与消息中间件通信的组件。
+		Destination Bindings：目标绑定，有binder创建，用于消息的消费和生产，连接应用程序与消息中间件
+		Message：消息
+		依赖：
+			<dependency>
+	            <groupId>org.springframework.cloud</groupId>
+	            <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
+        	</dependency>
+        生产者：
+        	在项目启动类上添加注解：@EnableBinding(Source.class)
+        	配置：
+        		spring:
+        			cloud:
+	        		    stream:
+					      rocketmq:
+					        binder:
+					          name-server: localhost:9876
+					      bindings:
+					        # 生产者配置
+					        output:
+					          # 用来指定topic
+					          destination: stream-test-topic
+        消费者：
+        	在项目启动类上添加注解：@EnableBinding(Sink.class)
+        	配置：
+        		spring:
+        			cloud:
+	        		    stream:
+					      rocketmq:
+					        binder:
+					          name-server: localhost:9876
+					      bindings:
+					        # 消费者配置
+					        input:
+					          # 用来指定topic
+					          destination: stream-test-topic
+					          # rocketmq必须配置group，其他的mq不用
+          					  group: binder-group
+          	消费者代码：StreamRocketMqConsumer
+         分布式事务：
+         	借助于rocketmq的分布式事务来实现
+    6、消息过滤
+    	参考网站：https://image.disaitiyu.com
+    7、监控
+    	使用actuator
+    	/actuator/bindings
+    	/actuator/channels
+    	/actuator/health
+    8、错误处理
+    	参考网址：https://www.imooc.com/article/290435
+    	待完善到代码中去
+
+	碰见问题：
+		关闭消费者程序时会提示报错，待解决
+		如何删除或者清空消息
+	
+七、Gateway
+	1、添加依赖
+		<dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+	2、配置文件
+		spring:
+		  application:
+		    # 服务名称，一定要配置，否则无法注册上服务，尽量用-，不要用_，不要用特殊字符
+		    name: gateway-center
+		  cloud:
+		    nacos:
+		      discovery:
+		        # 指定nacos server的地址
+		        server-addr: localhost:8848
+		    gateway:
+		      discovery:
+		        locator:
+		          # 通过服务发现组件找到其他微服务
+		          enabled: true
+	3、转发规律
+		访问： http://网关地址/微服务名称/接口地址 转发到对应的某个微服务的接口地址中
+		比如：http://localhost:8040/user-center/user/info/1 实际访问了 http://localhost:8081/user/info/1
+	4、核心概念
+		route ：路由，是一条转发规则
+		predicate：谓词，控制请求是否要走这个转发规则，满足谓词条件才会进行转发，否则就不进行转发
+		filter：过滤器，修改请求和响应，为规则添加业务逻辑
+	5、自定义路由谓词工厂
+		继承：AbstractRoutePredicateFactory
+	6、自定义过滤器工厂
+		过滤器生命周期：
+			pre：gateway转发请求之前
+			post：gateway转发请求之后
+		实现方式一：继承AbstractGatewayFileterFactory
+		丝线方式二：继承AbstractNameValueGatewayFileterFactory
+		自定义过滤器工厂类名必须以：GatewayFileterFactory结尾
+	7、全局过滤器
+	8、问题排查
+		https://www.imooc.com/article/290824
+	9、过滤器顺序：order越小，越先执行
+	10、网关限流
+		参考：https://www.imooc.com/article/290828
+
+八、认证授权
+	1、处处安全方案
+		参考：http://ifeve.com/oauth2-tutorial-all/
+			https://github.com/chengjiansheng/cjs-oauth2-sso-demo
+			https://www.cnblogs.com/cjsblog/p/10548022.html
+	2、本项目采用方案
+		网关认证授权颁发token
+		微服务鉴权获取token信息
+	3、jwt
+		由：header、payload、signature三部分组成
+		jwt工具类：https://www.imooc.com/article/290892
+	4、小程序开发工具包
+		参考：https://github.com/Wechat-Group/WxJava
+	5、AOP检查登录状态
+		// 静态方法获取request
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes attributes = (ServletRequestAttributes) requestAttributes;
+        HttpServletRequest request = attributes.getRequest();
+    6、Feign传递token
+    	创建类实现RequestInterceptor接口
+    	然后在自定义的@FeignClient中加上configuration配置，也可以在配置文件中配置
+
+九、Nacos配置中心
+	1、依赖
+		<dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+    2、配置文件
+    	bootstrap.yml
+    3、动态刷新配置
+    	在配置文件所在类上加注解：@RefreshScope ，这样子修改以后不用重启项目就可以获取最新的配置
+    4、配置共享
+    	相同微服务的不同环境配置共享，比如dev和prod环境配置共享
+    	不同微服务之间的配置共享，参考12-4
+    		具体的两种方式：shared-dataids 和 ext-config
+    5、配置文件优先级
+    	自定义配置yaml > ext-config > shared-dataids
+    	nacos上的远程配置优先级 > 本地配置文件的优先级
+    6、nacos数据持久化
+    	服务发现存放在本地
+    	服务配置也存放在本地，配置数据存放在内嵌式derby数据库中，要停止服务才可以访问
+    7、搭建生产可用的nacos集群
+    	参考：https://www.imooc.com/article/288153
+    8、注意
+    	nacos做服务发现和配置管理可以分开的，这样子可以做两个集群，相互不影响
+    	nacos上的配置文件类型注意必须是yaml或者properties，其他无效
+    	可以在远程的上配置生产环境的数据库连接字符串，这样保证生产环境密钥不泄漏
+
+十、调用链监控Sleuth+Zipkin
+	1、整合Sleuth
+		<dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
+    2、整合zipkin
+    	因为zipkin已经包含了sleuth，所以引入zipkin就不需要重复引入sleuth
+    	下载网址：https://zipkin.io/pages/quickstart
+    	<dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zipkin</artifactId>
+        </dependency>
+    	启动服务：/Users/monkey/java/study/SpringCloudAlibaba/soft/zipkin
+    	java -jar zipkin-server-2.24.2-exec.jar 
+    3、zipkin持久化
+    	默认是存储到内存中，一旦重启，数据就丢失了，实际项目需要进行持久化
+    	建议存储到Elasticsearch中，选择es6
+    	es的启动：
+    	/Users/monkey/java/study/SpringCloudAlibaba/soft/elasticsearch/elasticsearch-6.8.2/bin
+    	执行：./elasticsearch
+
+十一、代码质量	
+	1、代码插件：Statistic来检查
+	2、代码规约：Alibaba Java Coding Guidelines
+	3、代码质量管理系统：SonarQube ：https://www.imooc.com/article/291857
+
+十二、项目监控
+	
+
+
+
+
+
+	
+
+
+
+
+

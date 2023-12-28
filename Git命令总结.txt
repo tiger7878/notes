@@ -42,7 +42,10 @@
 	切换到指定分支，并更新工作区
 		git checkout branch-name
 	
-	查看远程分支
+	刷新本地缓存的远程分支
+		git fetch
+
+	查看远程分支(有可能看不见全部远程分支，需要用fetch)
 		git branch -r
 		
 	从远程拉取分支到本地（远程分支会和本地关联）
